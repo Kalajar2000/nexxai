@@ -115,9 +115,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 headers: { 'Accept': 'application/json' }
             }).then(function (res) {
                 if (res.ok) { showOk(); }
-                else { alert('Sorry, something went wrong. Please email hello@nexxai.com.'); }
+                else { alert('Sorry, something went wrong. Please email santiago@nexxai.world.'); }
             }).catch(function () {
-                alert('Network error. Please email us at hello@nexxai.com.');
+                alert('Network error. Please email us at santiago@nexxai.world.');
             }).finally(function () {
                 if (btn) { btn.disabled = false; btn.textContent = "Let's Talk"; }
             });

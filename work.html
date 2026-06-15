@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Work — NEXXAI</title>
+    <title>Our Work | NEXXAI</title>
     <meta name="description" content="A selection of AI products and software platforms NEXXAI has designed, engineered, and shipped across healthcare, enterprise, e-commerce, education and more.">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="addons.css">
@@ -30,7 +30,7 @@
                     <li><a href="company.html">Company</a></li>
                 </ul>
             </nav>
-            <div class="header-cta"><a href="company.html#contact" class="btn btn-primary">Get Started</a></div>
+            <div class="header-cta"><a href="#contact" class="btn btn-primary">Get Started</a></div>
             <div class="mobile-menu-toggle"><span></span><span></span><span></span></div>
         </div>
     </header>
@@ -42,7 +42,7 @@
             <li><a href="upskilling.html">Upskilling</a></li>
             <li><a href="work.html">Work</a></li>
             <li><a href="company.html">Company</a></li>
-            <li><a href="company.html#contact">Contact</a></li>
+            <li><a href="#contact">Contact</a></li>
         </ul>
     </div>
 
@@ -50,7 +50,7 @@
         <div class="container">
             <span class="eyebrow">Our work</span>
             <h1>Products we've designed, built, and shipped</h1>
-            <p>From AI platforms to consumer apps — real software, in production, for founders and enterprises across four continents.</p>
+            <p>From AI platforms to consumer apps: real software, in production, for founders and enterprises across four continents.</p>
         </div>
     </section>
 
@@ -128,7 +128,7 @@
                     <div class="work-media"><img loading="lazy" src="assets/img/work/dating.webp" alt="The Perfect Match dating app"></div>
                     <div class="work-body">
                         <div class="work-cat">Social · USA</div>
-                        <h3>The Perfect Match — Dating App</h3>
+                        <h3>The Perfect Match Dating App</h3>
                         <p>A dating app that goes beyond swipes, redefining how people connect through deeper matching and meaningful interactions.</p>
                         <div class="work-meta"><span><i class="fas fa-users"></i>11-person team</span></div>
                         <div class="work-tags"><span class="tag">Flutter</span><span class="tag">Adobe XD</span><span class="tag">Firebase</span><span class="tag">Stripe</span></div>
@@ -178,8 +178,55 @@
                 <h2>Have a product in mind?</h2>
                 <p>Whether it's an AI platform or a full app build, we can take it from concept to launch.</p>
                 <div class="hero-buttons">
-                    <a href="company.html#contact" class="btn btn-primary">Start a Project</a>
+                    <a href="#contact" class="btn btn-primary">Start a Project</a>
                     <a href="services.html" class="btn btn-secondary">Explore Services</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <span class="eyebrow">Contact us</span>
+                <h2>Tell us about your project</h2>
+                <p>Send us what you're trying to build and we'll come back within 24 hours with a clear next step.</p>
+            </div>
+            <div class="contact-grid animate-on-scroll">
+                <div class="contact-form">
+                    <form id="contactForm" action="https://formspree.io/f/xqeonnea" method="POST">
+                        <input type="hidden" name="_subject" value="New enquiry from the NEXXAI website">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Company</label>
+                            <input type="text" id="company" name="company" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="challenge">What are you looking to build?</label>
+                            <textarea id="challenge" name="challenge" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Let's Talk</button>
+                    </form>
+                    <div class="alternative-contact">
+                        <p>Prefer to email? Reach us at <a href="mailto:santiago@nexxai.world">santiago@nexxai.world</a></p>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3>Talk to us directly</h3>
+                    <p>Whether it's an AI product, a full app build, or upskilling your team, we're ready when you are.</p>
+                    <div class="contact-info" style="margin-top:1.5rem;">
+                        <p><i class="fas fa-envelope"></i> &nbsp;santiago@nexxai.world</p>
+                        <p><i class="fas fa-phone"></i> &nbsp;+34 603 352 552</p>
+                        <p><i class="fas fa-location-dot"></i> &nbsp;Barcelona &middot; Boston &middot; Florida &middot; Lahore</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -204,7 +251,7 @@
                     <div class="footer-column">
                         <h3>Connect</h3>
                         <div class="contact-info">
-                            <p><i class="fas fa-envelope"></i> hello@nexxai.com</p>
+                            <p><i class="fas fa-envelope"></i> santiago@nexxai.world</p>
                             <p><i class="fas fa-phone"></i> +34 603 352 552</p>
                         </div>
                     </div>
@@ -216,6 +263,16 @@
             </div>
         </div>
     </footer>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+        <div class="success-content">
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h3>Message Sent!</h3>
+            <p>We'll be in touch within 24 hours to talk through how we can help you ship.</p>
+            <button class="btn btn-primary" id="closeSuccess">Close</button>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="script.js"></script>

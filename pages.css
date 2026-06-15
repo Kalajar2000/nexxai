@@ -357,3 +357,6 @@
 @media (max-width: 480px) {
     .stats-grid { grid-template-columns: 1fr; }
 }
+
+/* Robust marquee for the trust strip (reliable animation on mobile) */
+.logo-scroller-inner { display: flex; width: max-content; align-items: center; will-change: transform; }
