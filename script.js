@@ -97,10 +97,30 @@ document.addEventListener('DOMContentLoaded', function () {
     if (contactForm) {
         contactForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            setTimeout(function () {
+            var action = contactForm.getAttribute('action') || '';
+            var showOk = function () {
                 if (successMessage) successMessage.classList.add('active');
                 contactForm.reset();
-            }, 800);
+            };
+            // Demo mode: until a real Formspree endpoint is set, just confirm.
+            if (!action || action.indexOf('YOUR_FORM_ID') !== -1) {
+                setTimeout(showOk, 600);
+                return;
+            }
+            var btn = contactForm.querySelector('button[type="submit"]');
+            if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+            fetch(action, {
+                method: 'POST',
+                body: new FormData(contactForm),
+                headers: { 'Accept': 'application/json' }
+            }).then(function (res) {
+                if (res.ok) { showOk(); }
+                else { alert('Sorry, something went wrong. Please email hello@nexxai.com.'); }
+            }).catch(function () {
+                alert('Network error. Please email us at hello@nexxai.com.');
+            }).finally(function () {
+                if (btn) { btn.disabled = false; btn.textContent = "Let's Talk"; }
+            });
         });
     }
     if (closeSuccess && successMessage) {
