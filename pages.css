@@ -399,3 +399,9 @@ body.modal-open { overflow: hidden; }
 
 .work-modal-media iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; display: block; }
 .work-modal-media video { width: 100%; height: auto; max-height: 75vh; display: block; background: #000; }
+
+/* ---- Trust-strip marquee: self-contained so the orphaned styles.css rule can't kill it ---- */
+.logo-scroller { overflow: hidden; }
+.logo-scroller-inner { display: inline-block; white-space: nowrap; animation: nexx-marquee 35s linear infinite; will-change: transform; }
+.logo-scroller:hover .logo-scroller-inner { animation-play-state: paused; }
+@keyframes nexx-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
