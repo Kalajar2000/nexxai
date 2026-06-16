@@ -1,6 +1,6 @@
-// NEXXAI hero 3D — one living scene: ambient particles + liquid orb that
-// morphs into a 4D tesseract on click. Reacts to cursor and scroll.
-// Built entirely in code (Three.js), no external media.
+// NEXXAI hero 3D — one living AI scene: ambient particles + a liquid "AI core"
+// orb that wakes into a neural network (nodes, synapses, firing signals) on click.
+// Reacts to cursor and scroll. Built entirely in code (Three.js), no external media.
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
 /* ---- Ashima 3D simplex noise (for the liquid orb) ---- */
@@ -32,16 +32,16 @@ float snoise(vec3 v){
 function makeParticles() {
   const N = 120, pos = new Float32Array(N * 3), base = [];
   for (let i = 0; i < N; i++) {
-    const r = 2.6 * Math.cbrt(Math.random()), th = Math.random() * 6.283, ph = Math.acos(2 * Math.random() - 1);
+    const r = 2.7 * Math.cbrt(Math.random()), th = Math.random() * 6.283, ph = Math.acos(2 * Math.random() - 1);
     const x = r * Math.sin(ph) * Math.cos(th), y = r * Math.sin(ph) * Math.sin(th), z = r * Math.cos(ph);
     pos[i * 3] = x; pos[i * 3 + 1] = y; pos[i * 3 + 2] = z; base.push([x, y, z]);
   }
   const pgeo = new THREE.BufferGeometry(); pgeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const pmat = new THREE.PointsMaterial({ size: 0.055, color: new THREE.Color('#cdb6ff'), transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false });
+  const pmat = new THREE.PointsMaterial({ size: 0.05, color: new THREE.Color('#cdb6ff'), transparent: true, opacity: 0.75, blending: THREE.AdditiveBlending, depthWrite: false });
   const points = new THREE.Points(pgeo, pmat);
   const lpos = new Float32Array(N * N * 3);
   const lgeo = new THREE.BufferGeometry(); lgeo.setAttribute('position', new THREE.BufferAttribute(lpos, 3));
-  const lmat = new THREE.LineBasicMaterial({ color: new THREE.Color('#6f5bd6'), transparent: true, opacity: 0.16, blending: THREE.AdditiveBlending, depthWrite: false });
+  const lmat = new THREE.LineBasicMaterial({ color: new THREE.Color('#6f5bd6'), transparent: true, opacity: 0.13, blending: THREE.AdditiveBlending, depthWrite: false });
   const lines = new THREE.LineSegments(lgeo, lmat);
   const grp = new THREE.Group(); grp.add(points, lines);
   const pa = pgeo.attributes.position.array, TH = 0.95;
@@ -69,7 +69,7 @@ function makeParticles() {
   };
 }
 
-/* ---- liquid orb (shader-displaced sphere) ---- */
+/* ---- liquid orb (the dormant AI core) ---- */
 function makeOrb() {
   const uniforms = { uTime: { value: 0 } };
   const geo = new THREE.IcosahedronGeometry(1.5, 5);
@@ -86,7 +86,7 @@ function makeOrb() {
         gl_Position=projectionMatrix*mv;
       }`,
     fragmentShader: `
-      varying float vN; varying vec3 vNrm; varying vec3 vView; uniform float uTime;
+      varying float vN; varying vec3 vNrm; varying vec3 vView;
       void main(){
         vec3 violet=vec3(0.545,0.361,0.965), blue=vec3(0.231,0.510,0.965), pink=vec3(0.925,0.282,0.600);
         float m=smoothstep(-1.0,1.0,vN);
@@ -102,58 +102,66 @@ function makeOrb() {
   };
 }
 
-/* ---- 4D tesseract ---- */
-function makeTesseract() {
-  const V = [];
-  for (let i = 0; i < 16; i++) V.push([(i & 1) ? 1 : -1, (i & 2) ? 1 : -1, (i & 4) ? 1 : -1, (i & 8) ? 1 : -1]);
-  const E = [];
-  for (let i = 0; i < 16; i++) for (let j = i + 1; j < 16; j++) {
-    let diff = 0; for (let k = 0; k < 4; k++) if (V[i][k] !== V[j][k]) diff++;
-    if (diff === 1) E.push([i, j]);
+/* ---- neural network "brain" (nodes + synapses + firing signals) ---- */
+function makeBrain() {
+  const N = 46, R = 1.5, nodes = [], npos = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) {
+    const y = 1 - (i / (N - 1)) * 2, rr = Math.sqrt(Math.max(1 - y * y, 0)), phi = i * 2.399963;
+    const rad = R * (0.8 + Math.random() * 0.2);
+    const x = Math.cos(phi) * rr * rad, z = Math.sin(phi) * rr * rad, yy = y * rad;
+    nodes.push([x, yy, z]); npos[i * 3] = x; npos[i * 3 + 1] = yy; npos[i * 3 + 2] = z;
   }
-  const lpos = new Float32Array(E.length * 2 * 3);
+  // connect each node to its 3 nearest neighbours (dedup)
+  const edges = [], seen = {};
+  for (let i = 0; i < N; i++) {
+    const d = [];
+    for (let j = 0; j < N; j++) if (j !== i) {
+      const dx = nodes[i][0] - nodes[j][0], dy = nodes[i][1] - nodes[j][1], dz = nodes[i][2] - nodes[j][2];
+      d.push([dx * dx + dy * dy + dz * dz, j]);
+    }
+    d.sort(function (a, b) { return a[0] - b[0]; });
+    for (let k = 0; k < 3; k++) {
+      const a = Math.min(i, d[k][1]), b = Math.max(i, d[k][1]), key = a + '_' + b;
+      if (!seen[key]) { seen[key] = 1; edges.push([a, b]); }
+    }
+  }
+  const ngeo = new THREE.BufferGeometry(); ngeo.setAttribute('position', new THREE.BufferAttribute(npos, 3));
+  const nmat = new THREE.PointsMaterial({ size: 0.13, color: new THREE.Color('#dcccff'), transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false });
+  const points = new THREE.Points(ngeo, nmat);
+  const lpos = new Float32Array(edges.length * 2 * 3);
+  for (let e = 0; e < edges.length; e++) {
+    const a = nodes[edges[e][0]], b = nodes[edges[e][1]];
+    lpos[e * 6] = a[0]; lpos[e * 6 + 1] = a[1]; lpos[e * 6 + 2] = a[2];
+    lpos[e * 6 + 3] = b[0]; lpos[e * 6 + 4] = b[1]; lpos[e * 6 + 5] = b[2];
+  }
   const lgeo = new THREE.BufferGeometry(); lgeo.setAttribute('position', new THREE.BufferAttribute(lpos, 3));
-  const lmat = new THREE.LineBasicMaterial({ color: new THREE.Color('#b79dff'), transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false });
+  const lmat = new THREE.LineBasicMaterial({ color: new THREE.Color('#7c5fe0'), transparent: true, opacity: 0.32, blending: THREE.AdditiveBlending, depthWrite: false });
   const lines = new THREE.LineSegments(lgeo, lmat);
-  const vpos = new Float32Array(16 * 3);
-  const vgeo = new THREE.BufferGeometry(); vgeo.setAttribute('position', new THREE.BufferAttribute(vpos, 3));
-  const vmat = new THREE.PointsMaterial({ size: 0.13, color: new THREE.Color('#e3d6ff'), transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false });
-  const verts = new THREE.Points(vgeo, vmat);
-  const grp = new THREE.Group(); grp.add(lines, verts);
-  const P = new Array(16); const D = 2.5, SCALE = 1.55;
-  function rot(pt, a) {
-    let x = pt[0], y = pt[1], z = pt[2], w = pt[3], c, s;
-    c = Math.cos(a.xw); s = Math.sin(a.xw); { const nx = x * c - w * s, nw = x * s + w * c; x = nx; w = nw; }
-    c = Math.cos(a.yw); s = Math.sin(a.yw); { const ny = y * c - w * s, nw = y * s + w * c; y = ny; w = nw; }
-    c = Math.cos(a.zw); s = Math.sin(a.zw); { const nz = z * c - w * s, nw = z * s + w * c; z = nz; w = nw; }
-    c = Math.cos(a.xy); s = Math.sin(a.xy); { const nx = x * c - y * s, ny = x * s + y * c; x = nx; y = ny; }
-    c = Math.cos(a.xz); s = Math.sin(a.xz); { const nx = x * c - z * s, nz = x * s + z * c; x = nx; z = nz; }
-    const k = SCALE / (D - w);
-    return [x * k, y * k, z * k];
-  }
+  // firing signals travelling along edges
+  const SIG = 20, spos = new Float32Array(SIG * 3), sig = [];
+  for (let s = 0; s < SIG; s++) sig.push({ e: Math.floor(Math.random() * edges.length), t: Math.random(), spd: 0.45 + Math.random() * 0.8 });
+  const sgeo = new THREE.BufferGeometry(); sgeo.setAttribute('position', new THREE.BufferAttribute(spos, 3));
+  const smat = new THREE.PointsMaterial({ size: 0.17, color: new THREE.Color('#5eead4'), transparent: true, opacity: 1, blending: THREE.AdditiveBlending, depthWrite: false });
+  const signals = new THREE.Points(sgeo, smat);
+  const grp = new THREE.Group(); grp.add(lines, points, signals);
   return {
-    group: grp, disposables: [lines, verts],
-    update(t, p, scrollN) {
-      const a = {
-        xw: t * 0.30 + p.x * 0.9,
-        yw: t * 0.22 + p.y * 0.9 + scrollN * 1.6,
-        zw: t * 0.16,
-        xy: t * 0.14,
-        xz: t * 0.10 + scrollN * 0.6
-      };
-      for (let i = 0; i < 16; i++) { P[i] = rot(V[i], a); vpos[i * 3] = P[i][0]; vpos[i * 3 + 1] = P[i][1]; vpos[i * 3 + 2] = P[i][2]; }
-      let k = 0;
-      for (let e = 0; e < E.length; e++) {
-        const A = P[E[e][0]], B = P[E[e][1]];
-        lpos[k++] = A[0]; lpos[k++] = A[1]; lpos[k++] = A[2];
-        lpos[k++] = B[0]; lpos[k++] = B[1]; lpos[k++] = B[2];
+    group: grp, disposables: [points, lines, signals],
+    update(t, p, scrollN, dt) {
+      for (let s = 0; s < SIG; s++) {
+        const o = sig[s]; o.t += o.spd * dt;
+        if (o.t >= 1) { o.t = 0; o.e = Math.floor(Math.random() * edges.length); o.spd = 0.45 + Math.random() * 0.8; }
+        const a = nodes[edges[o.e][0]], b = nodes[edges[o.e][1]], tt = o.t;
+        spos[s * 3] = a[0] + (b[0] - a[0]) * tt; spos[s * 3 + 1] = a[1] + (b[1] - a[1]) * tt; spos[s * 3 + 2] = a[2] + (b[2] - a[2]) * tt;
       }
-      lgeo.attributes.position.needsUpdate = true; vgeo.attributes.position.needsUpdate = true;
+      sgeo.attributes.position.needsUpdate = true;
+      nmat.opacity = 0.72 + Math.sin(t * 2.0) * 0.22;
+      grp.rotation.y = t * 0.18 + p.x * 0.8 + scrollN * 1.2;
+      grp.rotation.x = p.y * 0.5 + scrollN * 0.4;
     }
   };
 }
 
-/* ---- engine: one scene, orb <-> tesseract morph ---- */
+/* ---- engine: one scene, orb <-> brain morph ---- */
 export function createHero(canvas, opts) {
   opts = opts || {};
   let renderer;
@@ -164,16 +172,15 @@ export function createHero(canvas, opts) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100); camera.position.z = 5;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const motion = reduce ? 0 : 1;
 
   const particles = makeParticles();
   const orb = makeOrb();
-  const tess = makeTesseract();
-  scene.add(particles.group, orb.object, tess.group);
-  tess.group.scale.setScalar(0.001); tess.group.visible = false;
+  const brain = makeBrain();
+  scene.add(particles.group, orb.object, brain.group);
+  brain.group.scale.setScalar(0.001); brain.group.visible = false;
 
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
-  let scrollN = 0, target = 0, mix = 0, raf = 0, stopped = false, mt = 0;
+  let scrollN = 0, target = 0, mix = 0, raf = 0, stopped = false, last = performance.now();
 
   function resize() {
     const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1;
@@ -190,31 +197,33 @@ export function createHero(canvas, opts) {
 
   function toggle() {
     target = target > 0.5 ? 0 : 1;
-    if (target === 1 && opts.onEnterTesseract) opts.onEnterTesseract();
+    if (target === 1 && opts.onActivate) opts.onActivate();
+    if (target === 0 && opts.onReset) opts.onReset();
   }
-  function reset() { target = 0; }
+  function reset() { target = 0; if (opts.onReset) opts.onReset(); }
+  function smooth(x) { x = Math.min(Math.max(x, 0), 1); return x * x * (3 - 2 * x); }
 
   const start = performance.now();
   function frame(now) {
     if (stopped) return;
-    const t = ((now - start) / 1000) * (motion || 1);
+    let dt = (now - last) / 1000; last = now; if (dt > 0.05) dt = 0.05;
+    const t = reduce ? 0 : (now - start) / 1000;
     pointer.x += (pointer.tx - pointer.x) * 0.06; pointer.y += (pointer.ty - pointer.y) * 0.06;
     mix += (target - mix) * 0.08;
-    const tt = reduce ? 0 : t;
 
-    particles.update(tt, pointer);
+    particles.update(t, pointer);
     const orbS = 1 - smooth(mix);
     orb.object.visible = orbS > 0.01; orb.object.scale.setScalar(Math.max(orbS, 0.001));
-    if (orb.object.visible) orb.update(tt, pointer);
-    const teS = smooth(mix);
-    tess.group.visible = teS > 0.01; tess.group.scale.setScalar(Math.max(teS, 0.001));
-    tess.group.children.forEach(function (c) { if (c.material) c.material.opacity = (c.type === 'Points' ? 0.95 : 0.95) * teS; });
-    if (tess.group.visible) tess.update(tt, pointer, scrollN);
+    if (orb.object.visible) orb.update(t, pointer);
+    const brS = smooth(mix);
+    brain.group.visible = brS > 0.01; brain.group.scale.setScalar(Math.max(brS, 0.001));
+    if (brain.group.visible) {
+      brain.update(t, pointer, scrollN, reduce ? 0.016 : dt);
+    }
 
     renderer.render(scene, camera);
     raf = requestAnimationFrame(frame);
   }
-  function smooth(x) { x = Math.min(Math.max(x, 0), 1); return x * x * (3 - 2 * x); }
   raf = requestAnimationFrame(frame);
 
   return {
@@ -223,7 +232,7 @@ export function createHero(canvas, opts) {
       stopped = true; cancelAnimationFrame(raf); ro.disconnect();
       window.removeEventListener('pointermove', onMove); window.removeEventListener('scroll', onScroll);
       canvas.removeEventListener('click', onClick);
-      [particles, orb, tess].forEach(function (s) {
+      [particles, orb, brain].forEach(function (s) {
         s.disposables.forEach(function (o) {
           if (o.geometry && o.geometry.dispose) o.geometry.dispose();
           if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) { m.dispose && m.dispose(); });

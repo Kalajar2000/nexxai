@@ -17,23 +17,26 @@
         .h3d-switch .h3d-hint{font-size:.82rem;color:var(--muted)}
         .h3d-switch button{padding:9px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--muted);font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:.2s}
         .h3d-switch button:hover{color:#fff;border-color:var(--violet)}
-        /* Easter-egg robot */
-        .egg{position:fixed;right:22px;bottom:88px;z-index:250;max-width:360px;opacity:0;transform:translateY(24px) scale(.96);pointer-events:none;transition:opacity .5s,transform .5s cubic-bezier(.16,1,.3,1)}
-        .egg.show{opacity:1;transform:none;pointer-events:auto}
-        .egg-card{position:relative;display:flex;gap:14px;padding:20px 22px;align-items:flex-start}
+        /* robot that emerges from inside the core */
+        .egg{position:absolute;top:52%;left:68%;z-index:20;width:280px;max-width:84vw;opacity:0;transform:translate(-50%,-50%) scale(.25);pointer-events:none;transition:opacity .5s,transform .6s cubic-bezier(.16,1,.3,1)}
+        .egg.show{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+        .egg-burst{position:absolute;inset:-46px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.55),transparent 65%);filter:blur(22px);opacity:0;z-index:-1}
+        .egg.show .egg-burst{animation:burst 1.1s ease-out}
+        @keyframes burst{0%{opacity:.95;transform:scale(.35)}100%{opacity:0;transform:scale(1.35)}}
+        .egg-card{position:relative;text-align:center;padding:24px 22px 22px;border-radius:22px}
         .egg-x{position:absolute;top:8px;right:12px;background:none;border:none;color:var(--dim);font-size:1.3rem;line-height:1;cursor:pointer}
         .egg-x:hover{color:#fff}
-        .egg-bot{flex-shrink:0;width:62px;height:70px}
-        .egg-msg strong{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:1.3rem;display:block;margin-bottom:4px}
-        .egg-msg p{color:var(--muted);font-size:.9rem;font-weight:300;margin:0 0 12px}
-        .egg-msg .btn-glass{padding:9px 16px;font-size:.84rem}
+        .egg-card .bot{width:62px;height:70px;margin:0 auto 8px;display:block}
+        .egg-card strong{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:1.35rem;display:block;margin-bottom:5px}
+        .egg-card p{color:var(--muted);font-size:.9rem;font-weight:300;margin:0 0 14px}
+        .egg-card .btn-glass{padding:9px 18px;font-size:.84rem}
         .bot{animation:botBob 3s ease-in-out infinite}
         .bot-eye{transform-box:fill-box;transform-origin:center;animation:botBlink 4.5s infinite}
         .bot-ant{animation:botPulse 1.6s ease-in-out infinite}
         @keyframes botBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
         @keyframes botBlink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
         @keyframes botPulse{0%,100%{opacity:1}50%{opacity:.35}}
-        @media(max-width:560px){.egg{right:50%;transform:translateX(50%) translateY(24px);left:auto;max-width:88vw;bottom:96px}.egg.show{transform:translateX(50%)}}
+        @media(max-width:980px){.egg{top:auto;left:50%;bottom:16%}}
     </style>
 </head>
 <body>
@@ -83,6 +86,28 @@
                 </div>
             </div>
         </div>
+        <!-- robot emerges from the core -->
+        <div class="egg" id="egg" aria-hidden="true">
+            <div class="egg-burst"></div>
+            <div class="egg-card glass">
+                <button class="egg-x" id="eggX" aria-label="Close">&times;</button>
+                <svg class="bot" viewBox="0 0 64 72" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="32" y1="6" x2="32" y2="16" stroke="#8b5cf6" stroke-width="2"/>
+                    <circle class="bot-ant" cx="32" cy="5" r="3.5" fill="#ec4899"/>
+                    <rect x="10" y="16" width="44" height="36" rx="12" fill="url(#botbg)" stroke="#8b5cf6" stroke-width="2"/>
+                    <circle class="bot-eye" cx="24" cy="32" r="4" fill="#cdb6ff"/>
+                    <circle class="bot-eye" cx="40" cy="32" r="4" fill="#cdb6ff"/>
+                    <path d="M24 42 Q32 48 40 42" stroke="#cdb6ff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                    <rect x="3" y="28" width="6" height="12" rx="3" fill="#5b21b6"/>
+                    <rect x="55" y="28" width="6" height="12" rx="3" fill="#5b21b6"/>
+                    <rect x="18" y="54" width="28" height="14" rx="6" fill="url(#botbg)" stroke="#8b5cf6" stroke-width="2"/>
+                    <defs><linearGradient id="botbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1430"/><stop offset="1" stop-color="#120c24"/></linearGradient></defs>
+                </svg>
+                <strong>You found it.</strong>
+                <p>You are exactly where you need to be. Let's supercharge your business.</p>
+                <a href="#contact" class="btn-glass solid">Start a project <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
     </section>
 
     <!-- Stats -->
@@ -98,8 +123,8 @@
     <!-- Note -->
     <section class="wrap" style="margin-top:80px">
         <div class="cta-band glass">
-            <h2 class="serif rv">Hero preview, the living scene</h2>
-            <p class="rv">Particles and a liquid orb by default. Click the orb to morph it into a 4D tesseract that reacts to your cursor and scroll, and meet the little guy who pops up. Scroll a little while it is a tesseract to see it react.</p>
+            <h2 class="serif rv">Hero preview, the AI core</h2>
+            <p class="rv">A liquid AI core inside a neural particle field. Click the core to wake it: it fires into a neural network with signals firing across the synapses, reacting to your cursor and scroll, and the AI itself pops out to say hello. Scroll a little while it is awake to see it react.</p>
             <a href="index.html" class="btn-glass rv">Back to current homepage <i class="fas fa-arrow-right"></i></a>
         </div>
     </section>
@@ -117,49 +142,22 @@
         </div>
     </footer>
 
-    <!-- Easter-egg robot -->
-    <div class="egg" id="egg" aria-hidden="true">
-        <div class="egg-card glass">
-            <button class="egg-x" id="eggX" aria-label="Close">&times;</button>
-            <svg class="bot egg-bot" viewBox="0 0 64 72" xmlns="http://www.w3.org/2000/svg">
-                <line x1="32" y1="6" x2="32" y2="16" stroke="#8b5cf6" stroke-width="2"/>
-                <circle class="bot-ant" cx="32" cy="5" r="3.5" fill="#ec4899"/>
-                <rect x="10" y="16" width="44" height="36" rx="12" fill="url(#botbg)" stroke="#8b5cf6" stroke-width="2"/>
-                <circle class="bot-eye" cx="24" cy="32" r="4" fill="#cdb6ff"/>
-                <circle class="bot-eye" cx="40" cy="32" r="4" fill="#cdb6ff"/>
-                <path d="M24 42 Q32 48 40 42" stroke="#cdb6ff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                <rect x="3" y="28" width="6" height="12" rx="3" fill="#5b21b6"/>
-                <rect x="55" y="28" width="6" height="12" rx="3" fill="#5b21b6"/>
-                <rect x="18" y="54" width="28" height="14" rx="6" fill="url(#botbg)" stroke="#8b5cf6" stroke-width="2"/>
-                <defs><linearGradient id="botbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1430"/><stop offset="1" stop-color="#120c24"/></linearGradient></defs>
-            </svg>
-            <div class="egg-msg">
-                <strong>You found it.</strong>
-                <p>You are exactly where you need to be. Let's supercharge your business.</p>
-                <a href="#contact" class="btn-glass solid">Start a project <i class="fas fa-arrow-right"></i></a>
-            </div>
-        </div>
-    </div>
-
     <!-- control -->
     <div class="h3d-switch glass">
         <span class="h3d-label">Hero 3D</span>
-        <span class="h3d-hint">Click the orb to morph it into a tesseract</span>
+        <span class="h3d-hint">Click the orb to wake the AI</span>
         <button id="replay">Reset to orb</button>
     </div>
 
     <script src="redesign.js?v=3"></script>
     <script type="module">
-        import { createHero } from './hero3d.js?v=2';
+        import { createHero } from './hero3d.js?v=3';
         var cv = document.getElementById('h3d');
         var egg = document.getElementById('egg');
-        var shown = false;
-        var hero = createHero(cv, {
-            onEnterTesseract: function () {
-                if (!shown) { shown = true; egg.classList.add('show'); egg.setAttribute('aria-hidden', 'false'); }
-            }
-        });
-        document.getElementById('eggX').addEventListener('click', function () { egg.classList.remove('show'); });
+        function showEgg() { egg.classList.add('show'); egg.setAttribute('aria-hidden', 'false'); }
+        function hideEgg() { egg.classList.remove('show'); egg.setAttribute('aria-hidden', 'true'); }
+        var hero = createHero(cv, { onActivate: showEgg, onReset: hideEgg });
+        document.getElementById('eggX').addEventListener('click', hideEgg);
         document.getElementById('replay').addEventListener('click', function () { hero.reset(); });
     </script>
 </body>
