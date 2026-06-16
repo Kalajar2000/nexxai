@@ -11,13 +11,29 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
     <style>
-        .h3d{width:100%;height:100%;display:block}
-        .h3d-switch{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px}
-        .h3d-switch .h3d-label{font-family:'Poppins',sans-serif;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:0 6px}
-        .h3d-switch button{padding:9px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--muted);font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s}
-        .h3d-switch button:hover{color:#fff}
-        .h3d-switch button.on{color:#fff;background:linear-gradient(180deg,#7c3aed,#5b21b6);border-color:transparent}
-        @media(max-width:560px){.h3d-switch{flex-wrap:wrap;justify-content:center;max-width:92vw}.h3d-switch .h3d-label{width:100%;text-align:center}}
+        .h3d{width:100%;height:100%;display:block;cursor:pointer}
+        .h3d-switch{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:999px;flex-wrap:wrap;justify-content:center;max-width:94vw}
+        .h3d-switch .h3d-label{font-family:'Poppins',sans-serif;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);padding:0 4px}
+        .h3d-switch .h3d-hint{font-size:.82rem;color:var(--muted)}
+        .h3d-switch button{padding:9px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--muted);font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:.2s}
+        .h3d-switch button:hover{color:#fff;border-color:var(--violet)}
+        /* Easter-egg robot */
+        .egg{position:fixed;right:22px;bottom:88px;z-index:250;max-width:360px;opacity:0;transform:translateY(24px) scale(.96);pointer-events:none;transition:opacity .5s,transform .5s cubic-bezier(.16,1,.3,1)}
+        .egg.show{opacity:1;transform:none;pointer-events:auto}
+        .egg-card{position:relative;display:flex;gap:14px;padding:20px 22px;align-items:flex-start}
+        .egg-x{position:absolute;top:8px;right:12px;background:none;border:none;color:var(--dim);font-size:1.3rem;line-height:1;cursor:pointer}
+        .egg-x:hover{color:#fff}
+        .egg-bot{flex-shrink:0;width:62px;height:70px}
+        .egg-msg strong{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:1.3rem;display:block;margin-bottom:4px}
+        .egg-msg p{color:var(--muted);font-size:.9rem;font-weight:300;margin:0 0 12px}
+        .egg-msg .btn-glass{padding:9px 16px;font-size:.84rem}
+        .bot{animation:botBob 3s ease-in-out infinite}
+        .bot-eye{transform-box:fill-box;transform-origin:center;animation:botBlink 4.5s infinite}
+        .bot-ant{animation:botPulse 1.6s ease-in-out infinite}
+        @keyframes botBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+        @keyframes botBlink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+        @keyframes botPulse{0%,100%{opacity:1}50%{opacity:.35}}
+        @media(max-width:560px){.egg{right:50%;transform:translateX(50%) translateY(24px);left:auto;max-width:88vw;bottom:96px}.egg.show{transform:translateX(50%)}}
     </style>
 </head>
 <body>
@@ -69,7 +85,7 @@
         </div>
     </section>
 
-    <!-- Stats + marquee -->
+    <!-- Stats -->
     <section class="wrap" style="position:relative;z-index:2;margin-top:-30px">
         <div class="stats">
             <div class="stat glass"><div class="n rv">2015</div><div class="l">Building since</div></div>
@@ -79,11 +95,11 @@
         </div>
     </section>
 
-    <!-- Closing CTA -->
+    <!-- Note -->
     <section class="wrap" style="margin-top:80px">
         <div class="cta-band glass">
-            <h2 class="serif rv">This is just the hero preview</h2>
-            <p class="rv">Use the switcher below to compare the three 3D options in context, then tell me which one to ship to the live homepage.</p>
+            <h2 class="serif rv">Hero preview, the living scene</h2>
+            <p class="rv">Particles and a liquid orb by default. Click the orb to morph it into a 4D tesseract that reacts to your cursor and scroll, and meet the little guy who pops up. Scroll a little while it is a tesseract to see it react.</p>
             <a href="index.html" class="btn-glass rv">Back to current homepage <i class="fas fa-arrow-right"></i></a>
         </div>
     </section>
@@ -101,27 +117,50 @@
         </div>
     </footer>
 
-    <!-- 3D switcher -->
+    <!-- Easter-egg robot -->
+    <div class="egg" id="egg" aria-hidden="true">
+        <div class="egg-card glass">
+            <button class="egg-x" id="eggX" aria-label="Close">&times;</button>
+            <svg class="bot egg-bot" viewBox="0 0 64 72" xmlns="http://www.w3.org/2000/svg">
+                <line x1="32" y1="6" x2="32" y2="16" stroke="#8b5cf6" stroke-width="2"/>
+                <circle class="bot-ant" cx="32" cy="5" r="3.5" fill="#ec4899"/>
+                <rect x="10" y="16" width="44" height="36" rx="12" fill="url(#botbg)" stroke="#8b5cf6" stroke-width="2"/>
+                <circle class="bot-eye" cx="24" cy="32" r="4" fill="#cdb6ff"/>
+                <circle class="bot-eye" cx="40" cy="32" r="4" fill="#cdb6ff"/>
+                <path d="M24 42 Q32 48 40 42" stroke="#cdb6ff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <rect x="3" y="28" width="6" height="12" rx="3" fill="#5b21b6"/>
+                <rect x="55" y="28" width="6" height="12" rx="3" fill="#5b21b6"/>
+                <rect x="18" y="54" width="28" height="14" rx="6" fill="url(#botbg)" stroke="#8b5cf6" stroke-width="2"/>
+                <defs><linearGradient id="botbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1430"/><stop offset="1" stop-color="#120c24"/></linearGradient></defs>
+            </svg>
+            <div class="egg-msg">
+                <strong>You found it.</strong>
+                <p>You are exactly where you need to be. Let's supercharge your business.</p>
+                <a href="#contact" class="btn-glass solid">Start a project <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- control -->
     <div class="h3d-switch glass">
         <span class="h3d-label">Hero 3D</span>
-        <button data-k="orb" class="on">Liquid orb</button>
-        <button data-k="particles">Particles</button>
-        <button data-k="crystal">Crystal</button>
+        <span class="h3d-hint">Click the orb to morph it into a tesseract</span>
+        <button id="replay">Reset to orb</button>
     </div>
 
     <script src="redesign.js?v=3"></script>
     <script type="module">
-        import { createHero } from './hero3d.js?v=1';
-        var canvas = document.getElementById('h3d');
-        var hero = createHero(canvas);
-        function show(k) {
-            hero.setKind(k);
-            document.querySelectorAll('.h3d-switch button').forEach(function (b) { b.classList.toggle('on', b.dataset.k === k); });
-        }
-        document.querySelectorAll('.h3d-switch button').forEach(function (b) {
-            b.addEventListener('click', function () { show(b.dataset.k); });
+        import { createHero } from './hero3d.js?v=2';
+        var cv = document.getElementById('h3d');
+        var egg = document.getElementById('egg');
+        var shown = false;
+        var hero = createHero(cv, {
+            onEnterTesseract: function () {
+                if (!shown) { shown = true; egg.classList.add('show'); egg.setAttribute('aria-hidden', 'false'); }
+            }
         });
-        show('orb');
+        document.getElementById('eggX').addEventListener('click', function () { egg.classList.remove('show'); });
+        document.getElementById('replay').addEventListener('click', function () { hero.reset(); });
     </script>
 </body>
 </html>
