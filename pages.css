@@ -360,3 +360,13 @@
 
 /* Trust strip marquee: keep the original inline-block sizing; just hint the compositor */
 .logo-scroller-inner { will-change: transform; }
+
+.badge-video {
+    position: absolute; top: 14px; left: 14px; z-index: 2;
+    font-family: 'Poppins', sans-serif; font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase; color: #fff;
+    padding: 0.32rem 0.75rem; border-radius: 30px;
+    background: linear-gradient(45deg, var(--pink-accent), var(--purple-medium));
+    box-shadow: var(--glow-pink);
+}
+.badge-video i { margin-right: 0.35rem; }
