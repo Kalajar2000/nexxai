@@ -358,5 +358,5 @@
     .stats-grid { grid-template-columns: 1fr; }
 }
 
-/* Robust marquee for the trust strip (reliable animation on mobile) */
-.logo-scroller-inner { display: flex; width: max-content; align-items: center; will-change: transform; }
+/* Trust strip marquee: keep the original inline-block sizing; just hint the compositor */
+.logo-scroller-inner { will-change: transform; }
