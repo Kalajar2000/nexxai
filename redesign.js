@@ -1,24 +1,33 @@
-// NEXXAI redesign preview — entrance reveal + mobile menu
+// NEXXAI redesign preview — reveal, nav, contact form
 document.addEventListener('DOMContentLoaded', function () {
-    // staggered blur-in for any .rv element
-    var rv = [].slice.call(document.querySelectorAll('.rv'));
-    rv.forEach(function (el, i) {
-        setTimeout(function () { el.classList.add('in'); }, 150 + i * 65);
+    // hero entrance (staggered blur-in)
+    document.querySelectorAll('.hero .rv').forEach(function (el, i) {
+        setTimeout(function () { el.classList.add('in'); }, 150 + i * 60);
     });
-    // failsafe: never leave content hidden
-    setTimeout(function () { rv.forEach(function (el) { el.classList.add('in'); }); }, 2600);
-
-    // reveal-on-scroll for sections lower down
-    var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-    }, { threshold: 0.15 });
-    document.querySelectorAll('.sec .rv, .cta-band .rv, .stats .rv').forEach(function (el) { io.observe(el); });
+    // lower sections reveal on scroll
+    var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.rv').forEach(function (el) { if (!el.closest('.hero')) io.observe(el); });
+    // failsafe: nothing ever stays hidden
+    setTimeout(function () { document.querySelectorAll('.rv').forEach(function (el) { el.classList.add('in'); }); }, 3000);
 
     // mobile menu
-    var burger = document.querySelector('.nav-burger');
-    var mnav = document.querySelector('.mnav');
-    var close = document.querySelector('.mnav .x');
+    var burger = document.querySelector('.nav-burger'), mnav = document.querySelector('.mnav'), x = document.querySelector('.mnav .x');
     if (burger && mnav) burger.addEventListener('click', function () { mnav.classList.add('open'); });
-    if (close && mnav) close.addEventListener('click', function () { mnav.classList.remove('open'); });
+    if (x && mnav) x.addEventListener('click', function () { mnav.classList.remove('open'); });
     if (mnav) mnav.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { mnav.classList.remove('open'); }); });
+
+    // contact form (Formspree AJAX)
+    var cf = document.getElementById('cf'), ok = document.getElementById('ok'), okc = document.getElementById('okc');
+    if (cf) cf.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var btn = cf.querySelector('button[type="submit"]');
+        if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+        fetch(cf.action, { method: 'POST', body: new FormData(cf), headers: { 'Accept': 'application/json' } })
+            .then(function (r) { if (r.ok && ok) ok.classList.add('on'); cf.reset(); })
+            .catch(function () { alert('Please email santiago@nexxai.world'); })
+            .finally(function () { if (btn) { btn.disabled = false; btn.innerHTML = 'Let\'s Talk <i class="fas fa-arrow-right"></i>'; } });
+    });
+    if (okc && ok) okc.addEventListener('click', function () { ok.classList.remove('on'); });
 });
