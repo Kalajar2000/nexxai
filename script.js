@@ -189,17 +189,24 @@ document.addEventListener('DOMContentLoaded', function () {
     // ---- Portfolio card detail modal ----
     var workModal = document.getElementById('workModal');
     if (workModal) {
-        var wmImg = document.getElementById('wmImg'),
+        var wmMedia = document.getElementById('wmMedia'),
             wmCat = document.getElementById('wmCat'),
             wmTitle = document.getElementById('wmTitle'),
             wmDesc = document.getElementById('wmDesc'),
             wmStack = document.getElementById('wmStack');
+        var playerHTML = function (v) {
+            var yt = v.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{6,})/);
+            if (yt) return '<iframe src="https://www.youtube.com/embed/' + yt[1] + '?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
+            var vm = v.match(/vimeo\.com\/(?:video\/)?([0-9]+)/);
+            if (vm) return '<iframe src="https://player.vimeo.com/video/' + vm[1] + '?autoplay=1" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+            return '<video src="' + v + '" controls autoplay playsinline></video>';
+        };
         var openModal = function (card) {
             var img = card.querySelector('.work-media img');
             var h3 = card.querySelector('h3');
             var cat = card.querySelector('.work-cat');
-            wmImg.src = img ? img.getAttribute('src') : '';
-            wmImg.alt = h3 ? h3.textContent : '';
+            var vid = card.getAttribute('data-video');
+            wmMedia.innerHTML = vid ? playerHTML(vid) : ('<img src="' + (img ? img.getAttribute('src') : '') + '" alt="">');
             wmTitle.textContent = h3 ? h3.textContent : '';
             wmCat.textContent = cat ? cat.textContent : '';
             wmDesc.textContent = card.getAttribute('data-fulldesc') || '';
@@ -215,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.work-grid .work-card').forEach(function (card) {
             card.addEventListener('click', function () { openModal(card); });
         });
-        var closeModal = function () { workModal.classList.remove('active'); document.body.classList.remove('modal-open'); };
+        var closeModal = function () { workModal.classList.remove('active'); document.body.classList.remove('modal-open'); wmMedia.innerHTML = ''; };
         workModal.querySelector('.work-modal-close').addEventListener('click', closeModal);
         workModal.querySelector('.work-modal-overlay').addEventListener('click', closeModal);
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
