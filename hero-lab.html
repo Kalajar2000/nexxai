@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hero 3D Preview — NEXXAI</title>
+    <title>Hero 3D Lab — NEXXAI</title>
     <meta name="robots" content="noindex">
     <link rel="stylesheet" href="redesign.css?v=3">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -17,26 +17,14 @@
         .h3d-switch .h3d-hint{font-size:.82rem;color:var(--muted)}
         .h3d-switch button{padding:9px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--muted);font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:.2s}
         .h3d-switch button:hover{color:#fff;border-color:var(--violet)}
-        /* robot that emerges from inside the core */
-        .egg{position:absolute;top:52%;left:68%;z-index:20;width:280px;max-width:84vw;opacity:0;transform:translate(-50%,-50%) scale(.25);pointer-events:none;transition:opacity .5s,transform .6s cubic-bezier(.16,1,.3,1)}
-        .egg.show{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
-        .egg-burst{position:absolute;inset:-46px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.55),transparent 65%);filter:blur(22px);opacity:0;z-index:-1}
-        .egg.show .egg-burst{animation:burst 1.1s ease-out}
-        @keyframes burst{0%{opacity:.95;transform:scale(.35)}100%{opacity:0;transform:scale(1.35)}}
-        .egg-card{position:relative;text-align:center;padding:24px 22px 22px;border-radius:22px}
-        .egg-x{position:absolute;top:8px;right:12px;background:none;border:none;color:var(--dim);font-size:1.3rem;line-height:1;cursor:pointer}
-        .egg-x:hover{color:#fff}
-        .egg-card .bot{width:62px;height:70px;margin:0 auto 8px;display:block}
-        .egg-card strong{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:1.35rem;display:block;margin-bottom:5px}
-        .egg-card p{color:var(--muted);font-size:.9rem;font-weight:300;margin:0 0 14px}
-        .egg-card .btn-glass{padding:9px 18px;font-size:.84rem}
-        .bot{animation:botBob 3s ease-in-out infinite}
-        .bot-eye{transform-box:fill-box;transform-origin:center;animation:botBlink 4.5s infinite}
-        .bot-ant{animation:botPulse 1.6s ease-in-out infinite}
-        @keyframes botBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-        @keyframes botBlink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
-        @keyframes botPulse{0%,100%{opacity:1}50%{opacity:.35}}
-        @media(max-width:980px){.egg{top:auto;left:50%;bottom:16%}}
+        /* speech bubble pinned to the 3D robot */
+        .speech{position:fixed;z-index:30;transform:translate(-50%,-132%);opacity:0;pointer-events:none;transition:opacity .35s ease;width:236px;max-width:72vw}
+        .speech.show{opacity:1;pointer-events:auto}
+        .speech-in{position:relative;padding:13px 15px;border-radius:16px;background:rgba(18,18,30,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);box-shadow:0 14px 34px rgba(0,0,0,.55)}
+        .speech-in::after{content:"";position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);border:7px solid transparent;border-top-color:rgba(18,18,30,.94)}
+        .speech p{font-size:.86rem;color:var(--txt);margin:0 0 8px;font-weight:300;line-height:1.4}
+        .speech a{font-size:.82rem;font-weight:700;color:var(--violet)}
+        .speech a:hover{color:#fff}
     </style>
 </head>
 <body>
@@ -86,28 +74,6 @@
                 </div>
             </div>
         </div>
-        <!-- robot emerges from the core -->
-        <div class="egg" id="egg" aria-hidden="true">
-            <div class="egg-burst"></div>
-            <div class="egg-card glass">
-                <button class="egg-x" id="eggX" aria-label="Close">&times;</button>
-                <svg class="bot" viewBox="0 0 64 72" xmlns="http://www.w3.org/2000/svg">
-                    <line x1="32" y1="6" x2="32" y2="16" stroke="#8b5cf6" stroke-width="2"/>
-                    <circle class="bot-ant" cx="32" cy="5" r="3.5" fill="#ec4899"/>
-                    <rect x="10" y="16" width="44" height="36" rx="12" fill="url(#botbg)" stroke="#8b5cf6" stroke-width="2"/>
-                    <circle class="bot-eye" cx="24" cy="32" r="4" fill="#cdb6ff"/>
-                    <circle class="bot-eye" cx="40" cy="32" r="4" fill="#cdb6ff"/>
-                    <path d="M24 42 Q32 48 40 42" stroke="#cdb6ff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                    <rect x="3" y="28" width="6" height="12" rx="3" fill="#5b21b6"/>
-                    <rect x="55" y="28" width="6" height="12" rx="3" fill="#5b21b6"/>
-                    <rect x="18" y="54" width="28" height="14" rx="6" fill="url(#botbg)" stroke="#8b5cf6" stroke-width="2"/>
-                    <defs><linearGradient id="botbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1430"/><stop offset="1" stop-color="#120c24"/></linearGradient></defs>
-                </svg>
-                <strong>You found it.</strong>
-                <p>You are exactly where you need to be. Let's supercharge your business.</p>
-                <a href="#contact" class="btn-glass solid">Start a project <i class="fas fa-arrow-right"></i></a>
-            </div>
-        </div>
     </section>
 
     <!-- Stats -->
@@ -123,8 +89,8 @@
     <!-- Note -->
     <section class="wrap" style="margin-top:80px">
         <div class="cta-band glass">
-            <h2 class="serif rv">Hero preview, the AI core</h2>
-            <p class="rv">A liquid AI core inside a neural particle field. Click the core to wake it: it fires into a neural network with signals firing across the synapses, reacting to your cursor and scroll, and the AI itself pops out to say hello. Scroll a little while it is awake to see it react.</p>
+            <h2 class="serif rv">Hero lab, the 3-click story</h2>
+            <p class="rv">Click the core three times. First the abstract AI core, then it fires into a neural network and the AI itself greets you, then it becomes your software: cloud, devices, data and code. Then it loops. It all reacts to your cursor and scroll.</p>
             <a href="index.html" class="btn-glass rv">Back to current homepage <i class="fas fa-arrow-right"></i></a>
         </div>
     </section>
@@ -142,22 +108,36 @@
         </div>
     </footer>
 
+    <!-- robot speech bubble (pinned to the 3D robot) -->
+    <div class="speech" id="speech" aria-hidden="true">
+        <div class="speech-in">
+            <p>Hey, I'm your AI. Let's supercharge your business.</p>
+            <a href="#contact">Start a project <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+
     <!-- control -->
     <div class="h3d-switch glass">
-        <span class="h3d-label">Hero 3D · build 3</span>
-        <span class="h3d-hint">Click the orb to wake the AI into a neural network</span>
+        <span class="h3d-label">Hero 3D · build 4</span>
+        <span class="h3d-hint" id="hint">Click the core to wake the AI</span>
         <button id="replay">Reset to orb</button>
     </div>
 
     <script src="redesign.js?v=3"></script>
     <script type="module">
-        import { createHero } from './hero3d.js?v=3';
+        import { createHero } from './hero3d.js?v=4';
         var cv = document.getElementById('h3d');
-        var egg = document.getElementById('egg');
-        function showEgg() { egg.classList.add('show'); egg.setAttribute('aria-hidden', 'false'); }
-        function hideEgg() { egg.classList.remove('show'); egg.setAttribute('aria-hidden', 'true'); }
-        var hero = createHero(cv, { onActivate: showEgg, onReset: hideEgg });
-        document.getElementById('eggX').addEventListener('click', hideEgg);
+        var speech = document.getElementById('speech');
+        var hint = document.getElementById('hint');
+        var HINTS = [
+            'Click the core to wake the AI',
+            'AI brain online — click again for your software',
+            'Cloud, devices, data &amp; code — click to reset'
+        ];
+        var hero = createHero(cv, {
+            speechEl: speech,
+            onState: function (i) { hint.innerHTML = HINTS[i]; speech.setAttribute('aria-hidden', i === 1 ? 'false' : 'true'); }
+        });
         document.getElementById('replay').addEventListener('click', function () { hero.reset(); });
     </script>
 </body>
