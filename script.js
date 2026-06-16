@@ -163,4 +163,26 @@ document.addEventListener('DOMContentLoaded', function () {
             aiSphere.style.transform = 'translate(-50%, -50%)';
         });
     }
+
+    // ---- Portfolio filters ----
+    var filterBtns = document.querySelectorAll('.filter-btn');
+    if (filterBtns.length) {
+        var workCards = document.querySelectorAll('.work-grid .work-card');
+        filterBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                filterBtns.forEach(function (b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                var ff = btn.getAttribute('data-filter');
+                workCards.forEach(function (c) {
+                    c.style.display = (ff === 'all' || c.getAttribute('data-cat') === ff) ? '' : 'none';
+                });
+            });
+        });
+    }
+
+    // ---- Failsafe: never leave scroll-animated content hidden ----
+    setTimeout(function () {
+        document.querySelectorAll('.animate-on-scroll').forEach(function (el) { el.classList.add('show'); });
+    }, 1000);
+
 });

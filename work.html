@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Work | NEXXAI</title>
+    <title>Portfolio | NEXXAI</title>
     <meta name="description" content="A selection of AI products and software platforms NEXXAI has designed, engineered, and shipped across healthcare, enterprise, e-commerce, education and more.">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="addons.css">
-    <link rel="stylesheet" href="pages.css">
+    <link rel="stylesheet" href="styles.css?v=20260616">
+    <link rel="stylesheet" href="addons.css?v=20260616">
+    <link rel="stylesheet" href="pages.css?v=20260616">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +26,7 @@
                     <li><a href="services.html">Services</a></li>
                     <li><a href="ai-lab.html">AI Lab</a></li>
                     <li><a href="upskilling.html">Upskilling</a></li>
-                    <li><a href="work.html" aria-current="page">Work</a></li>
+                    <li><a href="work.html" aria-current="page">Portfolio</a></li>
                     <li><a href="company.html">Company</a></li>
                 </ul>
             </nav>
@@ -40,7 +40,7 @@
             <li><a href="services.html">Services</a></li>
             <li><a href="ai-lab.html">AI Lab</a></li>
             <li><a href="upskilling.html">Upskilling</a></li>
-            <li><a href="work.html">Work</a></li>
+            <li><a href="work.html">Portfolio</a></li>
             <li><a href="company.html">Company</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
@@ -48,7 +48,7 @@
 
     <section class="page-hero">
         <div class="container">
-            <span class="eyebrow">Our work</span>
+            <span class="eyebrow">Portfolio</span>
             <h1>Products we've designed, built, and shipped</h1>
             <p>From AI platforms to consumer apps: real software, in production, for founders and enterprises across four continents.</p>
         </div>
@@ -56,9 +56,17 @@
 
     <section style="padding-top:0;">
         <div class="container">
+                        <div class="work-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="software">Apps &amp; Software</button>
+                <button class="filter-btn" data-filter="automation">Automation</button>
+                <button class="filter-btn" data-filter="creative">Creative</button>
+                <button class="filter-btn" data-filter="video">Video</button>
+                <button class="filter-btn" data-filter="consulting">Consulting</button>
+            </div>
             <div class="work-grid animate-on-scroll">
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><span class="badge-ai">AI</span><img loading="lazy" src="assets/img/work/healthcare-ai.webp" alt="AI predictive analytics in healthcare app"></div>
                     <div class="work-body">
                         <div class="work-cat">Healthcare · USA</div>
@@ -69,7 +77,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><span class="badge-ai">AI</span><img loading="lazy" src="assets/img/work/ai-erp.webp" alt="AI-powered enterprise resource planning platform"></div>
                     <div class="work-body">
                         <div class="work-cat">Enterprise · USA</div>
@@ -80,7 +88,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><span class="badge-ai">AI</span><img loading="lazy" src="assets/img/work/ai-plantation.webp" alt="AI-powered plantation and agriculture app"></div>
                     <div class="work-body">
                         <div class="work-cat">Agriculture · Australia / Brazil</div>
@@ -91,7 +99,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/smart-identity.webp" alt="Smart identity companion app"></div>
                     <div class="work-body">
                         <div class="work-cat">Travel &amp; Emergency · UAE</div>
@@ -102,7 +110,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/lms.webp" alt="Learning management system"></div>
                     <div class="work-body">
                         <div class="work-cat">Education · USA</div>
@@ -113,7 +121,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/ecommerce.webp" alt="E-commerce marketplace app"></div>
                     <div class="work-body">
                         <div class="work-cat">E-Commerce · USA</div>
@@ -124,7 +132,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/dating.webp" alt="The Perfect Match dating app"></div>
                     <div class="work-body">
                         <div class="work-cat">Social · USA</div>
@@ -135,7 +143,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/community.webp" alt="Community helping app"></div>
                     <div class="work-body">
                         <div class="work-cat">Community · USA</div>
@@ -146,7 +154,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/catering.webp" alt="Catering ordering app"></div>
                     <div class="work-body">
                         <div class="work-cat">Food Service · USA</div>
@@ -157,7 +165,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/sports.webp" alt="Sports scoring and connecting app"></div>
                     <div class="work-body">
                         <div class="work-cat">Sports · Germany</div>
@@ -169,7 +177,7 @@
                 </div>
 
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/01-ai-crm-agent.webp" alt="AI CRM Agent"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Development</div>
@@ -179,7 +187,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="automation">
                     <div class="work-media"><span class="badge-video"><i class="fas fa-play"></i>Video</span><img loading="lazy" src="assets/img/work/02-n8n-ai-multiplatform-social-media-publishe.webp" alt="n8n AI Multiplatform Social Media Publisher"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Automation</div>
@@ -189,7 +197,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/03-ai-powered-transcription.webp" alt="AI-Powered Transcription"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Development</div>
@@ -199,7 +207,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="creative">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/04-ai-jewelry-photography-and-video-generatio.webp" alt="AI Jewelry Photography &amp; Video Generation for E-Commerce 💍"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Creative</div>
@@ -209,7 +217,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="creative">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/05-talent-management-platform-with-ai.webp" alt="Talent Management Platform with AI"></div>
                     <div class="work-body">
                         <div class="work-cat">Generative AI</div>
@@ -219,7 +227,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="video">
                     <div class="work-media"><span class="badge-video"><i class="fas fa-play"></i>Video</span><img loading="lazy" src="assets/img/work/06-talking-chimp-ai-video-veo-3-character-ani.webp" alt="Talking Chimp AI Video Veo 3 Character Animation"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Video</div>
@@ -229,7 +237,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="consulting">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/07-legal-and-finance-compliance-executive-pow.webp" alt="Legal and Finance Compliance Executive powered by AI"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Consulting</div>
@@ -239,7 +247,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="creative">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/08-ai-food-photography-and-creative-direction.webp" alt="AI Food Photography &amp; Creative Direction for Restaurant Campaigns 🍔"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Creative</div>
@@ -249,7 +257,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="creative">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/09-ai-sportwear-photography-and-athletic-bran.webp" alt="AI Sportwear Photography &amp; Athletic Brand Visuals 👟"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Creative</div>
@@ -259,7 +267,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/10-ai-driven-avatar-app.webp" alt="AI-Driven Avatar App"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Development</div>
@@ -269,7 +277,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="creative">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/11-ai-character-consistency-and-fashion-photo.webp" alt="AI Character Consistency &amp; Fashion Photography Generation"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Creative</div>
@@ -279,7 +287,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="creative">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/12-ai-beverage-photography-and-product-visual.webp" alt="AI Beverage Photography &amp; Product Visuals for Drink Brands 🍻"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Creative</div>
@@ -289,7 +297,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="consulting">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/13-ai-strategy-consultation-for-a-company.webp" alt="AI Strategy Consultation for a Company"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Consulting</div>
@@ -299,7 +307,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="automation">
                     <div class="work-media"><span class="badge-video"><i class="fas fa-play"></i>Video</span><img loading="lazy" src="assets/img/work/14-n8n-ai-product-video-generator.webp" alt="n8n AI Product Video Generator"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Automation</div>
@@ -309,7 +317,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="creative">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/15-elevating-autonomous-store-support-with-ai.webp" alt="Elevating Autonomous Store Support with AI"></div>
                     <div class="work-body">
                         <div class="work-cat">Generative AI</div>
@@ -319,7 +327,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="consulting">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/16-french-chamber-of-commerce-ai-use-cases.webp" alt="French Chamber of Commerce AI use cases"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Consulting</div>
@@ -329,7 +337,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="consulting">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/17-beer-company-poc-and-prototyping.webp" alt="Beer Company PoC and Prototyping"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Consulting</div>
@@ -339,7 +347,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="automation">
                     <div class="work-media"><span class="badge-video"><i class="fas fa-play"></i>Video</span><img loading="lazy" src="assets/img/work/18-n8n-ai-sales-call-analyzer-and-insights-da.webp" alt="n8n AI Sales Call Analyzer &amp; Insights Dashboard"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Automation</div>
@@ -349,7 +357,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="automation">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/19-order-management-automation.webp" alt="Order Management Automation"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Automation</div>
@@ -359,7 +367,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="video">
                     <div class="work-media"><span class="badge-video"><i class="fas fa-play"></i>Video</span><img loading="lazy" src="assets/img/work/20-ai-video-ad-for-energy-bars-brand-from-ima.webp" alt="AI Video Ad for Energy Bars Brand  From Image to Video with Runway"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Video</div>
@@ -369,7 +377,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="automation">
                     <div class="work-media"><span class="badge-video"><i class="fas fa-play"></i>Video</span><img loading="lazy" src="assets/img/work/21-n8n-ai-product-image-variant-generator.webp" alt="n8n AI Product Image Variant Generator"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Automation</div>
@@ -379,7 +387,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="video">
                     <div class="work-media"><span class="badge-video"><i class="fas fa-play"></i>Video</span><img loading="lazy" src="assets/img/work/22-ai-video-ads-for-meta-tiktok-and-youtube-c.webp" alt="AI Video Ads for Meta, TikTok &amp; YouTube Campaigns 🎥"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Video</div>
@@ -389,7 +397,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="automation">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/23-ai-planner-for-marketing-campaigns.webp" alt="AI Planner for Marketing Campaigns"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Automation</div>
@@ -399,7 +407,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="creative">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/24-ai-skincare-and-beauty-product-campaign.webp" alt="AI Skincare &amp; Beauty Product Campaign 💅🏻"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Creative</div>
@@ -409,7 +417,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="automation">
                     <div class="work-media"><span class="badge-video"><i class="fas fa-play"></i>Video</span><img loading="lazy" src="assets/img/work/25-n8n-ai-email-automation-with-human-approva.webp" alt="n8n AI Email Automation with Human Approval"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Automation</div>
@@ -419,7 +427,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="video">
                     <div class="work-media"><span class="badge-video"><i class="fas fa-play"></i>Video</span><img loading="lazy" src="assets/img/work/26-ai-fitness-channel-video-series-synthesia.webp" alt="AI Fitness Channel Video Series Synthesia"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Video</div>
@@ -429,7 +437,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="automation">
                     <div class="work-media"><span class="badge-video"><i class="fas fa-play"></i>Video</span><img loading="lazy" src="assets/img/work/27-n8n-ai-email-responder-with-calendar-integ.webp" alt="n8n AI Email Responder with Calendar Integration"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Automation</div>
@@ -439,7 +447,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="automation">
                     <div class="work-media"><span class="badge-video"><i class="fas fa-play"></i>Video</span><img loading="lazy" src="assets/img/work/28-n8n-ai-trend-based-instagram-content-gener.webp" alt="n8n AI Trend-Based Instagram Content Generator"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Automation</div>
@@ -449,7 +457,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="automation">
                     <div class="work-media"><span class="badge-video"><i class="fas fa-play"></i>Video</span><img loading="lazy" src="assets/img/work/29-n8n-ai-instagram-talking-head-avatar-auto.webp" alt="n8n AI Instagram Talking Head Avatar Auto-Poster"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Automation</div>
@@ -459,7 +467,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="creative">
                     <div class="work-media"><span class="badge-video"><i class="fas fa-play"></i>Video</span><img loading="lazy" src="assets/img/work/30-hyper-realistic-ai-video-generation.webp" alt="Hyper Realistic AI Video Generation"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Creative</div>
@@ -469,7 +477,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="automation">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/31-personalized-email-automation.webp" alt="Personalized Email Automation"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Automation</div>
@@ -479,7 +487,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="video">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/32-ai-video-translation-with-retaining-the-or.webp" alt="AI Video Translation with Retaining the Original Voice"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Video</div>
@@ -489,7 +497,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="automation">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/33-generative-ai-for-marketing-creatives-and.webp" alt="Generative AI for Marketing Creatives and Product Visualization"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Automation</div>
@@ -499,7 +507,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="automation">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/34-ai-voice-customer-service.webp" alt="AI Voice Customer Service"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Automation</div>
@@ -509,7 +517,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="creative">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/35-photo-realistic-image-generation.webp" alt="Photo-realistic Image Generation"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Creative</div>
@@ -519,7 +527,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="consulting">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/36-ai-workshop-for-enhanced-consulting-effici.webp" alt="AI workshop for Enhanced Consulting Efficiency-180 Degrees Consulting"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Consulting</div>
@@ -529,7 +537,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="consulting">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/37-artificial-intelligence-for-professionals.webp" alt="Artificial Intelligence for Professionals Online Course"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Consulting</div>
@@ -539,7 +547,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="consulting">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/38-ai-for-banking-deep-dive-workshop.webp" alt="AI for Banking Deep Dive Workshop"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Consulting</div>
@@ -549,7 +557,7 @@
                     </div>
                 </div>
 
-                <div class="work-card">
+                <div class="work-card" data-cat="software">
                     <div class="work-media"><img loading="lazy" src="assets/img/work/39-prompt-engineering-solution.webp" alt="Prompt Engineering Solution"></div>
                     <div class="work-body">
                         <div class="work-cat">AI Development</div>
@@ -634,7 +642,7 @@
                             <li><a href="services.html">Services</a></li>
                             <li><a href="ai-lab.html">AI Lab</a></li>
                             <li><a href="upskilling.html">Upskilling</a></li>
-                            <li><a href="work.html">Work</a></li>
+                            <li><a href="work.html">Portfolio</a></li>
                             <li><a href="company.html">Company</a></li>
                         </ul>
                     </div>
@@ -665,6 +673,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="script.js"></script>
+    <script src="script.js?v=20260616"></script>
 </body>
 </html>

@@ -370,3 +370,9 @@
     box-shadow: var(--glow-pink);
 }
 .badge-video i { margin-right: 0.35rem; }
+
+/* ---- Portfolio filter buttons ---- */
+.work-filters { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; margin-bottom: 2.5rem; }
+.filter-btn { font-family: 'Poppins', sans-serif; font-size: 0.9rem; color: var(--text-secondary); background-color: var(--card-bg); border: 1px solid var(--card-border); padding: 0.55rem 1.3rem; border-radius: 30px; cursor: pointer; transition: var(--transition); }
+.filter-btn:hover { color: var(--text-primary); border-color: var(--purple-light); transform: translateY(-2px); }
+.filter-btn.active { color: #fff; background: linear-gradient(45deg, var(--purple-medium), var(--blue-accent)); border-color: transparent; box-shadow: var(--glow-purple); }
