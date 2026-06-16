@@ -185,4 +185,40 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.animate-on-scroll').forEach(function (el) { el.classList.add('show'); });
     }, 1000);
 
+
+    // ---- Portfolio card detail modal ----
+    var workModal = document.getElementById('workModal');
+    if (workModal) {
+        var wmImg = document.getElementById('wmImg'),
+            wmCat = document.getElementById('wmCat'),
+            wmTitle = document.getElementById('wmTitle'),
+            wmDesc = document.getElementById('wmDesc'),
+            wmStack = document.getElementById('wmStack');
+        var openModal = function (card) {
+            var img = card.querySelector('.work-media img');
+            var h3 = card.querySelector('h3');
+            var cat = card.querySelector('.work-cat');
+            wmImg.src = img ? img.getAttribute('src') : '';
+            wmImg.alt = h3 ? h3.textContent : '';
+            wmTitle.textContent = h3 ? h3.textContent : '';
+            wmCat.textContent = cat ? cat.textContent : '';
+            wmDesc.textContent = card.getAttribute('data-fulldesc') || '';
+            wmStack.innerHTML = '';
+            (card.getAttribute('data-stack') || '').split('|').forEach(function (s) {
+                s = s.trim();
+                if (s) { var el = document.createElement('span'); el.className = 'tag'; el.textContent = s; wmStack.appendChild(el); }
+            });
+            workModal.scrollTop = 0;
+            workModal.classList.add('active');
+            document.body.classList.add('modal-open');
+        };
+        document.querySelectorAll('.work-grid .work-card').forEach(function (card) {
+            card.addEventListener('click', function () { openModal(card); });
+        });
+        var closeModal = function () { workModal.classList.remove('active'); document.body.classList.remove('modal-open'); };
+        workModal.querySelector('.work-modal-close').addEventListener('click', closeModal);
+        workModal.querySelector('.work-modal-overlay').addEventListener('click', closeModal);
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+    }
+
 });
