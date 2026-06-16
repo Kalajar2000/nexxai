@@ -155,7 +155,7 @@ ul{list-style:none}
 .faq-item.open .faq-q i{transform:rotate(45deg)}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease}
 .faq-a p{color:var(--muted);font-weight:300;padding-bottom:22px}
-.faq-item.open .faq-a{max-height:240px}
+.faq-item.open .faq-a{max-height:400px}
 
 /* contact */
 .contact-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:start}
