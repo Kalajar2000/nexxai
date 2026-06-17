@@ -133,31 +133,75 @@ function makeOrb() {
   return { group: grp, update(t, p) { uniforms.uTime.value = t; mesh.rotation.y = t * 0.12 + p.x * 0.6; mesh.rotation.x = p.y * 0.4; } };
 }
 
-/* ---- state 2: AI neural-network brain ---- */
+/* ---- state 2: interactive neural galaxy — cursor brightens+swells, pulls (gravity) & parallax ---- */
 function makeBrain() {
-  const N = 46, R = 1.5, nodes = [], npos = new Float32Array(N * 3);
-  for (let i = 0; i < N; i++) { const y = 1 - (i / (N - 1)) * 2, rr = Math.sqrt(Math.max(1 - y * y, 0)), phi = i * 2.399963, rad = R * (0.8 + Math.random() * 0.2); const x = Math.cos(phi) * rr * rad, z = Math.sin(phi) * rr * rad, yy = y * rad; nodes.push([x, yy, z]); npos[i * 3] = x; npos[i * 3 + 1] = yy; npos[i * 3 + 2] = z; }
+  const N = 112, TILT = -0.3;
+  const homes = new Float32Array(N * 3), disp = new Float32Array(N * 3);
+  const colA = new Float32Array(N * 3), seeds = new Float32Array(N), depth = new Float32Array(N), nodes = [];
+  const cCyan = new THREE.Color(0x9be7ff), cViolet = new THREE.Color(0x8b5cf6), cPink = new THREE.Color(0xff5ed0);
+  const cT = Math.cos(TILT), sT = Math.sin(TILT);
+  for (let i = 0; i < N; i++) {
+    const f = i / N; let r, x, y, z;
+    if (Math.random() < 0.2) { r = 1.3 + Math.random() * 1.2; const a2 = Math.random() * 6.283, b2 = Math.acos(2 * Math.random() - 1); x = r * Math.sin(b2) * Math.cos(a2); y = r * Math.sin(b2) * Math.sin(a2) * 0.7; z = r * Math.cos(b2) * 0.5; }
+    else { r = 1.05 + 1.35 * Math.sqrt(f); const ang = (i % 3) * 2.094 + r * 2.1 + (Math.random() - 0.5) * 0.5; x = Math.cos(ang) * r; y = Math.sin(ang) * r; z = (Math.random() - 0.5) * 0.5; }
+    const yt = y * cT - z * sT, zt = y * sT + z * cT;
+    homes[i * 3] = x; homes[i * 3 + 1] = yt; homes[i * 3 + 2] = zt; nodes.push([x, yt, zt]);
+    depth[i] = 0.4 + Math.max(0, Math.min(1, (zt + 1.4) / 2.8)); seeds[i] = Math.random();
+    const cc = r < 1.8 ? cCyan.clone().lerp(cViolet, Math.min(1, (r - 1.05) / 0.75)) : cViolet.clone().lerp(cPink, Math.min(1, r - 1.8));
+    colA[i * 3] = cc.r; colA[i * 3 + 1] = cc.g; colA[i * 3 + 2] = cc.b;
+  }
+  disp.set(homes);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(disp, 3));
+  geo.setAttribute('aColor', new THREE.BufferAttribute(colA, 3));
+  geo.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 1));
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 }, uCursor: { value: new THREE.Vector2(0, 0) } },
+    transparent: true, blending: THREE.AdditiveBlending, depthWrite: false,
+    vertexShader: `attribute vec3 aColor; attribute float aSeed; uniform float uTime; uniform vec2 uCursor; varying vec3 vCol; varying float vGlow;
+      void main(){
+        vCol=aColor;
+        vec4 mv=modelViewMatrix*vec4(position,1.0);
+        vec4 clip=projectionMatrix*mv;
+        vec2 ndc=clip.xy/clip.w;
+        float prox=smoothstep(0.5,0.0,distance(ndc,uCursor));
+        float tw=0.5+0.5*sin(uTime*2.0+aSeed*28.0);
+        vGlow=prox*1.6+tw*0.4;
+        float sz=0.22+prox*0.6+tw*0.05;
+        gl_PointSize=sz*(300.0/max(-mv.z,0.1));
+        gl_Position=clip;
+      }`,
+    fragmentShader: `varying vec3 vCol; varying float vGlow;
+      void main(){ vec2 uv=gl_PointCoord-0.5; float a=smoothstep(0.5,0.0,length(uv)); gl_FragColor=vec4(vCol*(0.6+vGlow), a); }`
+  });
+  const points = new THREE.Points(geo, mat);
   const edges = [], seen = {};
-  for (let i = 0; i < N; i++) { const d = []; for (let j = 0; j < N; j++) if (j !== i) { const dx = nodes[i][0] - nodes[j][0], dy = nodes[i][1] - nodes[j][1], dz = nodes[i][2] - nodes[j][2]; d.push([dx * dx + dy * dy + dz * dz, j]); } d.sort(function (a, b) { return a[0] - b[0]; }); for (let k = 0; k < 3; k++) { const a = Math.min(i, d[k][1]), b = Math.max(i, d[k][1]), key = a + '_' + b; if (!seen[key]) { seen[key] = 1; edges.push([a, b]); } } }
-  const ngeo = new THREE.BufferGeometry(); ngeo.setAttribute('position', new THREE.BufferAttribute(npos, 3));
-  const nmat = roundPoints({ size: 0.16, color: new THREE.Color(LILAC), opacity: 0.95 });
-  const points = new THREE.Points(ngeo, nmat);
-  const lpos = new Float32Array(edges.length * 2 * 3);
-  for (let e = 0; e < edges.length; e++) { const a = nodes[edges[e][0]], b = nodes[edges[e][1]]; lpos[e * 6] = a[0]; lpos[e * 6 + 1] = a[1]; lpos[e * 6 + 2] = a[2]; lpos[e * 6 + 3] = b[0]; lpos[e * 6 + 4] = b[1]; lpos[e * 6 + 5] = b[2]; }
+  for (let i = 0; i < N; i++) { const dd = []; for (let j = 0; j < N; j++) if (j !== i) { const dx = nodes[i][0] - nodes[j][0], dy = nodes[i][1] - nodes[j][1], dz = nodes[i][2] - nodes[j][2]; dd.push([dx * dx + dy * dy + dz * dz, j]); } dd.sort(function (a, b) { return a[0] - b[0]; }); for (let k = 0; k < 2; k++) { const a = Math.min(i, dd[k][1]), b = Math.max(i, dd[k][1]), key = a + '_' + b; if (!seen[key]) { seen[key] = 1; edges.push([a, b]); } } }
+  const lpos = new Float32Array(edges.length * 6);
   const lgeo = new THREE.BufferGeometry(); lgeo.setAttribute('position', new THREE.BufferAttribute(lpos, 3));
-  const lines = new THREE.LineSegments(lgeo, new THREE.LineBasicMaterial({ color: new THREE.Color(0x7c5fe0), transparent: true, opacity: 0.32, blending: THREE.AdditiveBlending, depthWrite: false }));
-  const SIG = 20, spos = new Float32Array(SIG * 3), sig = [];
-  for (let s = 0; s < SIG; s++) sig.push({ e: Math.floor(Math.random() * edges.length), t: Math.random(), spd: 0.45 + Math.random() * 0.8 });
+  const lines = new THREE.LineSegments(lgeo, new THREE.LineBasicMaterial({ color: new THREE.Color(0x7c5fe0), transparent: true, opacity: 0.24, blending: THREE.AdditiveBlending, depthWrite: false }));
+  const SIG = 16, spos = new Float32Array(SIG * 3), sig = [];
+  for (let s = 0; s < SIG; s++) sig.push({ e: Math.floor(Math.random() * edges.length), t: Math.random(), spd: 0.4 + Math.random() * 0.7 });
   const sgeo = new THREE.BufferGeometry(); sgeo.setAttribute('position', new THREE.BufferAttribute(spos, 3));
-  const signals = new THREE.Points(sgeo, roundPoints({ size: 0.2, color: new THREE.Color(CYAN), opacity: 1 }));
-  const grp = new THREE.Group(); grp.add(lines, points, signals);
+  const signals = new THREE.Points(sgeo, roundPoints({ size: 0.18, color: new THREE.Color(0x9be7ff), opacity: 1 }));
+  const grp = new THREE.Group(); grp.add(lines, points, signals); grp.position.set(0, 0.0, 0.25);
+  const A = new THREE.Vector3();
   return {
     group: grp,
     update(t, p, scrollN, dt) {
-      for (let s = 0; s < SIG; s++) { const o = sig[s]; o.t += o.spd * dt; if (o.t >= 1) { o.t = 0; o.e = Math.floor(Math.random() * edges.length); o.spd = 0.45 + Math.random() * 0.8; } const a = nodes[edges[o.e][0]], b = nodes[edges[o.e][1]], tt = o.t; spos[s * 3] = a[0] + (b[0] - a[0]) * tt; spos[s * 3 + 1] = a[1] + (b[1] - a[1]) * tt; spos[s * 3 + 2] = a[2] + (b[2] - a[2]) * tt; }
+      mat.uniforms.uTime.value = t; mat.uniforms.uCursor.value.set(p.x * 2.0, -p.y * 2.0);
+      A.set(p.x * 2.6, -p.y * 2.0, 0.4);
+      for (let i = 0; i < N; i++) {
+        const hx = homes[i * 3] + p.x * 0.5 * depth[i], hy = homes[i * 3 + 1] - p.y * 0.4 * depth[i], hz = homes[i * 3 + 2];
+        const dx = A.x - hx, dy = A.y - hy, dz = A.z - hz, pull = 0.5 * Math.exp(-(dx * dx + dy * dy + dz * dz) / 0.6);
+        disp[i * 3] = hx + dx * pull; disp[i * 3 + 1] = hy + dy * pull; disp[i * 3 + 2] = hz + dz * pull;
+      }
+      geo.attributes.position.needsUpdate = true;
+      for (let e = 0; e < edges.length; e++) { const a = edges[e][0], b = edges[e][1]; lpos[e * 6] = disp[a * 3]; lpos[e * 6 + 1] = disp[a * 3 + 1]; lpos[e * 6 + 2] = disp[a * 3 + 2]; lpos[e * 6 + 3] = disp[b * 3]; lpos[e * 6 + 4] = disp[b * 3 + 1]; lpos[e * 6 + 5] = disp[b * 3 + 2]; }
+      lgeo.attributes.position.needsUpdate = true;
+      for (let s = 0; s < SIG; s++) { const o = sig[s]; o.t += o.spd * dt; if (o.t >= 1) { o.t = 0; o.e = Math.floor(Math.random() * edges.length); o.spd = 0.4 + Math.random() * 0.7; } const a = edges[o.e][0], b = edges[o.e][1], tt = o.t; spos[s * 3] = disp[a * 3] + (disp[b * 3] - disp[a * 3]) * tt; spos[s * 3 + 1] = disp[a * 3 + 1] + (disp[b * 3 + 1] - disp[a * 3 + 1]) * tt; spos[s * 3 + 2] = disp[a * 3 + 2] + (disp[b * 3 + 2] - disp[a * 3 + 2]) * tt; }
       sgeo.attributes.position.needsUpdate = true;
-      nmat.opacity = 0.72 + Math.sin(t * 2.0) * 0.22;
-      grp.rotation.y = t * 0.18 + p.x * 0.8 + scrollN * 1.2; grp.rotation.x = p.y * 0.5 + scrollN * 0.4;
+      grp.rotation.y = p.x * 0.12 + scrollN * 0.25; grp.rotation.x = p.y * 0.06;
     }
   };
 }
@@ -409,8 +453,7 @@ export function createHero(canvas, opts) {
           var sc = HH / (size.y || 1);
           model.position.sub(center);
           var wrap = new THREE.Group(); wrap.add(model); wrap.scale.setScalar(sc); robotHolder.add(wrap);
-          var halo = makeGalaxy(); halo.group.position.set(0, 0.18, 0); robotHolder.add(halo.group);
-          robot = { wrap: wrap, halo: halo };
+          robot = { wrap: wrap };
         }, undefined, function () { robot = null; });
       } catch (e) { robot = null; }
     })();
@@ -460,7 +503,6 @@ export function createHero(canvas, opts) {
       robotHolder.rotation.y = pointer.x * 0.5 + Math.sin(t * 0.5) * 0.06;
       robotHolder.rotation.x = pointer.y * 0.28 + Math.sin(t * 0.4) * 0.03;
       robotHolder.position.y = -0.3 + Math.sin(t * 1.2) * 0.04;
-      robot.halo.update(t, reduce ? 0.016 : dt);
     }
     if (opts.speechEl) {
       if (current === 1 && robotShown > 0.5) {
