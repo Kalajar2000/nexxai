@@ -94,3 +94,24 @@ function show(which) {
 }
 document.querySelectorAll('.lab-switch button').forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.v); }); });
 show('3d');
+
+/* matrix-style code background */
+(function matrixBG() {
+  const mc = document.getElementById('matrix'); if (!mc) return;
+  const mx = mc.getContext('2d'); const fs = 14; let cols = 0, drops = [];
+  const chars = '01<>{}[]/\\|=+*#01010110';
+  function mr() { mc.width = window.innerWidth; mc.height = window.innerHeight; cols = Math.ceil(mc.width / fs); drops = []; for (let i = 0; i < cols; i++) drops[i] = Math.random() * -60; }
+  function mt() {
+    mx.fillStyle = 'rgba(6,6,14,0.10)'; mx.fillRect(0, 0, mc.width, mc.height);
+    mx.font = fs + 'px monospace';
+    for (let i = 0; i < cols; i++) {
+      const ch = chars[Math.floor(Math.random() * chars.length)], x = i * fs, y = drops[i] * fs;
+      mx.fillStyle = Math.random() < 0.08 ? 'rgba(150,210,255,0.95)' : 'rgba(123,92,246,0.5)';
+      mx.fillText(ch, x, y);
+      if (y > mc.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+    requestAnimationFrame(mt);
+  }
+  mr(); window.addEventListener('resize', mr); mt();
+})();
