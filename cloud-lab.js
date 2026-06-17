@@ -19,7 +19,7 @@ function radialShadowTex() {
    (bottom purple -> top green), gated to a 3D box in the model's local space.
    Geometry/texture untouched — purely an in-shader color override inside the box,
    so reverting this restores the model exactly. Box is tunable below. */
-const DB_BOX = { x0: 0.13, x1: 1.02, y0: -0.40, y1: 0.13, z0: -0.32, z1: 0.66 };
+const DB_BOX = { x0: 0.625, x1: 0.97, y0: -0.37, y1: 0.03, z0: -0.45, z1: -0.07 };
 function recolorDataBricks(material) {
   material.onBeforeCompile = function (shader) {
     shader.uniforms.uB0 = { value: new THREE.Vector3(DB_BOX.x0, DB_BOX.y0, DB_BOX.z0) };
