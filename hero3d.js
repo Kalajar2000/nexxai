@@ -99,19 +99,17 @@ function makeParticles() {
 
 /* ---- state 1: liquid orb ---- */
 function makeOrb() {
-  const uniforms = { uTime: { value: 0 }, uRipple: { value: 0 } };
+  const uniforms = { uTime: { value: 0 } };
   const mat = new THREE.ShaderMaterial({
     uniforms, transparent: true,
-    vertexShader: SNOISE + `uniform float uTime; uniform float uRipple; varying float vN; varying vec3 vNrm; varying vec3 vView;
+    vertexShader: SNOISE + `uniform float uTime; varying float vN; varying vec3 vNrm; varying vec3 vView;
       void main(){
         float t=uTime;
-        float n1=snoise(position*0.8 + vec3(0.0,t*0.34,0.0));
-        float n2=snoise(position*1.7 + vec3(t*0.26,0.0,t*0.2) + n1*0.9);
-        float n3=snoise(position*3.6 - t*0.16)*0.24;
-        float disp=n1*0.64 + n2*0.46 + n3;
-        disp += sin(length(position)*6.0 - uTime*7.0) * uRipple * 0.7;
-        vN=disp;
-        vec3 pp=position+normal*disp*(0.42 + uRipple*0.5);
+        float n1=snoise(position*0.75 + vec3(0.0,t*0.28,0.0));
+        float n2=snoise(position*1.7 + vec3(t*0.22,0.0,t*0.16) + n1*0.8);
+        float n3=snoise(position*3.4 - t*0.12)*0.22;
+        float disp=n1*0.62 + n2*0.42 + n3; vN=disp;
+        vec3 pp=position+normal*disp*0.34;
         vec4 mv=modelViewMatrix*vec4(pp,1.0);
         vNrm=normalize(normalMatrix*normal); vView=normalize(-mv.xyz);
         gl_Position=projectionMatrix*mv;
@@ -122,17 +120,17 @@ function makeOrb() {
         float m=smoothstep(-1.0,1.0,vN);
         vec3 col=mix(blue,violet,m);
         col=mix(col,pink,smoothstep(0.5,1.0,m)*0.6);
-        col=mix(col,cyan,smoothstep(0.0,-1.0,vN)*0.24);
-        float fres=pow(1.0-max(dot(normalize(vNrm),normalize(vView)),0.0),2.1);
-        col+=fres*0.65;
-        float iri=0.5+0.5*sin(fres*11.0 + vN*6.0 + uTime*1.4);
-        col+=vec3(0.12,0.06,0.18)*iri*0.55;
+        col=mix(col,cyan,smoothstep(0.0,-1.0,vN)*0.22);
+        float fres=pow(1.0-max(dot(normalize(vNrm),normalize(vView)),0.0),2.2);
+        col+=fres*0.6;
+        float iri=0.5+0.5*sin(fres*10.0 + vN*5.0 + uTime*1.2);
+        col+=vec3(0.12,0.06,0.18)*iri*0.5;
         gl_FragColor=vec4(col,1.0);
       }`
   });
-  const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(1.18, 5), mat);
+  const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(1.5, 5), mat);
   const grp = new THREE.Group(); grp.add(mesh);
-  return { group: grp, ripple() { uniforms.uRipple.value = 1.0; }, update(t, p) { uniforms.uTime.value = t; uniforms.uRipple.value *= 0.92; mesh.rotation.y = t * 0.12 + p.x * 0.6; mesh.rotation.x = p.y * 0.4; } };
+  return { group: grp, update(t, p) { uniforms.uTime.value = t; mesh.rotation.y = t * 0.12 + p.x * 0.6; mesh.rotation.x = p.y * 0.4; } };
 }
 
 /* ---- state 2: AI neural-network brain ---- */
@@ -272,23 +270,44 @@ function makeSoftware(holo) {
 }
 
 /* ---- brain-flash overlay (moving pulses inside the robot's glass skull) ---- */
-function makeFlash() {
-  const N = 12, R = 0.42, nodes = [], npos = new Float32Array(N * 3);
-  for (let i = 0; i < N; i++) { const a = Math.random() * 6.283, b = Math.acos(2 * Math.random() - 1), r = R * (0.45 + Math.random() * 0.55); const x = r * Math.sin(b) * Math.cos(a), y = r * Math.sin(b) * Math.sin(a) * 0.8, z = r * Math.cos(b); nodes.push([x, y, z]); npos[i * 3] = x; npos[i * 3 + 1] = y; npos[i * 3 + 2] = z; }
-  const ngeo = new THREE.BufferGeometry(); ngeo.setAttribute('position', new THREE.BufferAttribute(npos, 3));
-  const pmat = roundPoints({ size: 0.16, color: new THREE.Color(0xff5ed0), opacity: 0.9 });
-  const pts = new THREE.Points(ngeo, pmat);
-  const edges = []; for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) { const dx = nodes[i][0] - nodes[j][0], dy = nodes[i][1] - nodes[j][1], dz = nodes[i][2] - nodes[j][2]; if (dx * dx + dy * dy + dz * dz < (R * 0.95) * (R * 0.95)) edges.push([i, j]); }
-  const SIG = 8, spos = new Float32Array(SIG * 3), sig = [];
-  for (let s = 0; s < SIG; s++) sig.push({ e: edges.length ? Math.floor(Math.random() * edges.length) : 0, t: Math.random(), spd: 0.6 + Math.random() * 0.9 });
+// neural-network "galaxy" of light orbs that surrounds the robot (not on her face)
+function makeGalaxy() {
+  const N = 84, pos = new Float32Array(N * 3), col = new Float32Array(N * 3), nodes = [];
+  const cV = new THREE.Color(0x8b5cf6), cC = new THREE.Color(0x5be0ff), cP = new THREE.Color(0xff5ed0);
+  for (let i = 0; i < N; i++) {
+    const a = Math.random() * 6.283, b = Math.acos(2 * Math.random() - 1);
+    const r = 1.15 + Math.pow(Math.random(), 0.65) * 1.05;          // hollow shell around her
+    const x = r * Math.sin(b) * Math.cos(a), y = r * Math.cos(b) * 0.7, z = r * Math.sin(b) * Math.sin(a) * 0.85;
+    nodes.push([x, y, z]); pos[i * 3] = x; pos[i * 3 + 1] = y; pos[i * 3 + 2] = z;
+    const cc = (Math.random() < 0.55) ? cV.clone().lerp(cC, Math.random()) : cP.clone().lerp(cV, Math.random() * 0.7);
+    col[i * 3] = cc.r; col[i * 3 + 1] = cc.g; col[i * 3 + 2] = cc.b;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  const pmat = roundPoints({ size: 0.15, opacity: 0.95, vertexColors: true });
+  const pts = new THREE.Points(geo, pmat);
+  const edges = [];
+  for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) {
+    const dx = nodes[i][0] - nodes[j][0], dy = nodes[i][1] - nodes[j][1], dz = nodes[i][2] - nodes[j][2];
+    if (dx * dx + dy * dy + dz * dz < 0.62 * 0.62 && edges.length < 150) edges.push([i, j]);
+  }
+  const lpos = new Float32Array(edges.length * 6);
+  for (let k = 0; k < edges.length; k++) { const a = nodes[edges[k][0]], b = nodes[edges[k][1]]; lpos[k * 6] = a[0]; lpos[k * 6 + 1] = a[1]; lpos[k * 6 + 2] = a[2]; lpos[k * 6 + 3] = b[0]; lpos[k * 6 + 4] = b[1]; lpos[k * 6 + 5] = b[2]; }
+  const lgeo = new THREE.BufferGeometry(); lgeo.setAttribute('position', new THREE.BufferAttribute(lpos, 3));
+  const lmat = new THREE.LineBasicMaterial({ color: 0x6f7cff, transparent: true, opacity: 0.16, blending: THREE.AdditiveBlending, depthWrite: false });
+  const lines = new THREE.LineSegments(lgeo, lmat);
+  const SIG = 9, spos = new Float32Array(SIG * 3), sig = [];
+  for (let s = 0; s < SIG; s++) sig.push({ e: edges.length ? Math.floor(Math.random() * edges.length) : 0, t: Math.random(), spd: 0.35 + Math.random() * 0.6 });
   const sgeo = new THREE.BufferGeometry(); sgeo.setAttribute('position', new THREE.BufferAttribute(spos, 3));
-  const sigPts = new THREE.Points(sgeo, roundPoints({ size: 0.2, color: new THREE.Color(0x9be7ff), opacity: 1 }));
-  const g = new THREE.Group(); g.add(pts, sigPts);
+  const sigPts = new THREE.Points(sgeo, roundPoints({ size: 0.16, color: new THREE.Color(0x9be7ff), opacity: 1 }));
+  const g = new THREE.Group(); g.add(lines, pts, sigPts);
   return {
     group: g,
     update(t, dt) {
+      g.rotation.y = t * 0.1; g.rotation.x = Math.sin(t * 0.13) * 0.12;
       if (edges.length) { for (let s = 0; s < SIG; s++) { const o = sig[s]; o.t += o.spd * dt; if (o.t >= 1) { o.t = 0; o.e = Math.floor(Math.random() * edges.length); } const a = nodes[edges[o.e][0]], b = nodes[edges[o.e][1]], tt = o.t; spos[s * 3] = a[0] + (b[0] - a[0]) * tt; spos[s * 3 + 1] = a[1] + (b[1] - a[1]) * tt; spos[s * 3 + 2] = a[2] + (b[2] - a[2]) * tt; } sgeo.attributes.position.needsUpdate = true; }
-      pmat.opacity = 0.55 + Math.sin(t * 4.0) * 0.3; g.rotation.y = t * 0.4;
+      pmat.opacity = 0.72 + Math.sin(t * 1.8) * 0.18;
     }
   };
 }
@@ -311,21 +330,25 @@ export function createHero(canvas, opts) {
   scene.add(particles.group);
   states.forEach(function (s, i) { scene.add(s.group); s.shown = i === 0 ? 1 : 0; if (i !== 0) { s.group.visible = false; s.group.scale.setScalar(0.001); } });
 
-  // lights (only the GLB robot's PBR materials respond; unlit scene elements ignore these)
-  scene.add(new THREE.AmbientLight(0xb9c2ff, 0.75));
-  var kl = new THREE.DirectionalLight(0xffffff, 1.5); kl.position.set(2, 3, 4); scene.add(kl);
-  var fl = new THREE.DirectionalLight(0x6f8cff, 0.6); fl.position.set(-3, -1, 2); scene.add(fl);
-  var rimL = new THREE.DirectionalLight(0xec4899, 0.5); rimL.position.set(0, 2, -4); scene.add(rimL);
+  // lights (only the GLB robot's PBR materials respond; unlit scene elements ignore these).
+  // Brighter + a hemisphere fill + a RoomEnvironment env map (added in loadRobot) so her
+  // full porcelain colours and glowing circuitry read clearly instead of looking dark.
+  scene.add(new THREE.AmbientLight(0xc7ccff, 1.05));
+  scene.add(new THREE.HemisphereLight(0xbcd0ff, 0x3a2d5c, 0.85));
+  var kl = new THREE.DirectionalLight(0xffffff, 2.1); kl.position.set(2, 3, 4); scene.add(kl);
+  var fl = new THREE.DirectionalLight(0x8aa0ff, 0.85); fl.position.set(-3, -1, 2); scene.add(fl);
+  var rimL = new THREE.DirectionalLight(0xff79c6, 0.7); rimL.position.set(0, 2, -4); scene.add(rimL);
 
   // robot (Higgsfield porcelain GLB), lazy-loaded after first paint, shown in the brain state
   var HH = 2.0;
-  var robotHolder = new THREE.Group(); robotHolder.visible = false; robotHolder.scale.setScalar(0.001); robotHolder.position.set(0, -0.55, 0.7); scene.add(robotHolder);
+  var robotHolder = new THREE.Group(); robotHolder.visible = false; robotHolder.scale.setScalar(0.001); robotHolder.position.set(0, -0.3, 0.7); scene.add(robotHolder);
   var robot = null, robotShown = 0, robotLoading = false;
   function loadRobot() {
     if (robotLoading) return; robotLoading = true;
     (async function () {
       try {
-        var mods = await Promise.all([import('three/addons/loaders/GLTFLoader.js'), import('three/addons/loaders/DRACOLoader.js')]);
+        var mods = await Promise.all([import('three/addons/loaders/GLTFLoader.js'), import('three/addons/loaders/DRACOLoader.js'), import('three/addons/environments/RoomEnvironment.js')]);
+        try { var pmrem = new THREE.PMREMGenerator(renderer); scene.environment = pmrem.fromScene(new mods[2].RoomEnvironment(), 0.04).texture; } catch (e) {}
         var draco = new mods[1].DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/gltf/');
         var loader = new mods[0].GLTFLoader(); loader.setDRACOLoader(draco);
         loader.load(opts.robotUrl || 'assets/robot.glb?v=3', function (gltf) {
@@ -335,10 +358,8 @@ export function createHero(canvas, opts) {
           var sc = HH / (size.y || 1);
           model.position.sub(center);
           var wrap = new THREE.Group(); wrap.add(model); wrap.scale.setScalar(sc); robotHolder.add(wrap);
-          var flash = makeFlash(); flash.group.position.set(0, 0.4 * HH, 0.1 * HH); robotHolder.add(flash.group);
-          var speak = new THREE.Sprite(new THREE.SpriteMaterial({ map: SOFT, color: 0x9be7ff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
-          speak.position.set(0, 0.22 * HH, 0.2 * HH); speak.scale.setScalar(0.32 * HH); robotHolder.add(speak);
-          robot = { wrap: wrap, flash: flash, speak: speak };
+          var halo = makeGalaxy(); halo.group.position.set(0, 0.18, 0); robotHolder.add(halo.group);
+          robot = { wrap: wrap, halo: halo };
         }, undefined, function () { robot = null; });
       } catch (e) { robot = null; }
     })();
@@ -359,9 +380,8 @@ export function createHero(canvas, opts) {
   window.addEventListener('scroll', onScroll, { passive: true });
   canvas.addEventListener('click', onClick);
 
-  var pendingSpeak = false, speakUntil = 0;
-  function setState(i) { current = ((i % 3) + 3) % 3; if (current === 1) { pendingSpeak = true; loadRobot(); } if (opts.onState) opts.onState(current, NAMES[current]); }
-  function next() { if (current === 0 && states[0].ripple) states[0].ripple(); setState(current + 1); }
+  function setState(i) { current = ((i % 3) + 3) % 3; if (current === 1) loadRobot(); if (opts.onState) opts.onState(current, NAMES[current]); }
+  function next() { setState(current + 1); }
   function reset() { setState(0); }
   function smooth(x) { x = Math.min(Math.max(x, 0), 1); return x * x * (3 - 2 * x); }
   setState(0);
@@ -381,7 +401,6 @@ export function createHero(canvas, opts) {
       s.group.visible = vis > 0.01; s.group.scale.setScalar(Math.max(vis, 0.001));
       if (s.group.visible) s.update(t, pointer, scrollN, reduce ? 0.016 : dt);
     }
-    if (pendingSpeak) { speakUntil = t + 4; pendingSpeak = false; }
     var rtg = current === 1 ? 1 : 0;
     robotShown += (rtg - robotShown) * 0.09;
     var rvis = smooth(robotShown);
@@ -389,16 +408,15 @@ export function createHero(canvas, opts) {
     if (robot) {
       robotHolder.rotation.y = pointer.x * 0.5 + Math.sin(t * 0.5) * 0.06;
       robotHolder.rotation.x = pointer.y * 0.28 + Math.sin(t * 0.4) * 0.03;
-      robotHolder.position.y = -0.55 + Math.sin(t * 1.2) * 0.04;
-      robot.flash.update(t, reduce ? 0.016 : dt);
-      robot.speak.material.opacity = (t < speakUntil) ? (0.4 + 0.45 * Math.abs(Math.sin(t * 9.0))) : Math.max(0, robot.speak.material.opacity - 0.04);
+      robotHolder.position.y = -0.3 + Math.sin(t * 1.2) * 0.04;
+      robot.halo.update(t, reduce ? 0.016 : dt);
     }
     if (opts.speechEl) {
       if (current === 1 && robotShown > 0.5) {
-        tmp.set(0, 0.8, 0.7).project(camera);
+        tmp.set(0, 0.6, 0.7).project(camera);
         const rect = canvas.getBoundingClientRect();
         var sx = rect.left + (tmp.x * 0.5 + 0.5) * rect.width, sy = rect.top + (-tmp.y * 0.5 + 0.5) * rect.height;
-        sx = Math.min(Math.max(sx, 130), window.innerWidth - 130); sy = Math.max(sy, 100);
+        sx = Math.min(Math.max(sx, 130), window.innerWidth - 130); sy = Math.max(sy, 92);
         opts.speechEl.style.left = sx + 'px'; opts.speechEl.style.top = sy + 'px';
         opts.speechEl.classList.add('show');
       } else { opts.speechEl.classList.remove('show'); }
