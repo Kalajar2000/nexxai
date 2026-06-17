@@ -118,21 +118,21 @@
 
     <!-- control -->
     <div class="h3d-switch glass">
-        <span class="h3d-label">Hero 3D · build 5</span>
+        <span class="h3d-label">Hero 3D · build 6</span>
         <span class="h3d-hint" id="hint">Click the core to wake the AI</span>
         <button id="replay">Reset to orb</button>
     </div>
 
     <script src="redesign.js?v=3"></script>
     <script type="module">
-        import { createHero } from './hero3d.js?v=5';
+        import { createHero } from './hero3d.js?v=6';
         var cv = document.getElementById('h3d');
         var speech = document.getElementById('speech');
         var hint = document.getElementById('hint');
         var HINTS = [
             'Click the core to wake the AI',
             'AI brain online — click again for your software',
-            'Cloud, devices, data &amp; code — click to reset'
+            'Software: move your cursor over the 0s and 1s to reveal them in matrix green'
         ];
         var hero = createHero(cv, {
             speechEl: speech,
