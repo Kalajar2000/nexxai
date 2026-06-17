@@ -15,6 +15,33 @@ function radialShadowTex() {
   x.fillStyle = g; x.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c);
 }
 
+/* Recolor only the saturated NEON parts of the baked texture toward purple
+   (data bricks, cables, cyan accents). Leaves white/silver/black untouched.
+   Geometry is never modified — purely a texture-pixel pass at load. */
+function recolorNeonPurple(material) {
+  const tex = material.map; if (!tex || !tex.image) return;
+  const img = tex.image, w = img.width, h = img.height;
+  if (!w || !h) return;
+  const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+  const cx = cv.getContext('2d'); cx.drawImage(img, 0, 0, w, h);
+  let id; try { id = cx.getImageData(0, 0, w, h); } catch (e) { return; }
+  const d = id.data;
+  const vR = 0.60, vG = 0.28, vB = 1.0, mR = 0.86, mG = 0.22, mB = 0.98; // violet -> magenta
+  for (let i = 0; i < d.length; i += 4) {
+    const rn = d[i] / 255, gn = d[i + 1] / 255, bn = d[i + 2] / 255;
+    const mx = Math.max(rn, gn, bn), mn = Math.min(rn, gn, bn);
+    const sat = mx > 0 ? (mx - mn) / mx : 0;
+    if (sat > 0.16) {
+      const v = mx; let k = (rn - bn) * 0.5 + 0.5; k = k < 0 ? 0 : k > 1 ? 1 : k;
+      const tR = (vR + (mR - vR) * k) * v * 1.15, tG = (vG + (mG - vG) * k) * v * 1.15, tB = (vB + (mB - vB) * k) * v * 1.15;
+      d[i] = Math.min(255, (rn + (tR - rn) * 0.82) * 255);
+      d[i + 1] = Math.min(255, (gn + (tG - gn) * 0.82) * 255);
+      d[i + 2] = Math.min(255, (bn + (tB - bn) * 0.82) * 255);
+    }
+  }
+  cx.putImageData(id, 0, 0); tex.image = cv; tex.needsUpdate = true;
+}
+
 const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.setClearAlpha(0);
@@ -47,6 +74,7 @@ new GLTFLoader().load('assets/cloud.glb?v=5', function (g) {
     if (o.isMesh && o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) {
       if ('envMapIntensity' in m) m.envMapIntensity = 1.1;
       if ('roughness' in m) m.roughness = Math.min(m.roughness != null ? m.roughness : 0.6, 0.75);
+      recolorNeonPurple(m);
       m.needsUpdate = true;
     });
   });
