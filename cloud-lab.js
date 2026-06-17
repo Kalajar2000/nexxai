@@ -41,7 +41,7 @@ const shadow = new THREE.Mesh(new THREE.PlaneGeometry(5.5, 5.5), new THREE.MeshB
 shadow.rotation.x = -Math.PI / 2; shadow.position.y = -1.55; scene.add(shadow);
 
 const holder = new THREE.Group(); scene.add(holder);
-new GLTFLoader().load('assets/cloud.glb?v=2', function (g) {
+new GLTFLoader().load('assets/cloud.glb?v=3', function (g) {
   const model = g.scene;
   model.traverse(function (o) {
     if (o.isMesh && o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) {
