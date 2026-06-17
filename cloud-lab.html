@@ -23,7 +23,7 @@
         .lab-switch button.active { color: #fff; background: linear-gradient(135deg, #8b5cf6, #3b82f6); border-color: transparent; box-shadow: 0 6px 20px rgba(139,92,246,.45); }
         .lab-hint { font-size: .82rem; color: #8b93ad; flex: 1 1 100%; }
         .stage { position: fixed; inset: 0; }
-        .stage[hidden] { display: none; }
+        .stage[hidden] { display: none !important; }
         .stage canvas { width: 100%; height: 100%; display: block; cursor: grab; }
         .stage-cap { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); font-size: .8rem; color: #8b93ad; background: rgba(10,10,22,.7); border: 1px solid rgba(255,255,255,.08); padding: 7px 14px; border-radius: 999px; white-space: nowrap; }
         .model-msg { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; color: #aab4d4; text-align: center; padding: 24px; }
@@ -53,7 +53,7 @@
 </head>
 <body>
     <div class="lab-top">
-        <div class="lab-title">Cloud / software state — 3 options<span class="lab-build">build 1</span></div>
+        <div class="lab-title">Cloud / software state — 3 options<span class="lab-build">build 2</span></div>
         <div class="lab-switch">
             <button data-v="3d" class="active">① Real 3D model</button>
             <button data-v="code">② Clean code</button>
