@@ -123,14 +123,14 @@
 
     <!-- control -->
     <div class="h3d-switch glass">
-        <span class="h3d-label">Hero 3D · build 9</span>
+        <span class="h3d-label">Hero 3D · build 10</span>
         <span class="h3d-hint" id="hint">Click the core to wake the AI</span>
         <button id="replay">Reset to orb</button>
     </div>
 
     <script src="redesign.js?v=3"></script>
     <script type="module">
-        import { createHero } from './hero3d.js?v=9';
+        import { createHero } from './hero3d.js?v=10';
         var cv = document.getElementById('h3d');
         var speech = document.getElementById('speech');
         var speechtext = document.getElementById('speechtext');
@@ -139,7 +139,7 @@
         var HINTS = [
             'Click the core to wake the AI',
             'Meet your AI. Click again to see what we build',
-            'Cloud, devices &amp; code. Move your cursor over the 0s and 1s'
+            'Global cloud: data flowing from the laptop to the cloud, database, web &amp; code'
         ];
         var typer = null;
         function typeMsg(text) { clearInterval(typer); speechtext.textContent = ''; var i = 0; typer = setInterval(function () { speechtext.textContent = text.slice(0, ++i); if (i >= text.length) clearInterval(typer); }, 26); }

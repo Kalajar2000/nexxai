@@ -183,88 +183,128 @@ function makeRobot(holo) {
   };
 }
 
-/* ---- state 3: software (holographic cloud + devices + data + binary code) ---- */
+/* ---- state 3: GLOBAL CLOUD — laptop projecting a cloud + data flow to devices/code ---- */
 function makeSoftware(holo) {
   const grp = new THREE.Group();
-  const core = new THREE.Group(); grp.add(core);       // rotates: cloud + devices + data
-  const codeGrp = new THREE.Group(); grp.add(codeGrp); // near-fixed binary field
+  const core = new THREE.Group(); core.scale.setScalar(0.82); grp.add(core);
+  const BASE_Y = 0.2, BASE_X = -0.12;
+  const blinkers = [];
 
-  // technological holographic cloud (glowing lumps, not fog)
-  const cloud = new THREE.Group();
-  [[0, 0, 0, 0.72], [-0.72, -0.1, 0.1, 0.56], [0.72, -0.1, -0.1, 0.56], [0.36, 0.34, 0, 0.52], [-0.4, 0.3, 0.12, 0.48], [0, -0.16, -0.2, 0.62]]
-    .forEach(function (c) { const m = new THREE.Mesh(new THREE.SphereGeometry(c[3], 24, 18), holo); m.position.set(c[0], c[1], c[2]); cloud.add(m); });
-  cloud.position.set(0, 0.85, 0); core.add(cloud);
-
-  function accent(color) { return new THREE.Sprite(new THREE.SpriteMaterial({ map: SOFT, color: color, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); }
-  function screen(w, h, color, op) { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(color), transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false })); return m; }
-
-  const devs = [];
-  function orbit(obj, ang, rad, y, spin) { const piv = new THREE.Group(); obj.position.set(rad, y, 0); piv.add(obj); core.add(piv); devs.push({ piv: piv, obj: obj, ang: ang, spin: spin }); }
-
-  // phone: body + glowing screen + camera dot
-  const phone = new THREE.Group();
-  phone.add(new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.9, 0.07), holo));
-  const ps = screen(0.34, 0.66, CYAN, 0.18); ps.position.z = 0.041; phone.add(ps);
-  const pc = accent(0x9be7ff); pc.position.set(0, 0.37, 0.05); pc.scale.setScalar(0.05); phone.add(pc);
-  orbit(phone, 0.5, 2.0, -0.25, 0.4);
-
-  // browser: window + glowing screen + 3 traffic dots
-  const browser = new THREE.Group();
-  browser.add(new THREE.Mesh(new THREE.BoxGeometry(1.04, 0.72, 0.06), holo));
-  const bs = screen(0.92, 0.46, BLUE, 0.16); bs.position.set(0, -0.08, 0.035); browser.add(bs);
-  [0xff6b6b, 0xffd166, 0x6ee7b7].forEach(function (col, i) { const d = accent(col); d.position.set(-0.42 + i * 0.08, 0.27, 0.04); d.scale.setScalar(0.045); browser.add(d); });
-  orbit(browser, 2.5, 2.1, 0.2, -0.35);
-
-  // server / database: stacked cylinders + status lights
-  const server = new THREE.Group();
-  [-0.18, 0, 0.18].forEach(function (yy) { const s = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.15, 24), holo); s.position.y = yy; server.add(s); const led = accent(0x6ee7b7); led.position.set(0.22, yy, 0.2); led.scale.setScalar(0.05); server.add(led); });
-  orbit(server, 4.6, 1.95, -0.05, 0.3);
-
-  // connections + travelling data dots
-  const cc = new THREE.Vector3(0, 0.85, 0);
-  const clpos = new Float32Array(devs.length * 2 * 3); const clgeo = new THREE.BufferGeometry(); clgeo.setAttribute('position', new THREE.BufferAttribute(clpos, 3));
-  const conn = new THREE.LineSegments(clgeo, new THREE.LineBasicMaterial({ color: new THREE.Color(CYAN), transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending, depthWrite: false })); core.add(conn);
-  const dpos = new Float32Array(devs.length * 3); const dgeo = new THREE.BufferGeometry(); dgeo.setAttribute('position', new THREE.BufferAttribute(dpos, 3));
-  const dots = new THREE.Points(dgeo, roundPoints({ size: 0.24, color: new THREE.Color(CYAN), opacity: 1 })); core.add(dots);
-  const dph = devs.map(function () { return Math.random(); });
-
-  // binary field: only 0/1, lilac by default, green around the cursor
-  const tex0 = glyphTex('0', '#ffffff'), tex1 = glyphTex('1', '#ffffff');
-  const lilacC = new THREE.Color(LILAC), greenC = new THREE.Color('#46f08a');
-  const COLS = 12, ROWS = 7, bits = [];
-  for (let c = 0; c < COLS; c++) {
-    const cx = -3.6 + 7.2 * c / (COLS - 1);
-    for (let r = 0; r < ROWS; r++) {
-      const y0 = 2.6 - r * 0.62;
-      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: Math.random() < 0.5 ? tex0 : tex1, color: lilacC.clone(), transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending, depthWrite: false }));
-      sp.position.set(cx, y0, -1.5); sp.scale.setScalar(0.3); codeGrp.add(sp);
-      bits.push({ sp: sp, cx: cx, y: y0, spd: 0.4 + Math.random() * 0.5 });
-    }
+  function neonMat(color, op) { return new THREE.LineBasicMaterial({ color: new THREE.Color(color), transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false }); }
+  function fillMat(color, op) { return new THREE.MeshBasicMaterial({ color: new THREE.Color(color), transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }); }
+  function wireMat(color, op) { return new THREE.MeshBasicMaterial({ color: new THREE.Color(color), wireframe: true, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false }); }
+  function edgesOf(geo, color, op) { return new THREE.LineSegments(new THREE.EdgesGeometry(geo), neonMat(color, op)); }
+  function neonBox(w, h, d, color, fillOp) { const g = new THREE.Group(); const bg = new THREE.BoxGeometry(w, h, d); g.add(new THREE.Mesh(bg, fillMat(color, fillOp == null ? 0.05 : fillOp))); g.add(edgesOf(bg, color, 0.85)); return g; }
+  function glow(color, scale, op) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: SOFT, color: new THREE.Color(color), transparent: true, opacity: op == null ? 0.8 : op, blending: THREE.AdditiveBlending, depthWrite: false })); s.scale.setScalar(scale); return s; }
+  function row(w, color, op) { return new THREE.Mesh(new THREE.PlaneGeometry(w, 0.035), fillMat(color, op == null ? 0.55 : op)); }
+  function dot(color, scale) { return glow(color, scale, 0.95); }
+  function labelSprite(text) {
+    const c = document.createElement('canvas'); c.width = 512; c.height = 128; const x = c.getContext('2d');
+    x.font = 'bold 56px Montserrat, Arial, sans-serif'; x.fillStyle = '#cfeeff'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.shadowColor = '#5be0ff'; x.shadowBlur = 22; x.fillText(text, 256, 66);
+    const tx = new THREE.CanvasTexture(c); tx.minFilter = THREE.LinearFilter;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tx, transparent: true, opacity: 0.95, depthWrite: false })); sp.scale.set(1.35, 0.34, 1); return sp;
+  }
+  function codeTexture() {
+    const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
+    x.font = '15px monospace'; x.textBaseline = 'top';
+    for (let r = 0; r < 12; r++) { let s = ''; const n = 6 + Math.floor(Math.random() * 9); for (let k = 0; k < n; k++) s += Math.random() < 0.5 ? '0' : '1'; x.fillStyle = r % 4 === 0 ? '#9be7ff' : 'rgba(120,200,255,0.6)'; x.fillText(s, 10 + (r % 3) * 12, 10 + r * 20); }
+    const tx = new THREE.CanvasTexture(c); tx.minFilter = THREE.LinearFilter; return tx;
   }
 
-  const v = new THREE.Vector3();
+  // ---------- laptop projecting the cloud ----------
+  const laptop = new THREE.Group();
+  const screenBox = neonBox(1.55, 0.98, 0.05, VIOLET, 0.04); screenBox.position.set(0, -0.88, 0);
+  const screenFace = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.84), new THREE.MeshBasicMaterial({ map: codeTexture(), transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending, depthWrite: false })); screenFace.position.set(0, -0.88, 0.04);
+  const deck = neonBox(1.72, 0.07, 0.92, VIOLET, 0.05); deck.position.set(0, -1.42, 0.4); deck.rotation.x = 1.3;
+  const lglow = glow(0x6a4bd8, 1.9, 0.18); lglow.position.set(0, -0.95, -0.1);
+  laptop.add(lglow, screenBox, screenFace, deck); core.add(laptop);
+
+  // ---------- cloud (top) ----------
+  const cloud = new THREE.Group(); cloud.position.set(0, 1.12, 0);
+  const cglow = glow(0x8b5cf6, 2.4, 0.28); cloud.add(cglow);
+  [[0, 0, 0, 0.6], [-0.62, -0.05, 0, 0.46], [0.62, -0.05, 0, 0.46], [0.3, 0.26, 0.05, 0.42], [-0.32, 0.24, 0.05, 0.4], [0, -0.12, -0.05, 0.5]].forEach(function (c, i) {
+    const sg = new THREE.SphereGeometry(c[3], 18, 14);
+    const body = new THREE.Mesh(sg, fillMat(i % 2 ? 0x6aa8ff : VIOLET, 0.13)); body.position.set(c[0], c[1], c[2]);
+    const wire = new THREE.Mesh(sg, wireMat(0x7fe6ff, 0.2)); wire.position.copy(body.position);
+    cloud.add(body, wire);
+  });
+  const cloudLabel = labelSprite('GLOBAL CLOUD'); cloudLabel.position.set(0, 0.02, 0.62); cloud.add(cloudLabel);
+  core.add(cloud);
+
+  // ---------- modules ----------
+  const modules = [];
+  function place(g, x, y, z) { g.position.set(x, y, z); core.add(g); return g; }
+
+  // server racks
+  const server = new THREE.Group(); server.add(neonBox(0.6, 1.0, 0.46, VIOLET, 0.05));
+  for (let i = 0; i < 4; i++) { const r = row(0.5, 0x7fe6ff, 0.45); r.position.set(0, 0.36 - i * 0.24, 0.24); server.add(r); const led = dot(i % 2 ? 0x6ee7b7 : 0xff79c6, 0.12); led.position.set(0.18, 0.36 - i * 0.24, 0.26); server.add(led); blinkers.push({ sp: led, ph: Math.random() }); }
+  place(server, -1.95, 0.18, -0.1); modules.push({ anchor: new THREE.Vector3(-1.95, 0.6, -0.1) });
+
+  // database (stacked cylinders)
+  const database = new THREE.Group();
+  [-0.26, 0, 0.26].forEach(function (yy) {
+    const sub = new THREE.Group(); sub.position.y = yy; const cg = new THREE.CylinderGeometry(0.34, 0.34, 0.18, 22);
+    sub.add(new THREE.Mesh(cg, fillMat(VIOLET, 0.1))); sub.add(new THREE.Mesh(cg, wireMat(0x7fe6ff, 0.28)));
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.014, 6, 24), neonMat(0x9be7ff, 0.85)); ring.rotation.x = Math.PI / 2; ring.position.y = 0.09; sub.add(ring);
+    database.add(sub);
+  });
+  place(database, -1.0, -0.42, 0.2); modules.push({ anchor: new THREE.Vector3(-1.0, -0.05, 0.2) });
+
+  // browser / web window
+  const browser = new THREE.Group(); browser.add(neonBox(1.2, 0.8, 0.04, BLUE, 0.05));
+  const bbar = row(1.12, 0x7fe6ff, 0.4); bbar.position.set(0, 0.22, 0.03); browser.add(bbar);
+  [0xff6b6b, 0xffd166, 0x6ee7b7].forEach(function (col, i) { const d = dot(col, 0.07); d.position.set(-0.5 + i * 0.1, 0.32, 0.05); browser.add(d); });
+  const url = row(0.55, 0x9be7ff, 0.5); url.position.set(0.12, 0.32, 0.04); browser.add(url);
+  for (let i = 0; i < 3; i++) { const r = row(0.82 - i * 0.12, 0x7fe6ff, 0.45); r.position.set(-0.14, 0.06 - i * 0.17, 0.04); browser.add(r); }
+  place(browser, 1.15, 0.25, 0.05); modules.push({ anchor: new THREE.Vector3(1.15, 0.62, 0.05) });
+
+  // globe (the "global")
+  const globe = new THREE.Group(); const gg = new THREE.SphereGeometry(0.46, 16, 12);
+  globe.add(new THREE.Mesh(gg, wireMat(0x6fe9ff, 0.3))); globe.add(new THREE.Mesh(gg, fillMat(0x244a8c, 0.12)));
+  const ring1 = new THREE.Mesh(new THREE.TorusGeometry(0.46, 0.012, 6, 32), neonMat(0x9be7ff, 0.7)); globe.add(ring1);
+  const ring2 = ring1.clone(); ring2.rotation.x = Math.PI / 2; globe.add(ring2);
+  globe.add(glow(0x4aa8ff, 1.3, 0.16));
+  place(globe, 1.98, -0.28, -0.05); modules.push({ anchor: new THREE.Vector3(1.98, 0.1, -0.05) });
+
+  // floating code panels (more code stuff)
+  function codePanel() {
+    const g = new THREE.Group(); g.add(neonBox(0.95, 0.62, 0.03, 0x4f7bff, 0.05));
+    const face = new THREE.Mesh(new THREE.PlaneGeometry(0.84, 0.5), new THREE.MeshBasicMaterial({ map: codeTexture(), transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false })); face.position.z = 0.02; g.add(face); return g;
+  }
+  const code1 = codePanel(); code1.rotation.y = 0.4; place(code1, -1.55, -1.05, 0.55); modules.push({ anchor: new THREE.Vector3(-1.4, -0.75, 0.55) });
+  const code2 = codePanel(); code2.rotation.y = -0.4; place(code2, 1.55, -1.05, 0.55); modules.push({ anchor: new THREE.Vector3(1.4, -0.75, 0.55) });
+
+  // ---------- connectors + travelling data ----------
+  const cloudBottom = new THREE.Vector3(0, 0.55, 0), laptopTop = new THREE.Vector3(0, -0.42, 0);
+  const segs = [{ a: laptopTop, b: cloudBottom }];
+  modules.forEach(function (m) { segs.push({ a: cloudBottom, b: m.anchor }); });
+  const lpos = new Float32Array(segs.length * 6);
+  segs.forEach(function (s, i) { lpos[i * 6] = s.a.x; lpos[i * 6 + 1] = s.a.y; lpos[i * 6 + 2] = s.a.z; lpos[i * 6 + 3] = s.b.x; lpos[i * 6 + 4] = s.b.y; lpos[i * 6 + 5] = s.b.z; });
+  const lgeo = new THREE.BufferGeometry(); lgeo.setAttribute('position', new THREE.BufferAttribute(lpos, 3));
+  core.add(new THREE.LineSegments(lgeo, neonMat(0x6fb7ff, 0.3)));
+  const M = segs.length * 2, dpos = new Float32Array(M * 3);
+  const dgeo = new THREE.BufferGeometry(); dgeo.setAttribute('position', new THREE.BufferAttribute(dpos, 3));
+  core.add(new THREE.Points(dgeo, roundPoints({ size: 0.16, color: new THREE.Color(0x9be7ff), opacity: 1 })));
+  const ddat = [];
+  for (let i = 0; i < M; i++) ddat.push({ s: i % segs.length, t: Math.random(), spd: 0.3 + Math.random() * 0.5 });
+
   return {
     group: grp,
     update(t, p, scrollN, dt) {
-      for (let i = 0; i < devs.length; i++) {
-        const d = devs[i]; d.piv.rotation.y = d.ang + t * 0.2; d.obj.rotation.y = t * d.spin; d.obj.rotation.x = Math.sin(t * 0.5 + i) * 0.1;
-        d.obj.getWorldPosition(v); core.worldToLocal(v);
-        clpos[i * 6] = cc.x; clpos[i * 6 + 1] = cc.y; clpos[i * 6 + 2] = cc.z; clpos[i * 6 + 3] = v.x; clpos[i * 6 + 4] = v.y; clpos[i * 6 + 5] = v.z;
-        dph[i] += dt * 0.5; if (dph[i] > 1) dph[i] -= 1; const tt = dph[i]; dpos[i * 3] = cc.x + (v.x - cc.x) * tt; dpos[i * 3 + 1] = cc.y + (v.y - cc.y) * tt; dpos[i * 3 + 2] = cc.z + (v.z - cc.z) * tt;
+      grp.position.y = Math.sin(t * 0.7) * 0.05;
+      core.rotation.y = BASE_Y + p.x * 0.4 + scrollN * 0.3;
+      core.rotation.x = BASE_X + p.y * 0.22;
+      cloud.position.y = 1.12 + Math.sin(t * 0.8) * 0.05;
+      cglow.material.opacity = 0.22 + Math.sin(t * 1.4) * 0.08;
+      cloudLabel.material.opacity = 0.78 + Math.sin(t * 1.4) * 0.16;
+      globe.rotation.y += dt * 0.5;
+      for (let i = 0; i < blinkers.length; i++) { blinkers[i].sp.material.opacity = 0.4 + 0.5 * Math.abs(Math.sin(t * 3 + blinkers[i].ph * 6)); }
+      for (let i = 0; i < ddat.length; i++) {
+        const d = ddat[i]; d.t += d.spd * dt; if (d.t >= 1) { d.t = 0; d.s = Math.floor(Math.random() * segs.length); d.spd = 0.3 + Math.random() * 0.5; }
+        const s = segs[d.s]; dpos[i * 3] = s.a.x + (s.b.x - s.a.x) * d.t; dpos[i * 3 + 1] = s.a.y + (s.b.y - s.a.y) * d.t; dpos[i * 3 + 2] = s.a.z + (s.b.z - s.a.z) * d.t;
       }
-      clgeo.attributes.position.needsUpdate = true; dgeo.attributes.position.needsUpdate = true;
-      const sx = p.x * 7.0, sy = -p.y * 4.2;
-      for (let i = 0; i < bits.length; i++) {
-        const b = bits[i]; b.y -= b.spd * dt;
-        if (b.y < -2.2) { b.y = 2.8; b.sp.material.map = Math.random() < 0.5 ? tex0 : tex1; b.sp.material.needsUpdate = true; }
-        b.sp.position.y = b.y;
-        const dx = b.cx - sx, dy = b.y - sy, near = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / 1.7);
-        b.sp.material.color.copy(lilacC).lerp(greenC, near);
-        b.sp.material.opacity = 0.13 + near * 0.85;
-      }
-      cloud.position.y = 0.85 + Math.sin(t * 0.8) * 0.05; cloud.rotation.y = t * 0.12;
-      core.rotation.y = p.x * 0.45 + scrollN * 0.7; core.rotation.x = p.y * 0.28 + scrollN * 0.22;
-      codeGrp.rotation.y = p.x * 0.05;
+      dgeo.attributes.position.needsUpdate = true;
     }
   };
 }
@@ -326,18 +366,20 @@ export function createHero(canvas, opts) {
   const holo = makeHolo();
 
   const particles = makeParticles();
-  const states = [makeOrb(), makeBrain(), makeSoftware(holo)];
+  let sw; try { sw = makeSoftware(holo); } catch (e) { sw = { group: new THREE.Group(), update: function () {} }; }
+  const states = [makeOrb(), makeBrain(), sw];
   scene.add(particles.group);
   states.forEach(function (s, i) { scene.add(s.group); s.shown = i === 0 ? 1 : 0; if (i !== 0) { s.group.visible = false; s.group.scale.setScalar(0.001); } });
 
   // lights (only the GLB robot's PBR materials respond; unlit scene elements ignore these).
   // Brighter + a hemisphere fill + a RoomEnvironment env map (added in loadRobot) so her
   // full porcelain colours and glowing circuitry read clearly instead of looking dark.
-  scene.add(new THREE.AmbientLight(0xc7ccff, 1.05));
+  scene.add(new THREE.AmbientLight(0xc7ccff, 1.2));
   scene.add(new THREE.HemisphereLight(0xbcd0ff, 0x3a2d5c, 0.85));
   var kl = new THREE.DirectionalLight(0xffffff, 2.1); kl.position.set(2, 3, 4); scene.add(kl);
   var fl = new THREE.DirectionalLight(0x8aa0ff, 0.85); fl.position.set(-3, -1, 2); scene.add(fl);
   var rimL = new THREE.DirectionalLight(0xff79c6, 0.7); rimL.position.set(0, 2, -4); scene.add(rimL);
+  var frontL = new THREE.DirectionalLight(0xffffff, 1.25); frontL.position.set(0, 0.6, 6); scene.add(frontL);
 
   // robot (Higgsfield porcelain GLB), lazy-loaded after first paint, shown in the brain state
   var HH = 2.0;
@@ -353,6 +395,15 @@ export function createHero(canvas, opts) {
         var loader = new mods[0].GLTFLoader(); loader.setDRACOLoader(draco);
         loader.load(opts.robotUrl || 'assets/robot.glb?v=3', function (gltf) {
           var model = gltf.scene;
+          model.traverse(function (o) {
+            if (o.isMesh && o.material) {
+              (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) {
+                if ('envMapIntensity' in m) m.envMapIntensity = 1.5;
+                if (m.emissive && (m.emissive.r + m.emissive.g + m.emissive.b) > 0.05) m.emissiveIntensity = (m.emissiveIntensity || 1) * 1.7;
+                m.needsUpdate = true;
+              });
+            }
+          });
           var box = new THREE.Box3().setFromObject(model), size = new THREE.Vector3(), center = new THREE.Vector3();
           box.getSize(size); box.getCenter(center);
           var sc = HH / (size.y || 1);
