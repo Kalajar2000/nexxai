@@ -71,7 +71,7 @@ function makeHolo() {
 
 /* ---- ambient particle field ---- */
 function makeParticles() {
-  const N = 110, pos = new Float32Array(N * 3), base = [];
+  const N = 80, pos = new Float32Array(N * 3), base = [];
   for (let i = 0; i < N; i++) {
     const r = 2.8 * Math.cbrt(Math.random()), th = Math.random() * 6.283, ph = Math.acos(2 * Math.random() - 1);
     const x = r * Math.sin(ph) * Math.cos(th), y = r * Math.sin(ph) * Math.sin(th), z = r * Math.cos(ph);
@@ -99,17 +99,19 @@ function makeParticles() {
 
 /* ---- state 1: liquid orb ---- */
 function makeOrb() {
-  const uniforms = { uTime: { value: 0 } };
+  const uniforms = { uTime: { value: 0 }, uRipple: { value: 0 } };
   const mat = new THREE.ShaderMaterial({
     uniforms, transparent: true,
-    vertexShader: SNOISE + `uniform float uTime; varying float vN; varying vec3 vNrm; varying vec3 vView;
+    vertexShader: SNOISE + `uniform float uTime; uniform float uRipple; varying float vN; varying vec3 vNrm; varying vec3 vView;
       void main(){
         float t=uTime;
-        float n1=snoise(position*0.75 + vec3(0.0,t*0.28,0.0));
-        float n2=snoise(position*1.7 + vec3(t*0.22,0.0,t*0.16) + n1*0.8);
-        float n3=snoise(position*3.4 - t*0.12)*0.22;
-        float disp=n1*0.62 + n2*0.42 + n3; vN=disp;
-        vec3 pp=position+normal*disp*0.34;
+        float n1=snoise(position*0.8 + vec3(0.0,t*0.34,0.0));
+        float n2=snoise(position*1.7 + vec3(t*0.26,0.0,t*0.2) + n1*0.9);
+        float n3=snoise(position*3.6 - t*0.16)*0.24;
+        float disp=n1*0.64 + n2*0.46 + n3;
+        disp += sin(length(position)*6.0 - uTime*7.0) * uRipple * 0.7;
+        vN=disp;
+        vec3 pp=position+normal*disp*(0.42 + uRipple*0.5);
         vec4 mv=modelViewMatrix*vec4(pp,1.0);
         vNrm=normalize(normalMatrix*normal); vView=normalize(-mv.xyz);
         gl_Position=projectionMatrix*mv;
@@ -120,17 +122,17 @@ function makeOrb() {
         float m=smoothstep(-1.0,1.0,vN);
         vec3 col=mix(blue,violet,m);
         col=mix(col,pink,smoothstep(0.5,1.0,m)*0.6);
-        col=mix(col,cyan,smoothstep(0.0,-1.0,vN)*0.22);
-        float fres=pow(1.0-max(dot(normalize(vNrm),normalize(vView)),0.0),2.2);
-        col+=fres*0.6;
-        float iri=0.5+0.5*sin(fres*10.0 + vN*5.0 + uTime*1.2);
-        col+=vec3(0.12,0.06,0.18)*iri*0.5;
+        col=mix(col,cyan,smoothstep(0.0,-1.0,vN)*0.24);
+        float fres=pow(1.0-max(dot(normalize(vNrm),normalize(vView)),0.0),2.1);
+        col+=fres*0.65;
+        float iri=0.5+0.5*sin(fres*11.0 + vN*6.0 + uTime*1.4);
+        col+=vec3(0.12,0.06,0.18)*iri*0.55;
         gl_FragColor=vec4(col,1.0);
       }`
   });
-  const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(1.5, 5), mat);
+  const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(1.18, 5), mat);
   const grp = new THREE.Group(); grp.add(mesh);
-  return { group: grp, update(t, p) { uniforms.uTime.value = t; mesh.rotation.y = t * 0.12 + p.x * 0.6; mesh.rotation.x = p.y * 0.4; } };
+  return { group: grp, ripple() { uniforms.uRipple.value = 1.0; }, update(t, p) { uniforms.uTime.value = t; uniforms.uRipple.value *= 0.92; mesh.rotation.y = t * 0.12 + p.x * 0.6; mesh.rotation.x = p.y * 0.4; } };
 }
 
 /* ---- state 2: AI neural-network brain ---- */
@@ -297,7 +299,7 @@ export function createHero(canvas, opts) {
   let renderer;
   try { renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true }); }
   catch (e) { if (canvas) canvas.style.display = 'none'; return { dispose() {}, reset() {}, next() {} }; }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
   renderer.setClearAlpha(0);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100); camera.position.z = 5.2;
@@ -315,26 +317,33 @@ export function createHero(canvas, opts) {
   var fl = new THREE.DirectionalLight(0x6f8cff, 0.6); fl.position.set(-3, -1, 2); scene.add(fl);
   var rimL = new THREE.DirectionalLight(0xec4899, 0.5); rimL.position.set(0, 2, -4); scene.add(rimL);
 
-  // robot (Higgsfield porcelain GLB), shown in the brain state
-  var robotHolder = new THREE.Group(); robotHolder.visible = false; robotHolder.scale.setScalar(0.001); robotHolder.position.set(0, -0.2, 0.7); scene.add(robotHolder);
-  var robot = null, robotShown = 0;
-  (async function loadRobot() {
-    try {
-      var mods = await Promise.all([import('three/addons/loaders/GLTFLoader.js'), import('three/addons/loaders/DRACOLoader.js')]);
-      var draco = new mods[1].DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/gltf/');
-      var loader = new mods[0].GLTFLoader(); loader.setDRACOLoader(draco);
-      loader.load(opts.robotUrl || 'assets/robot.glb?v=3', function (gltf) {
-        var model = gltf.scene;
-        var box = new THREE.Box3().setFromObject(model), size = new THREE.Vector3(), center = new THREE.Vector3();
-        box.getSize(size); box.getCenter(center);
-        var sc = 2.8 / (size.y || 1);
-        model.position.sub(center);
-        var wrap = new THREE.Group(); wrap.add(model); wrap.scale.setScalar(sc); robotHolder.add(wrap);
-        var flash = makeFlash(); flash.group.position.set(0, 0.34 * 2.8, 0.12 * 2.8); robotHolder.add(flash.group);
-        robot = { wrap: wrap, flash: flash };
-      }, undefined, function () { robot = null; });
-    } catch (e) { robot = null; }
-  })();
+  // robot (Higgsfield porcelain GLB), lazy-loaded after first paint, shown in the brain state
+  var HH = 2.0;
+  var robotHolder = new THREE.Group(); robotHolder.visible = false; robotHolder.scale.setScalar(0.001); robotHolder.position.set(0, -0.55, 0.7); scene.add(robotHolder);
+  var robot = null, robotShown = 0, robotLoading = false;
+  function loadRobot() {
+    if (robotLoading) return; robotLoading = true;
+    (async function () {
+      try {
+        var mods = await Promise.all([import('three/addons/loaders/GLTFLoader.js'), import('three/addons/loaders/DRACOLoader.js')]);
+        var draco = new mods[1].DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/gltf/');
+        var loader = new mods[0].GLTFLoader(); loader.setDRACOLoader(draco);
+        loader.load(opts.robotUrl || 'assets/robot.glb?v=3', function (gltf) {
+          var model = gltf.scene;
+          var box = new THREE.Box3().setFromObject(model), size = new THREE.Vector3(), center = new THREE.Vector3();
+          box.getSize(size); box.getCenter(center);
+          var sc = HH / (size.y || 1);
+          model.position.sub(center);
+          var wrap = new THREE.Group(); wrap.add(model); wrap.scale.setScalar(sc); robotHolder.add(wrap);
+          var flash = makeFlash(); flash.group.position.set(0, 0.4 * HH, 0.1 * HH); robotHolder.add(flash.group);
+          var speak = new THREE.Sprite(new THREE.SpriteMaterial({ map: SOFT, color: 0x9be7ff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+          speak.position.set(0, 0.22 * HH, 0.2 * HH); speak.scale.setScalar(0.32 * HH); robotHolder.add(speak);
+          robot = { wrap: wrap, flash: flash, speak: speak };
+        }, undefined, function () { robot = null; });
+      } catch (e) { robot = null; }
+    })();
+  }
+  if (window.requestIdleCallback) requestIdleCallback(loadRobot, { timeout: 2500 }); else setTimeout(loadRobot, 1500);
 
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
   let scrollN = 0, current = 0, raf = 0, stopped = false, last = performance.now();
@@ -350,8 +359,9 @@ export function createHero(canvas, opts) {
   window.addEventListener('scroll', onScroll, { passive: true });
   canvas.addEventListener('click', onClick);
 
-  function setState(i) { current = ((i % 3) + 3) % 3; if (opts.onState) opts.onState(current, NAMES[current]); }
-  function next() { setState(current + 1); }
+  var pendingSpeak = false, speakUntil = 0;
+  function setState(i) { current = ((i % 3) + 3) % 3; if (current === 1) { pendingSpeak = true; loadRobot(); } if (opts.onState) opts.onState(current, NAMES[current]); }
+  function next() { if (current === 0 && states[0].ripple) states[0].ripple(); setState(current + 1); }
   function reset() { setState(0); }
   function smooth(x) { x = Math.min(Math.max(x, 0), 1); return x * x * (3 - 2 * x); }
   setState(0);
@@ -371,21 +381,25 @@ export function createHero(canvas, opts) {
       s.group.visible = vis > 0.01; s.group.scale.setScalar(Math.max(vis, 0.001));
       if (s.group.visible) s.update(t, pointer, scrollN, reduce ? 0.016 : dt);
     }
+    if (pendingSpeak) { speakUntil = t + 4; pendingSpeak = false; }
     var rtg = current === 1 ? 1 : 0;
     robotShown += (rtg - robotShown) * 0.09;
     var rvis = smooth(robotShown);
     robotHolder.visible = rvis > 0.01; robotHolder.scale.setScalar(Math.max(rvis, 0.001));
     if (robot) {
-      robotHolder.rotation.y = pointer.x * 0.4; robotHolder.rotation.x = pointer.y * 0.2;
-      robotHolder.position.y = -0.2 + Math.sin(t * 1.2) * 0.04;
+      robotHolder.rotation.y = pointer.x * 0.5 + Math.sin(t * 0.5) * 0.06;
+      robotHolder.rotation.x = pointer.y * 0.28 + Math.sin(t * 0.4) * 0.03;
+      robotHolder.position.y = -0.55 + Math.sin(t * 1.2) * 0.04;
       robot.flash.update(t, reduce ? 0.016 : dt);
+      robot.speak.material.opacity = (t < speakUntil) ? (0.4 + 0.45 * Math.abs(Math.sin(t * 9.0))) : Math.max(0, robot.speak.material.opacity - 0.04);
     }
     if (opts.speechEl) {
       if (current === 1 && robotShown > 0.5) {
-        tmp.set(0, 1.2, 0.7).project(camera);
+        tmp.set(0, 0.8, 0.7).project(camera);
         const rect = canvas.getBoundingClientRect();
-        opts.speechEl.style.left = (rect.left + (tmp.x * 0.5 + 0.5) * rect.width) + 'px';
-        opts.speechEl.style.top = (rect.top + (-tmp.y * 0.5 + 0.5) * rect.height) + 'px';
+        var sx = rect.left + (tmp.x * 0.5 + 0.5) * rect.width, sy = rect.top + (-tmp.y * 0.5 + 0.5) * rect.height;
+        sx = Math.min(Math.max(sx, 130), window.innerWidth - 130); sy = Math.max(sy, 100);
+        opts.speechEl.style.left = sx + 'px'; opts.speechEl.style.top = sy + 'px';
         opts.speechEl.classList.add('show');
       } else { opts.speechEl.classList.remove('show'); }
     }
