@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Lab · NEXXAI</title>
+    <meta name="robots" content="noindex">
+    <script type="importmap">
+    {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+    </script>
+    <link rel="stylesheet" href="redesign.css?v=3">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        html, body { margin: 0; height: 100%; background: #06060f; color: #eaf0ff; font-family: 'Inter', sans-serif; overflow: hidden; }
+        .lab-top { position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 14px 20px; background: linear-gradient(180deg, rgba(6,6,15,.92), rgba(6,6,15,0)); }
+        .lab-title { font-family: 'Poppins', sans-serif; font-size: .9rem; font-weight: 600; letter-spacing: .02em; }
+        .lab-build { font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: #9b8cff; border: 1px solid rgba(155,140,255,.4); border-radius: 999px; padding: 2px 8px; margin-left: 8px; }
+        .lab-switch { display: flex; gap: 8px; }
+        .lab-switch button { padding: 9px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.04); color: #b9c2dd; font: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; transition: .2s; }
+        .lab-switch button:hover { color: #fff; border-color: #8b5cf6; }
+        .lab-switch button.active { color: #fff; background: linear-gradient(135deg, #8b5cf6, #3b82f6); border-color: transparent; box-shadow: 0 6px 20px rgba(139,92,246,.45); }
+        .lab-hint { font-size: .82rem; color: #8b93ad; flex: 1 1 100%; }
+        .stage { position: fixed; inset: 0; }
+        .stage[hidden] { display: none; }
+        .stage canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+        .stage-cap { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); font-size: .8rem; color: #8b93ad; background: rgba(10,10,22,.7); border: 1px solid rgba(255,255,255,.08); padding: 7px 14px; border-radius: 999px; white-space: nowrap; }
+        .model-msg { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; color: #aab4d4; text-align: center; padding: 24px; }
+        .model-msg .spin { width: 38px; height: 38px; border-radius: 50%; border: 3px solid rgba(139,92,246,.25); border-top-color: #8b5cf6; animation: sp 1s linear infinite; }
+        @keyframes sp { to { transform: rotate(360deg); } }
+
+        /* ---------- variant 3: UI component diagram ---------- */
+        #stage-comp { display: flex; align-items: center; justify-content: center; background: radial-gradient(120% 90% at 50% 0%, #15123a 0%, #0a0a1c 45%, #06060f 100%); }
+        .diagram { position: relative; width: min(1000px, 94vw); height: min(560px, 80vh); }
+        .wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+        .cloud-node { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 3; display: flex; align-items: center; gap: 14px; padding: 16px 26px; border-radius: 20px; background: rgba(24,22,48,.72); backdrop-filter: blur(12px); border: 1px solid rgba(160,140,255,.35); box-shadow: 0 0 50px rgba(139,92,246,.45), inset 0 0 24px rgba(139,92,246,.12); }
+        .cloud-node i { font-size: 2.1rem; color: #c9b8ff; text-shadow: 0 0 18px rgba(139,92,246,.9); }
+        .cloud-node b { font-family: 'Montserrat', sans-serif; font-size: 1.05rem; letter-spacing: .06em; display: block; }
+        .cloud-node span { font-size: .76rem; color: #9aa3c4; }
+        .cloud-node::after { content: ""; position: absolute; inset: -6px; border-radius: 24px; border: 1px solid rgba(139,92,246,.4); animation: ring 2.6s ease-out infinite; }
+        @keyframes ring { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(1.12); opacity: 0; } }
+        .cards { position: absolute; inset: 0; }
+        .svc { position: absolute; top: 64%; transform: translate(-50%, -50%); width: min(20vw, 200px); padding: 16px 14px; border-radius: 16px; background: rgba(18,18,38,.66); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.1); text-align: center; transition: transform .25s, box-shadow .25s; }
+        .svc:hover { transform: translate(-50%, -54%); box-shadow: 0 14px 40px rgba(0,0,0,.5); }
+        .svc .chip { width: 50px; height: 50px; margin: 0 auto 10px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #fff; }
+        .svc b { font-size: .92rem; display: block; }
+        .svc span { font-size: .72rem; color: #98a1c2; }
+        .svc .bars { display: flex; gap: 4px; justify-content: center; margin-top: 10px; height: 16px; align-items: flex-end; }
+        .svc .bars i { width: 5px; background: currentColor; border-radius: 2px; opacity: .85; animation: eq 1.1s ease-in-out infinite; }
+        @keyframes eq { 0%,100% { height: 5px; } 50% { height: 16px; } }
+    </style>
+</head>
+<body>
+    <div class="lab-top">
+        <div class="lab-title">Cloud / software state — 3 options<span class="lab-build">build 1</span></div>
+        <div class="lab-switch">
+            <button data-v="3d" class="active">① Real 3D model</button>
+            <button data-v="code">② Clean code</button>
+            <button data-v="comp">③ Component (UI)</button>
+        </div>
+        <div class="lab-hint" id="hint"></div>
+    </div>
+
+    <!-- v1: generated 3D mesh -->
+    <section class="stage" id="stage-3d">
+        <canvas id="cv-3d"></canvas>
+        <div class="model-msg" id="model-msg" style="display:none">
+            <div class="spin"></div>
+            <div>The 3D cloud mesh is still generating.<br>Refresh in a minute and it'll appear here.</div>
+        </div>
+        <div class="stage-cap">① Generated 3D cloud mesh — move your cursor to rotate</div>
+    </section>
+
+    <!-- v2: clean code-built scene -->
+    <section class="stage" id="stage-code" hidden>
+        <canvas id="cv-code"></canvas>
+        <div class="stage-cap">② Code-built cloud → services, cleaned up</div>
+    </section>
+
+    <!-- v3: UI component diagram -->
+    <section class="stage" id="stage-comp" hidden>
+        <div class="diagram">
+            <div class="cloud-node">
+                <i class="fas fa-cloud"></i>
+                <div><b>GLOBAL CLOUD</b><span>auto-scaling infrastructure</span></div>
+            </div>
+            <svg class="wires" viewBox="0 0 1000 560" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="#8b5cf6"/><stop offset="1" stop-color="#5be0ff"/>
+                    </linearGradient>
+                </defs>
+                <path id="w0" d="M500,150 C420,250 200,250 125,330" fill="none" stroke="url(#wg)" stroke-width="2" stroke-dasharray="6 10" opacity=".55"><animate attributeName="stroke-dashoffset" from="160" to="0" dur="2.2s" repeatCount="indefinite"/></path>
+                <path id="w1" d="M500,150 C470,250 400,250 375,330" fill="none" stroke="url(#wg)" stroke-width="2" stroke-dasharray="6 10" opacity=".55"><animate attributeName="stroke-dashoffset" from="160" to="0" dur="2.2s" repeatCount="indefinite"/></path>
+                <path id="w2" d="M500,150 C530,250 600,250 625,330" fill="none" stroke="url(#wg)" stroke-width="2" stroke-dasharray="6 10" opacity=".55"><animate attributeName="stroke-dashoffset" from="160" to="0" dur="2.2s" repeatCount="indefinite"/></path>
+                <path id="w3" d="M500,150 C580,250 800,250 875,330" fill="none" stroke="url(#wg)" stroke-width="2" stroke-dasharray="6 10" opacity=".55"><animate attributeName="stroke-dashoffset" from="160" to="0" dur="2.2s" repeatCount="indefinite"/></path>
+                <circle r="4.5" fill="#bfeaff"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#w0"/></animateMotion></circle>
+                <circle r="4.5" fill="#bfeaff"><animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite"><mpath href="#w1"/></animateMotion></circle>
+                <circle r="4.5" fill="#bfeaff"><animateMotion dur="2.4s" begin="0.6s" repeatCount="indefinite"><mpath href="#w2"/></animateMotion></circle>
+                <circle r="4.5" fill="#bfeaff"><animateMotion dur="2.4s" begin="1.8s" repeatCount="indefinite"><mpath href="#w3"/></animateMotion></circle>
+            </svg>
+            <div class="cards">
+                <div class="svc" style="left:12.5%; color:#8b5cf6"><div class="chip" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)"><i class="fas fa-server"></i></div><b>Servers</b><span>compute &amp; APIs</span><div class="bars"><i style="animation-delay:0s"></i><i style="animation-delay:.2s"></i><i style="animation-delay:.4s"></i><i style="animation-delay:.1s"></i></div></div>
+                <div class="svc" style="left:37.5%; color:#5be0ff"><div class="chip" style="background:linear-gradient(135deg,#22d3ee,#0891b2)"><i class="fas fa-database"></i></div><b>Database</b><span>storage &amp; data</span><div class="bars"><i style="animation-delay:.3s"></i><i style="animation-delay:0s"></i><i style="animation-delay:.5s"></i><i style="animation-delay:.2s"></i></div></div>
+                <div class="svc" style="left:62.5%; color:#3b82f6"><div class="chip" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)"><i class="fas fa-window-maximize"></i></div><b>Web App</b><span>frontend &amp; UX</span><div class="bars"><i style="animation-delay:.1s"></i><i style="animation-delay:.4s"></i><i style="animation-delay:0s"></i><i style="animation-delay:.3s"></i></div></div>
+                <div class="svc" style="left:87.5%; color:#ff5ed0"><div class="chip" style="background:linear-gradient(135deg,#ec4899,#be185d)"><i class="fas fa-globe"></i></div><b>Global CDN</b><span>edge delivery</span><div class="bars"><i style="animation-delay:.2s"></i><i style="animation-delay:.5s"></i><i style="animation-delay:.1s"></i><i style="animation-delay:.4s"></i></div></div>
+            </div>
+        </div>
+        <div class="stage-cap">③ UI-component style — glass cards + animated data flow (HTML/SVG)</div>
+    </section>
+
+    <script type="module" src="cloud-lab.js"></script>
+</body>
+</html>
