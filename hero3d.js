@@ -396,6 +396,59 @@ function makeGalaxy() {
   };
 }
 
+/* ---- state 3 (new): generated 3D cloud diorama (drag to rotate) + matrix code background ---- */
+function makeMatrixTexture() {
+  const c = document.createElement('canvas'); c.width = 512; c.height = 512; const x = c.getContext('2d');
+  const fs = 16, cols = Math.ceil(c.width / fs), drops = [];
+  for (let i = 0; i < cols; i++) drops[i] = Math.random() * -40;
+  const chars = '01<>{}[]/|=+*01010110';
+  x.fillStyle = '#06060f'; x.fillRect(0, 0, c.width, c.height);
+  const tex = new THREE.CanvasTexture(c);
+  tex.step = function () {
+    x.fillStyle = 'rgba(6,6,15,0.12)'; x.fillRect(0, 0, c.width, c.height);
+    x.font = fs + 'px monospace';
+    for (let i = 0; i < cols; i++) {
+      const ch = chars[(Math.random() * chars.length) | 0], px = i * fs, py = drops[i] * fs;
+      x.fillStyle = Math.random() < 0.08 ? 'rgba(150,210,255,0.95)' : 'rgba(123,92,246,0.5)';
+      x.fillText(ch, px, py);
+      if (py > c.height && Math.random() > 0.975) drops[i] = 0; drops[i]++;
+    }
+    tex.needsUpdate = true;
+  };
+  return tex;
+}
+function recolorDataBricks(material) {
+  const B0 = new THREE.Vector3(0.625, -0.37, -0.45), B1 = new THREE.Vector3(0.97, 0.03, -0.07);
+  material.onBeforeCompile = function (shader) {
+    shader.uniforms.uB0 = { value: B0 }; shader.uniforms.uB1 = { value: B1 };
+    shader.vertexShader = 'varying vec3 vLP;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n  vLP = position;');
+    shader.fragmentShader = 'varying vec3 vLP;\nuniform vec3 uB0;\nuniform vec3 uB1;\n' + shader.fragmentShader
+      .replace('#include <map_fragment>',
+        '#include <map_fragment>\n  bool inBrick = all(greaterThan(vLP,uB0)) && all(lessThan(vLP,uB1));\n  vec3 brickCol = vec3(0.0);\n  if (inBrick) { float ty = clamp((vLP.y-uB0.y)/(uB1.y-uB0.y),0.0,1.0); brickCol = mix(vec3(0.60,0.05,1.0), vec3(0.06,1.0,0.34), ty); diffuseColor.rgb = brickCol; }')
+      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n  if (inBrick) { totalEmissiveRadiance += brickCol * 0.6; }');
+  };
+  material.needsUpdate = true;
+}
+function makeCloud() {
+  const grp = new THREE.Group();
+  const mtex = makeMatrixTexture();
+  const bg = new THREE.Mesh(new THREE.PlaneGeometry(14, 10), new THREE.MeshBasicMaterial({ map: mtex, transparent: true, opacity: 0.6, depthWrite: false }));
+  bg.position.set(0, 0, -3.4); grp.add(bg);
+  const cloudGrp = new THREE.Group(); grp.add(cloudGrp);
+  let spin = 0, dRX = 0, dRY = 0, dragging = false;
+  return {
+    group: grp, cloudGrp: cloudGrp,
+    addDrag(dx, dy) { dRY += dx; dRX = Math.max(-0.85, Math.min(0.85, dRX + dy)); },
+    setDragging(b) { dragging = b; },
+    update(t, p, scrollN, dt) {
+      mtex.step();
+      if (!dragging) spin += dt * 0.22;
+      cloudGrp.rotation.set(dRX, spin + dRY, 0);
+      cloudGrp.position.y = Math.sin(t * 0.8) * 0.05;
+    }
+  };
+}
+
 /* ---- engine ---- */
 export function createHero(canvas, opts) {
   opts = opts || {};
@@ -426,8 +479,8 @@ export function createHero(canvas, opts) {
   const holo = makeHolo();
 
   const particles = makeParticles();
-  let sw; try { sw = makeSoftware(holo); } catch (e) { sw = { group: new THREE.Group(), update: function () {} }; }
-  const states = [makeOrb(), makeBrain(), sw];
+  let cloud; try { cloud = makeCloud(); } catch (e) { cloud = { group: new THREE.Group(), cloudGrp: new THREE.Group(), update: function () {}, addDrag: function () {}, setDragging: function () {} }; }
+  const states = [makeOrb(), makeBrain(), cloud];
   scene.add(particles.group);
   states.forEach(function (s, i) { scene.add(s.group); s.shown = i === 0 ? 1 : 0; if (i !== 0) { s.group.visible = false; s.group.scale.setScalar(0.001); } });
 
@@ -480,6 +533,36 @@ export function createHero(canvas, opts) {
   }
   if (window.requestIdleCallback) requestIdleCallback(loadRobot, { timeout: 2500 }); else setTimeout(loadRobot, 1500);
 
+  // cloud diorama GLB — lazy-loaded when approaching the cloud state
+  var cloudLoading = false;
+  function loadCloud() {
+    if (cloudLoading) return; cloudLoading = true;
+    (async function () {
+      try {
+        var mods = await Promise.all([import('three/addons/loaders/GLTFLoader.js'), import('three/addons/loaders/DRACOLoader.js'), import('three/addons/environments/RoomEnvironment.js')]);
+        if (!scene.environment) { try { var pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new mods[2].RoomEnvironment(), 0.04).texture; } catch (e) {} }
+        var draco = new mods[1].DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/gltf/');
+        var loader = new mods[0].GLTFLoader(); loader.setDRACOLoader(draco);
+        loader.load(opts.cloudUrl || 'assets/cloud.glb?v=5', function (gltf) {
+          var model = gltf.scene;
+          model.traverse(function (o) {
+            if (o.isMesh && o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) {
+              if ('envMapIntensity' in m) m.envMapIntensity = 1.1;
+              if ('roughness' in m) m.roughness = Math.min(m.roughness != null ? m.roughness : 0.6, 0.75);
+              recolorDataBricks(m); m.needsUpdate = true;
+            });
+          });
+          var box = new THREE.Box3().setFromObject(model), size = new THREE.Vector3(), center = new THREE.Vector3();
+          box.getSize(size); box.getCenter(center);
+          var sc = 2.7 / (Math.max(size.x, size.y, size.z) || 1);
+          model.position.sub(center);
+          var wrap = new THREE.Group(); wrap.add(model); wrap.scale.setScalar(sc);
+          if (cloud.cloudGrp) cloud.cloudGrp.add(wrap);
+        }, undefined, function () { cloudLoading = false; });
+      } catch (e) { cloudLoading = false; }
+    })();
+  }
+
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
   let scrollN = 0, current = 0, raf = 0, stopped = false, last = performance.now();
   const NAMES = ['orb', 'brain', 'software'];
@@ -489,12 +572,20 @@ export function createHero(canvas, opts) {
   const ro = new ResizeObserver(resize); ro.observe(canvas);
   function onMove(e) { pointer.tx = e.clientX / window.innerWidth - 0.5; pointer.ty = e.clientY / window.innerHeight - 0.5; }
   function onScroll() { scrollN = Math.min(window.scrollY / 700, 1); }
-  function onClick() { next(); }
+  // drag-to-rotate the cloud in state 2 (distinguished from a click)
+  var dragActive = false, dragMoved = 0, lastDX = 0, lastDY = 0;
+  function onDown(e) { if (current !== 2) return; dragActive = true; dragMoved = 0; lastDX = e.clientX; lastDY = e.clientY; if (cloud.setDragging) cloud.setDragging(true); }
+  function onDrag(e) { if (!dragActive) return; var dx = e.clientX - lastDX, dy = e.clientY - lastDY; lastDX = e.clientX; lastDY = e.clientY; dragMoved += Math.abs(dx) + Math.abs(dy); if (cloud.addDrag) cloud.addDrag(dx * 0.011, dy * 0.011); }
+  function onUp() { if (dragActive) { dragActive = false; if (cloud.setDragging) cloud.setDragging(false); } }
+  function onClick() { if (current === 2 && dragMoved > 6) { dragMoved = 0; return; } next(); }
   window.addEventListener('pointermove', onMove, { passive: true });
   window.addEventListener('scroll', onScroll, { passive: true });
+  canvas.addEventListener('pointerdown', onDown);
+  window.addEventListener('pointermove', onDrag, { passive: true });
+  window.addEventListener('pointerup', onUp);
   canvas.addEventListener('click', onClick);
 
-  function setState(i) { current = ((i % 3) + 3) % 3; if (current === 1) loadRobot(); if (opts.onState) opts.onState(current, NAMES[current]); }
+  function setState(i) { current = ((i % 3) + 3) % 3; if (current === 1) loadRobot(); if (current === 2) loadCloud(); if (opts.onState) opts.onState(current, NAMES[current]); }
   function next() { setState(current + 1); }
   function reset() { setState(0); }
   function smooth(x) { x = Math.min(Math.max(x, 0), 1); return x * x * (3 - 2 * x); }
@@ -534,7 +625,8 @@ export function createHero(canvas, opts) {
         opts.speechEl.classList.add('show');
       } else { opts.speechEl.classList.remove('show'); }
     }
-    if (usePost && composer) composer.render(); else renderer.render(scene, camera);
+    if (current === 2) renderer.render(scene, camera);
+    else if (usePost && composer) composer.render(); else renderer.render(scene, camera);
     raf = requestAnimationFrame(frame);
   }
   raf = requestAnimationFrame(frame);
