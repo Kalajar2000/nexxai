@@ -15,31 +15,28 @@ function radialShadowTex() {
   x.fillStyle = g; x.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c);
 }
 
-/* Recolor only the saturated NEON parts of the baked texture toward purple
-   (data bricks, cables, cyan accents). Leaves white/silver/black untouched.
-   Geometry is never modified — purely a texture-pixel pass at load. */
-function recolorNeonPurple(material) {
-  const tex = material.map; if (!tex || !tex.image) return;
-  const img = tex.image, w = img.width, h = img.height;
-  if (!w || !h) return;
-  const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
-  const cx = cv.getContext('2d'); cx.drawImage(img, 0, 0, w, h);
-  let id; try { id = cx.getImageData(0, 0, w, h); } catch (e) { return; }
-  const d = id.data;
-  const vR = 0.60, vG = 0.28, vB = 1.0, mR = 0.86, mG = 0.22, mB = 0.98; // violet -> magenta
-  for (let i = 0; i < d.length; i += 4) {
-    const rn = d[i] / 255, gn = d[i + 1] / 255, bn = d[i + 2] / 255;
-    const mx = Math.max(rn, gn, bn), mn = Math.min(rn, gn, bn);
-    const sat = mx > 0 ? (mx - mn) / mx : 0;
-    if (sat > 0.16) {
-      const v = mx; let k = (rn - bn) * 0.5 + 0.5; k = k < 0 ? 0 : k > 1 ? 1 : k;
-      const tR = (vR + (mR - vR) * k) * v * 1.15, tG = (vG + (mG - vG) * k) * v * 1.15, tB = (vB + (mB - vB) * k) * v * 1.15;
-      d[i] = Math.min(255, (rn + (tR - rn) * 0.82) * 255);
-      d[i + 1] = Math.min(255, (gn + (tG - gn) * 0.82) * 255);
-      d[i + 2] = Math.min(255, (bn + (tB - bn) * 0.82) * 255);
-    }
-  }
-  cx.putImageData(id, 0, 0); tex.image = cv; tex.needsUpdate = true;
+/* Recolor ONLY the data bricks (database stack) with a vertical gradient
+   (bottom purple -> top green), gated to a 3D box in the model's local space.
+   Geometry/texture untouched — purely an in-shader color override inside the box,
+   so reverting this restores the model exactly. Box is tunable below. */
+const DB_BOX = { x0: 0.34, x1: 1.0, y0: -0.36, y1: 0.07, z0: -0.18, z1: 0.62 };
+function recolorDataBricks(material) {
+  material.onBeforeCompile = function (shader) {
+    shader.uniforms.uB0 = { value: new THREE.Vector3(DB_BOX.x0, DB_BOX.y0, DB_BOX.z0) };
+    shader.uniforms.uB1 = { value: new THREE.Vector3(DB_BOX.x1, DB_BOX.y1, DB_BOX.z1) };
+    shader.vertexShader = 'varying vec3 vLP;\n' + shader.vertexShader.replace(
+      '#include <begin_vertex>', '#include <begin_vertex>\n  vLP = position;'
+    );
+    shader.fragmentShader = 'varying vec3 vLP;\nuniform vec3 uB0;\nuniform vec3 uB1;\n' + shader.fragmentShader.replace(
+      '#include <map_fragment>',
+      '#include <map_fragment>\n' +
+      '  if (all(greaterThan(vLP, uB0)) && all(lessThan(vLP, uB1))) {\n' +
+      '    float ty = clamp((vLP.y - uB0.y) / (uB1.y - uB0.y), 0.0, 1.0);\n' +
+      '    diffuseColor.rgb = mix(vec3(0.55,0.13,0.95), vec3(0.18,0.95,0.42), ty);\n' +
+      '  }'
+    );
+  };
+  material.needsUpdate = true;
 }
 
 const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
@@ -74,7 +71,7 @@ new GLTFLoader().load('assets/cloud.glb?v=5', function (g) {
     if (o.isMesh && o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) {
       if ('envMapIntensity' in m) m.envMapIntensity = 1.1;
       if ('roughness' in m) m.roughness = Math.min(m.roughness != null ? m.roughness : 0.6, 0.75);
-      recolorNeonPurple(m);
+      recolorDataBricks(m);
       m.needsUpdate = true;
     });
   });
