@@ -19,7 +19,7 @@ function radialShadowTex() {
    (bottom purple -> top green), gated to a 3D box in the model's local space.
    Geometry/texture untouched — purely an in-shader color override inside the box,
    so reverting this restores the model exactly. Box is tunable below. */
-const DB_BOX = { x0: 0.34, x1: 1.0, y0: -0.36, y1: 0.07, z0: -0.18, z1: 0.62 };
+const DB_BOX = { x0: 0.13, x1: 1.02, y0: -0.40, y1: 0.13, z0: -0.32, z1: 0.66 };
 function recolorDataBricks(material) {
   material.onBeforeCompile = function (shader) {
     shader.uniforms.uB0 = { value: new THREE.Vector3(DB_BOX.x0, DB_BOX.y0, DB_BOX.z0) };
@@ -27,14 +27,19 @@ function recolorDataBricks(material) {
     shader.vertexShader = 'varying vec3 vLP;\n' + shader.vertexShader.replace(
       '#include <begin_vertex>', '#include <begin_vertex>\n  vLP = position;'
     );
-    shader.fragmentShader = 'varying vec3 vLP;\nuniform vec3 uB0;\nuniform vec3 uB1;\n' + shader.fragmentShader.replace(
-      '#include <map_fragment>',
-      '#include <map_fragment>\n' +
-      '  if (all(greaterThan(vLP, uB0)) && all(lessThan(vLP, uB1))) {\n' +
-      '    float ty = clamp((vLP.y - uB0.y) / (uB1.y - uB0.y), 0.0, 1.0);\n' +
-      '    diffuseColor.rgb = mix(vec3(0.55,0.13,0.95), vec3(0.18,0.95,0.42), ty);\n' +
-      '  }'
-    );
+    shader.fragmentShader = 'varying vec3 vLP;\nuniform vec3 uB0;\nuniform vec3 uB1;\n' + shader.fragmentShader
+      .replace('#include <map_fragment>',
+        '#include <map_fragment>\n' +
+        '  bool inBrick = all(greaterThan(vLP, uB0)) && all(lessThan(vLP, uB1));\n' +
+        '  vec3 brickCol = vec3(0.0);\n' +
+        '  if (inBrick) {\n' +
+        '    float ty = clamp((vLP.y - uB0.y) / (uB1.y - uB0.y), 0.0, 1.0);\n' +
+        '    brickCol = mix(vec3(0.60,0.05,1.0), vec3(0.06,1.0,0.34), ty);\n' +
+        '    diffuseColor.rgb = brickCol;\n' +
+        '  }')
+      .replace('#include <emissivemap_fragment>',
+        '#include <emissivemap_fragment>\n' +
+        '  if (inBrick) { totalEmissiveRadiance += brickCol * 0.6; }');
   };
   material.needsUpdate = true;
 }
