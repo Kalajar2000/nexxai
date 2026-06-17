@@ -125,7 +125,7 @@ function makeOrb() {
         col+=fres*0.6;
         float iri=0.5+0.5*sin(fres*10.0 + vN*5.0 + uTime*1.2);
         col+=vec3(0.12,0.06,0.18)*iri*0.5;
-        gl_FragColor=vec4(col,1.0);
+        gl_FragColor=vec4(col*1.28 + fres*0.35, 1.0);
       }`
   });
   const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(1.5, 5), mat);
@@ -403,9 +403,25 @@ export function createHero(canvas, opts) {
   try { renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true }); }
   catch (e) { if (canvas) canvas.style.display = 'none'; return { dispose() {}, reset() {}, next() {} }; }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-  renderer.setClearAlpha(0);
+  renderer.setClearColor(0x06060f, 1);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100); camera.position.z = 5.2;
+  // glow pipeline (bloom) — loaded after first paint, with graceful fallback to direct render
+  var composer = null, bloomPass = null, usePost = false;
+  (function initPost() {
+    function go() {
+      Promise.all([import('three/addons/postprocessing/EffectComposer.js'), import('three/addons/postprocessing/RenderPass.js'), import('three/addons/postprocessing/UnrealBloomPass.js')]).then(function (m) {
+        try {
+          var w = canvas.clientWidth || 1, h = canvas.clientHeight || 1;
+          composer = new m[0].EffectComposer(renderer);
+          composer.addPass(new m[1].RenderPass(scene, camera));
+          bloomPass = new m[2].UnrealBloomPass(new THREE.Vector2(w, h), 0.7, 0.55, 0.6);
+          composer.addPass(bloomPass); composer.setSize(w, h); usePost = true;
+        } catch (e) { usePost = false; }
+      }).catch(function () { usePost = false; });
+    }
+    if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 3000 }); else setTimeout(go, 1800);
+  })();
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const holo = makeHolo();
 
@@ -442,8 +458,12 @@ export function createHero(canvas, opts) {
           model.traverse(function (o) {
             if (o.isMesh && o.material) {
               (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) {
-                if ('envMapIntensity' in m) m.envMapIntensity = 1.5;
-                if (m.emissive && (m.emissive.r + m.emissive.g + m.emissive.b) > 0.05) m.emissiveIntensity = (m.emissiveIntensity || 1) * 1.7;
+                if ('envMapIntensity' in m) m.envMapIntensity = 1.6;
+                if (m.color && m.emissive) {
+                  var mx = Math.max(m.color.r, m.color.g, m.color.b), mn = Math.min(m.color.r, m.color.g, m.color.b), sat = mx > 0 ? (mx - mn) / mx : 0;
+                  if (sat > 0.3 && mx > 0.2) { m.emissive.copy(m.color); m.emissiveIntensity = Math.max(m.emissiveIntensity || 1, 1.35); }
+                  else if ((m.emissive.r + m.emissive.g + m.emissive.b) > 0.05) m.emissiveIntensity = (m.emissiveIntensity || 1) * 1.8;
+                }
                 m.needsUpdate = true;
               });
             }
@@ -464,7 +484,7 @@ export function createHero(canvas, opts) {
   let scrollN = 0, current = 0, raf = 0, stopped = false, last = performance.now();
   const NAMES = ['orb', 'brain', 'software'];
 
-  function resize() { const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  function resize() { const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); if (composer) composer.setSize(w, h); }
   resize();
   const ro = new ResizeObserver(resize); ro.observe(canvas);
   function onMove(e) { pointer.tx = e.clientX / window.innerWidth - 0.5; pointer.ty = e.clientY / window.innerHeight - 0.5; }
@@ -514,7 +534,7 @@ export function createHero(canvas, opts) {
         opts.speechEl.classList.add('show');
       } else { opts.speechEl.classList.remove('show'); }
     }
-    renderer.render(scene, camera);
+    if (usePost && composer) composer.render(); else renderer.render(scene, camera);
     raf = requestAnimationFrame(frame);
   }
   raf = requestAnimationFrame(frame);
