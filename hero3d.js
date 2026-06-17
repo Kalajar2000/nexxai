@@ -1,7 +1,7 @@
 // NEXXAI hero 3D — living AI scene (build 5). Soft round particles, a
 // holographic robot, a soft cloud, solid holo devices and cursor-reactive
 // matrix code. Click cycles: orb -> AI brain (+robot) -> software -> back.
-import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+import * as THREE from 'three';
 
 const VIOLET = 0x8b5cf6, BLUE = 0x3b82f6, PINK = 0xec4899, CYAN = 0x5eead4, LILAC = 0xcdb6ff;
 
@@ -103,13 +103,34 @@ function makeOrb() {
   const mat = new THREE.ShaderMaterial({
     uniforms, transparent: true,
     vertexShader: SNOISE + `uniform float uTime; varying float vN; varying vec3 vNrm; varying vec3 vView;
-      void main(){ float d=snoise(position*0.9+uTime*0.22); float d2=snoise(position*1.9-uTime*0.16)*0.45; float disp=d+d2; vN=disp; vec3 pp=position+normal*disp*0.26; vec4 mv=modelViewMatrix*vec4(pp,1.0); vNrm=normalize(normalMatrix*normal); vView=normalize(-mv.xyz); gl_Position=projectionMatrix*mv; }`,
-    fragmentShader: `varying float vN; varying vec3 vNrm; varying vec3 vView;
-      void main(){ vec3 violet=vec3(0.545,0.361,0.965), blue=vec3(0.231,0.510,0.965), pink=vec3(0.925,0.282,0.600); float m=smoothstep(-1.0,1.0,vN); vec3 col=mix(blue,violet,m); col=mix(col,pink,smoothstep(0.45,1.0,m)*0.55); float fres=pow(1.0-max(dot(normalize(vNrm),normalize(vView)),0.0),2.4); col+=fres*0.55; gl_FragColor=vec4(col,1.0); }`
+      void main(){
+        float t=uTime;
+        float n1=snoise(position*0.75 + vec3(0.0,t*0.28,0.0));
+        float n2=snoise(position*1.7 + vec3(t*0.22,0.0,t*0.16) + n1*0.8);
+        float n3=snoise(position*3.4 - t*0.12)*0.22;
+        float disp=n1*0.62 + n2*0.42 + n3; vN=disp;
+        vec3 pp=position+normal*disp*0.34;
+        vec4 mv=modelViewMatrix*vec4(pp,1.0);
+        vNrm=normalize(normalMatrix*normal); vView=normalize(-mv.xyz);
+        gl_Position=projectionMatrix*mv;
+      }`,
+    fragmentShader: `uniform float uTime; varying float vN; varying vec3 vNrm; varying vec3 vView;
+      void main(){
+        vec3 violet=vec3(0.545,0.361,0.965), blue=vec3(0.231,0.510,0.965), pink=vec3(0.925,0.282,0.600), cyan=vec3(0.36,0.86,0.93);
+        float m=smoothstep(-1.0,1.0,vN);
+        vec3 col=mix(blue,violet,m);
+        col=mix(col,pink,smoothstep(0.5,1.0,m)*0.6);
+        col=mix(col,cyan,smoothstep(0.0,-1.0,vN)*0.22);
+        float fres=pow(1.0-max(dot(normalize(vNrm),normalize(vView)),0.0),2.2);
+        col+=fres*0.6;
+        float iri=0.5+0.5*sin(fres*10.0 + vN*5.0 + uTime*1.2);
+        col+=vec3(0.12,0.06,0.18)*iri*0.5;
+        gl_FragColor=vec4(col,1.0);
+      }`
   });
   const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(1.5, 5), mat);
   const grp = new THREE.Group(); grp.add(mesh);
-  return { group: grp, update(t, p) { uniforms.uTime.value = t; mesh.rotation.y = t * 0.14 + p.x * 0.6; mesh.rotation.x = p.y * 0.4; } };
+  return { group: grp, update(t, p) { uniforms.uTime.value = t; mesh.rotation.y = t * 0.12 + p.x * 0.6; mesh.rotation.x = p.y * 0.4; } };
 }
 
 /* ---- state 2: AI neural-network brain ---- */
@@ -248,6 +269,28 @@ function makeSoftware(holo) {
   };
 }
 
+/* ---- brain-flash overlay (moving pulses inside the robot's glass skull) ---- */
+function makeFlash() {
+  const N = 12, R = 0.42, nodes = [], npos = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) { const a = Math.random() * 6.283, b = Math.acos(2 * Math.random() - 1), r = R * (0.45 + Math.random() * 0.55); const x = r * Math.sin(b) * Math.cos(a), y = r * Math.sin(b) * Math.sin(a) * 0.8, z = r * Math.cos(b); nodes.push([x, y, z]); npos[i * 3] = x; npos[i * 3 + 1] = y; npos[i * 3 + 2] = z; }
+  const ngeo = new THREE.BufferGeometry(); ngeo.setAttribute('position', new THREE.BufferAttribute(npos, 3));
+  const pmat = roundPoints({ size: 0.16, color: new THREE.Color(0xff5ed0), opacity: 0.9 });
+  const pts = new THREE.Points(ngeo, pmat);
+  const edges = []; for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) { const dx = nodes[i][0] - nodes[j][0], dy = nodes[i][1] - nodes[j][1], dz = nodes[i][2] - nodes[j][2]; if (dx * dx + dy * dy + dz * dz < (R * 0.95) * (R * 0.95)) edges.push([i, j]); }
+  const SIG = 8, spos = new Float32Array(SIG * 3), sig = [];
+  for (let s = 0; s < SIG; s++) sig.push({ e: edges.length ? Math.floor(Math.random() * edges.length) : 0, t: Math.random(), spd: 0.6 + Math.random() * 0.9 });
+  const sgeo = new THREE.BufferGeometry(); sgeo.setAttribute('position', new THREE.BufferAttribute(spos, 3));
+  const sigPts = new THREE.Points(sgeo, roundPoints({ size: 0.2, color: new THREE.Color(0x9be7ff), opacity: 1 }));
+  const g = new THREE.Group(); g.add(pts, sigPts);
+  return {
+    group: g,
+    update(t, dt) {
+      if (edges.length) { for (let s = 0; s < SIG; s++) { const o = sig[s]; o.t += o.spd * dt; if (o.t >= 1) { o.t = 0; o.e = Math.floor(Math.random() * edges.length); } const a = nodes[edges[o.e][0]], b = nodes[edges[o.e][1]], tt = o.t; spos[s * 3] = a[0] + (b[0] - a[0]) * tt; spos[s * 3 + 1] = a[1] + (b[1] - a[1]) * tt; spos[s * 3 + 2] = a[2] + (b[2] - a[2]) * tt; } sgeo.attributes.position.needsUpdate = true; }
+      pmat.opacity = 0.55 + Math.sin(t * 4.0) * 0.3; g.rotation.y = t * 0.4;
+    }
+  };
+}
+
 /* ---- engine ---- */
 export function createHero(canvas, opts) {
   opts = opts || {};
@@ -265,6 +308,33 @@ export function createHero(canvas, opts) {
   const states = [makeOrb(), makeBrain(), makeSoftware(holo)];
   scene.add(particles.group);
   states.forEach(function (s, i) { scene.add(s.group); s.shown = i === 0 ? 1 : 0; if (i !== 0) { s.group.visible = false; s.group.scale.setScalar(0.001); } });
+
+  // lights (only the GLB robot's PBR materials respond; unlit scene elements ignore these)
+  scene.add(new THREE.AmbientLight(0xb9c2ff, 0.75));
+  var kl = new THREE.DirectionalLight(0xffffff, 1.5); kl.position.set(2, 3, 4); scene.add(kl);
+  var fl = new THREE.DirectionalLight(0x6f8cff, 0.6); fl.position.set(-3, -1, 2); scene.add(fl);
+  var rimL = new THREE.DirectionalLight(0xec4899, 0.5); rimL.position.set(0, 2, -4); scene.add(rimL);
+
+  // robot (Higgsfield porcelain GLB), shown in the brain state
+  var robotHolder = new THREE.Group(); robotHolder.visible = false; robotHolder.scale.setScalar(0.001); robotHolder.position.set(0, -0.2, 0.7); scene.add(robotHolder);
+  var robot = null, robotShown = 0;
+  (async function loadRobot() {
+    try {
+      var mods = await Promise.all([import('three/addons/loaders/GLTFLoader.js'), import('three/addons/loaders/DRACOLoader.js')]);
+      var draco = new mods[1].DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/gltf/');
+      var loader = new mods[0].GLTFLoader(); loader.setDRACOLoader(draco);
+      loader.load(opts.robotUrl || 'assets/robot.glb?v=3', function (gltf) {
+        var model = gltf.scene;
+        var box = new THREE.Box3().setFromObject(model), size = new THREE.Vector3(), center = new THREE.Vector3();
+        box.getSize(size); box.getCenter(center);
+        var sc = 2.8 / (size.y || 1);
+        model.position.sub(center);
+        var wrap = new THREE.Group(); wrap.add(model); wrap.scale.setScalar(sc); robotHolder.add(wrap);
+        var flash = makeFlash(); flash.group.position.set(0, 0.34 * 2.8, 0.12 * 2.8); robotHolder.add(flash.group);
+        robot = { wrap: wrap, flash: flash };
+      }, undefined, function () { robot = null; });
+    } catch (e) { robot = null; }
+  })();
 
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
   let scrollN = 0, current = 0, raf = 0, stopped = false, last = performance.now();
@@ -301,9 +371,18 @@ export function createHero(canvas, opts) {
       s.group.visible = vis > 0.01; s.group.scale.setScalar(Math.max(vis, 0.001));
       if (s.group.visible) s.update(t, pointer, scrollN, reduce ? 0.016 : dt);
     }
+    var rtg = current === 1 ? 1 : 0;
+    robotShown += (rtg - robotShown) * 0.09;
+    var rvis = smooth(robotShown);
+    robotHolder.visible = rvis > 0.01; robotHolder.scale.setScalar(Math.max(rvis, 0.001));
+    if (robot) {
+      robotHolder.rotation.y = pointer.x * 0.4; robotHolder.rotation.x = pointer.y * 0.2;
+      robotHolder.position.y = -0.2 + Math.sin(t * 1.2) * 0.04;
+      robot.flash.update(t, reduce ? 0.016 : dt);
+    }
     if (opts.speechEl) {
-      if (current === 1 && states[1].shown > 0.55) {
-        tmp.set(0, 0.15, 0).project(camera);
+      if (current === 1 && robotShown > 0.5) {
+        tmp.set(0, 1.2, 0.7).project(camera);
         const rect = canvas.getBoundingClientRect();
         opts.speechEl.style.left = (rect.left + (tmp.x * 0.5 + 0.5) * rect.width) + 'px';
         opts.speechEl.style.top = (rect.top + (-tmp.y * 0.5 + 0.5) * rect.height) + 'px';
