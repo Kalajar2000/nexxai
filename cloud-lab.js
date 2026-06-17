@@ -69,25 +69,9 @@ function loop() {
 function start() { if (running) return; running = true; resize(); lastT = performance.now(); loop(); window.addEventListener('resize', resize); }
 function stop() { running = false; cancelAnimationFrame(raf); window.removeEventListener('resize', resize); }
 
-/* image option: subtle cursor tilt */
-const imgStage = document.getElementById('stage-img');
-const tilt = document.getElementById('img-tilt');
-if (imgStage && tilt) {
-  imgStage.addEventListener('pointermove', function (e) {
-    const r = imgStage.getBoundingClientRect();
-    const nx = (e.clientX - r.left) / r.width - 0.5, ny = (e.clientY - r.top) / r.height - 0.5;
-    tilt.style.transform = 'perspective(1200px) rotateY(' + (nx * 7) + 'deg) rotateX(' + (-ny * 7) + 'deg) scale(1.015)';
-  });
-  imgStage.addEventListener('pointerleave', function () { tilt.style.transform = 'perspective(1200px) rotateY(0) rotateX(0) scale(1)'; });
-}
-
-const HINTS = {
-  '3d': 'A properly-lit 3D mesh — drag to rotate, scroll to zoom. Environment lighting, no blow-out.',
-  img: 'Your GLOBAL CLOUD reference image, premium-framed with cursor parallax.'
-};
+const HINTS = { '3d': 'A properly-lit 3D mesh — drag to rotate, scroll to zoom. Environment lighting, no blow-out.' };
 function show(which) {
   document.getElementById('stage-3d').hidden = which !== '3d';
-  document.getElementById('stage-img').hidden = which !== 'img';
   if (which === '3d') start(); else stop();
   document.querySelectorAll('.lab-switch button').forEach(function (b) { b.classList.toggle('active', b.dataset.v === which); });
   const h = document.getElementById('hint'); if (h) h.textContent = HINTS[which];
