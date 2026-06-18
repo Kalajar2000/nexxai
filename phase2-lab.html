@@ -13,118 +13,116 @@
         .lab-wrap{max-width:1180px;margin:0 auto;padding:0 28px}
         .lab-top{font-family:'Poppins';font-weight:600;font-size:1.15rem;padding:34px 0 0}
         .pill{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#9b8cff;border:1px solid rgba(155,140,255,.4);border-radius:999px;padding:3px 9px;margin-left:10px;vertical-align:middle}
-        .lab-note{color:#8b93ad;font-size:.92rem;padding:10px 0 6px;max-width:820px;line-height:1.6}
+        .lab-note{color:#8b93ad;font-size:.92rem;padding:10px 0 6px;max-width:860px;line-height:1.6}
         .lab-note b{color:#cbbcff}
         .done{display:inline-block;margin:4px 8px 4px 0;padding:6px 12px;border-radius:999px;background:rgba(80,220,150,.12);border:1px solid rgba(80,220,150,.35);color:#86e6b4;font-size:.8rem}
-        .lab-sec{padding:46px 0;border-top:1px solid rgba(255,255,255,.08)}
+        .lab-sec{padding:44px 0;border-top:1px solid rgba(255,255,255,.08)}
         .lab-h{font-family:'Poppins';font-weight:600;font-size:1.25rem;margin-bottom:6px}
-        .lab-d{color:#8b93ad;font-size:.9rem;margin-bottom:10px;max-width:740px}
-        .opt{margin:26px 0;border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:30px 24px;background:rgba(255,255,255,.02);position:relative}
+        .lab-d{color:#8b93ad;font-size:.9rem;margin-bottom:10px;max-width:780px}
+        .opt{margin:24px 0;border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:32px 24px;background:rgba(255,255,255,.02);position:relative}
         .opt .tag{position:absolute;top:-12px;left:18px;font-family:'Poppins';font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#dcd2ff;background:#14122a;border:1px solid rgba(155,140,255,.45);border-radius:999px;padding:5px 13px}
-        .opt .note{color:#7e86a3;font-size:.8rem;margin-top:16px}
-        /* logo wall */
-        .wall{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:30px 56px}
-        .wall .lg{height:44px;display:inline-flex;align-items:center;gap:12px}
-        .wall img{height:100%;width:auto;filter:grayscale(1) brightness(0) invert(1);opacity:.5;transition:.3s}
-        .wall .lg:hover img{opacity:.95}
-        .wall .wm{font-family:'Poppins';font-weight:600;font-size:1.45rem;color:#fff;opacity:.5;transition:.3s;white-space:nowrap}
-        .wall .lg:hover .wm{opacity:.9}
-        .wall.tiles{gap:18px}
-        .wall.tiles .lg{height:auto;padding:22px 30px;border-radius:16px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08)}
-        .wall.tiles img{height:38px}
-        .miss{outline:1px dashed rgba(255,180,90,.5);outline-offset:6px;border-radius:6px}
-        /* draggable testimonials marquee */
-        .dmq{overflow:hidden;cursor:grab;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+        .opt .note{color:#7e86a3;font-size:.8rem;margin-top:18px}
+        /* tools wall */
+        .toolwall{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:46px}
+        .toolwall.tiles{gap:18px}
+        .toolwall .t{display:inline-flex;align-items:center;justify-content:center}
+        .toolwall img{height:50px;width:50px;object-fit:contain;border-radius:11px}
+        .toolwall.tiles .t{width:96px;height:96px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+        .toolwall.tiles img{height:46px;width:46px}
+        /* tech pills */
+        .grp{margin-bottom:24px}
+        .grp h4{font-family:'Poppins';font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:#9b8cff;margin-bottom:14px}
+        .pills2{display:flex;flex-wrap:wrap;gap:10px}
+        .pill2{display:inline-flex;align-items:center;gap:10px;padding:10px 17px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:.92rem;color:#e7e8f4;white-space:nowrap}
+        .pill2 img{height:20px;width:20px;object-fit:contain}
+        .pill2 i{color:#9b8cff;font-size:.95rem;width:20px;text-align:center}
+        .mono .pill2 img{filter:grayscale(1) brightness(0) invert(1);opacity:.82}
+        /* draggable marquee */
+        .dmq{overflow:hidden;cursor:grab;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
         .dmq.grab{cursor:grabbing}
-        .dmq-track{display:flex;gap:20px;width:max-content;will-change:transform}
-        .tc{flex:0 0 360px;width:360px;padding:26px;border-radius:20px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.09);display:flex;flex-direction:column;user-select:none}
-        .tc .stars{color:#f5b740;letter-spacing:2px;margin-bottom:12px;font-size:.9rem}
-        .tc .q{color:#e9eaf5;font-weight:300;font-size:.98rem;line-height:1.55;flex:1}
-        .tc .who{display:flex;align-items:center;gap:12px;margin-top:20px}
-        .av{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;background:linear-gradient(140deg,#8b5cf6,#3b82f6);flex-shrink:0}
-        .who .nm{font-weight:600;font-size:.92rem}.who .rl{color:#8b8fb0;font-size:.8rem}
-        .hint{text-align:center;color:#6b7290;font-size:.78rem;margin-top:14px}
+        .dmq+.dmq{margin-top:12px}
+        .dmq-track{display:flex;gap:10px;width:max-content;will-change:transform;padding:1px 0}
+        .dmq .pill2{user-select:none}
     </style>
 </head>
 <body>
 <div class="lab-wrap">
-    <div class="lab-top">Phase-2 preview<span class="pill">build 2</span></div>
+    <div class="lab-top">Phase-2 preview<span class="pill">build 3</span></div>
     <p class="lab-note">
-        <span class="done">✓ Titles → Poppins (live)</span><span class="done">✓ Contact → button heartbeat (live)</span><br>
-        Two things to lock here: the <b>logo wall</b> and the <b>draggable testimonials</b>. Reply e.g. <b>Wall 1 · Testimonials good</b>.
+        <span class="done">✓ Titles → Poppins</span><span class="done">✓ Contact heartbeat</span><span class="done">✓ Globe hubs → city only</span><span class="done">✓ Testimonials drag</span><br>
+        Found <b>every logo</b> (48 tech + 7 tools, incl. real Grok, GoHighLevel &amp; Higgsfield). Pick: <b>Tools = Bare or Tiles</b>, and <b>Tech = Colored / Mono / Moving</b>.
     </p>
 
-    <!-- LOGO WALL -->
+    <!-- TOOLS -->
     <section class="lab-sec">
-        <div class="lab-h">Tech-stack — real logos, grayscale, all showing</div>
-        <div class="lab-d">Real brand marks (monochrome; hover to light up). <b>GoHighLevel</b> and <b>Higgsfield</b> aren't on the logo CDNs — shown as wordmarks (dashed) until you drop me their logo files. Send your example layout and I'll match it.</div>
-
-        <div class="opt"><span class="tag">Wall 1 — bare marks, centered</span>
-            <div class="wall">
-                <span class="lg"><img src="assets/brand-stack/claude.svg" alt="Claude"></span>
-                <span class="lg"><img src="assets/brand-stack/gpt.svg" alt="GPT"></span>
-                <span class="lg"><img src="assets/brand-stack/grok.svg" alt="Grok"></span>
-                <span class="lg"><img src="assets/brand-stack/zapier.svg" alt="Zapier"></span>
-                <span class="lg"><img src="assets/brand-stack/n8n.svg" alt="n8n"></span>
-                <span class="lg"><span class="wm miss">GoHighLevel</span></span>
-                <span class="lg"><span class="wm miss">Higgsfield</span></span>
-            </div>
-            <div class="note">Clean monochrome wall — quietest, most premium.</div>
-        </div>
-
-        <div class="opt"><span class="tag">Wall 2 — marks in glass tiles</span>
-            <div class="wall tiles">
-                <span class="lg"><img src="assets/brand-stack/claude.svg" alt="Claude"></span>
-                <span class="lg"><img src="assets/brand-stack/gpt.svg" alt="GPT"></span>
-                <span class="lg"><img src="assets/brand-stack/grok.svg" alt="Grok"></span>
-                <span class="lg"><img src="assets/brand-stack/zapier.svg" alt="Zapier"></span>
-                <span class="lg"><img src="assets/brand-stack/n8n.svg" alt="n8n"></span>
-                <span class="lg"><span class="wm miss" style="font-size:1.15rem">GoHighLevel</span></span>
-                <span class="lg"><span class="wm miss" style="font-size:1.15rem">Higgsfield</span></span>
-            </div>
-            <div class="note">More structured — each tool sits in its own liquid-glass tile.</div>
-        </div>
+        <div class="lab-h">Tools wall — real logos</div>
+        <div class="lab-d">Claude · GPT · Grok · Zapier · GoHighLevel · Higgsfield · n8n. Note: Grok &amp; GoHighLevel ship as <b>dark app-icons</b>, so they read better on <b>Tiles</b> than bare on the black background.</div>
+        <div class="opt"><span class="tag">Tools — bare marks, centered</span><div class="toolwall" id="toolBare"></div>
+            <div class="note">True bare marks — cleanest, but the dark Grok/GoHighLevel icons get faint here.</div></div>
+        <div class="opt"><span class="tag">Tools — glass tiles</span><div class="toolwall tiles" id="toolTiles"></div>
+            <div class="note">Uniform tiles — every logo reads clearly, incl. the dark ones.</div></div>
     </section>
 
-    <!-- DRAGGABLE TESTIMONIALS -->
+    <!-- TECH STACK -->
     <section class="lab-sec">
-        <div class="lab-h">Testimonials — infinite + draggable</div>
-        <div class="lab-d">Auto-scrolls; <b>grab and drag</b> the row to scrub through (with momentum on release). Sample copy — your real testimonials drop straight in.</div>
-        <div class="opt"><span class="tag">Drag me ←→</span>
-            <div class="dmq"><div class="dmq-track">
-                <div class="tc"><div class="stars">★★★★★</div><p class="q">"Their ability to understand our business goals and deliver on time was impressive. They made the whole process seamless."</p><div class="who"><div class="av">MT</div><div><div class="nm">Marvin T.</div><div class="rl">Founder</div></div></div></div>
-                <div class="tc"><div class="stars">★★★★★</div><p class="q">"We've never worked with a team so dedicated to understanding our needs. Quick delivery kept every milestone on time."</p><div class="who"><div class="av">SU</div><div><div class="nm">Shigeto Umeda</div><div class="rl">COO</div></div></div></div>
-                <div class="tc"><div class="stars">★★★★★</div><p class="q">"They shipped our AI assistant in weeks, not quarters. It now handles a third of our support load."</p><div class="who"><div class="av">AR</div><div><div class="nm">Ana R.</div><div class="rl">Head of Ops</div></div></div></div>
-                <div class="tc"><div class="stars">★★★★★</div><p class="q">"Senior team, zero hand-holding. They embedded with us and just delivered, end to end."</p><div class="who"><div class="av">DK</div><div><div class="nm">David K.</div><div class="rl">CTO</div></div></div></div>
-                <div class="tc"><div class="stars">★★★★★</div><p class="q">"Clear communication, real ownership, and results we can actually measure. Rare."</p><div class="who"><div class="av">LP</div><div><div class="nm">Lucia P.</div><div class="rl">VP Product</div></div></div></div>
-            </div></div>
-            <div class="hint">drag the row ←→ · auto-resumes on release</div>
-        </div>
+        <div class="lab-h">Tech stack — logo + text (all 48)</div>
+        <div class="lab-d">Every tag now carries its real logo. Three treatments:</div>
+
+        <div class="opt"><span class="tag">Tech 1 — colored, categorized</span><div id="techColor"></div>
+            <div class="note">Brand colors — most recognizable.</div></div>
+
+        <div class="opt"><span class="tag">Tech 2 — monochrome, categorized</span><div id="techMono" class="mono"></div>
+            <div class="note">All-white marks — quietest / most premium, matches the dark theme.</div></div>
+
+        <div class="opt"><span class="tag">Tech 3 — moving rows (drag ←→)</span><div id="techMove"></div>
+            <div class="note">The "it moves" style you liked — auto-scrolls, grab to drag, opposite directions.</div></div>
     </section>
 
     <div style="height:60px"></div>
 </div>
 <script>
-    (function () {
-        document.querySelectorAll('.dmq').forEach(function (vp) {
-            var track = vp.querySelector('.dmq-track');
-            if (!track) return;
-            track.innerHTML += track.innerHTML; // duplicate for seamless loop
-            var off = 0, half = 0, drag = false, sx = 0, so = 0, vel = 0, lx = 0, speed = 0.5;
-            function meas() { half = track.scrollWidth / 2; }
-            meas(); window.addEventListener('load', meas); window.addEventListener('resize', meas);
-            function frame() {
-                if (!drag) { off -= speed; off += vel; vel *= 0.9; if (Math.abs(vel) < 0.02) vel = 0; }
-                if (half) { if (off <= -half) off += half; if (off > 0) off -= half; }
-                track.style.transform = 'translate3d(' + off.toFixed(2) + 'px,0,0)';
-                requestAnimationFrame(frame);
-            }
+    var TOOLS=[['Claude','claude.svg'],['GPT','gpt.svg'],['Grok','grok.png'],['Zapier','zapier.svg'],['GoHighLevel','gohighlevel.png'],['Higgsfield','higgsfield.png'],['n8n','n8n.svg']];
+    var TECH=[
+        ['AI & Machine Learning',[['TensorFlow','tensorflow'],['PyTorch','pytorch'],['LangChain','langchain'],['Hugging Face','huggingface'],['Scikit-learn','scikitlearn'],['OpenCV','opencv'],['Keras','keras'],['Pandas','pandas'],['NumPy','numpy']]],
+        ['Backend',[['.NET Core','dotnet'],['Node.js','nodejs'],['NestJS','nestjs'],['Express','express'],['Django','django'],['FastAPI','fastapi'],['Spring Boot','springboot'],['Ruby on Rails','rubyonrails'],['Laravel','laravel'],['GoLang','go']]],
+        ['Frontend',[['React','react'],['Next.js','nextjs'],['Vue.js','vuejs'],['Angular','angular'],['Tailwind CSS','tailwindcss'],['Bootstrap','bootstrap'],['HTML5','html5'],['CSS3','css3']]],
+        ['Mobile',[['Flutter','flutter'],['React Native','reactnative'],['Swift','swift'],['Kotlin','kotlin'],['Xamarin','xamarin'],['Ionic','ionic']]],
+        ['Databases',[['PostgreSQL','postgresql'],['MongoDB','mongodb'],['MySQL','mysql'],['Microsoft SQL','mssql'],['Redis','redis'],['Firebase','firebase'],['Supabase','supabase'],['DynamoDB','dynamodb']]],
+        ['Cloud & DevOps',[['AWS','aws'],['Azure','azure'],['Google Cloud','googlecloud'],['Docker','docker'],['Kubernetes','kubernetes'],['Jenkins','jenkins'],['Git','git'],['CI/CD','']]]
+    ];
+    function toolMark(t){ return '<span class="t"><img src="assets/brand-stack/'+t[1]+'" alt="'+t[0]+'" title="'+t[0]+'"></span>'; }
+    function chip(it){ var ic = it[1] ? '<img src="assets/tech/'+it[1]+'.svg" alt="">' : '<i class="fas fa-infinity"></i>'; return '<span class="pill2">'+ic+'<span>'+it[0]+'</span></span>'; }
+    document.getElementById('toolBare').innerHTML = TOOLS.map(toolMark).join('');
+    document.getElementById('toolTiles').innerHTML = TOOLS.map(toolMark).join('');
+    function cats(){ return TECH.map(function(g){ return '<div class="grp"><h4>'+g[0]+'</h4><div class="pills2">'+g[1].map(chip).join('')+'</div></div>'; }).join(''); }
+    document.getElementById('techColor').innerHTML = cats();
+    document.getElementById('techMono').innerHTML = cats();
+    // moving rows: split all chips into 2 rows
+    var all=[]; TECH.forEach(function(g){ all=all.concat(g[1]); });
+    var half=Math.ceil(all.length/2);
+    var rowA=all.slice(0,half).map(chip).join(''), rowB=all.slice(half).map(chip).join('');
+    document.getElementById('techMove').innerHTML =
+        '<div class="dmq"><div class="dmq-track">'+rowA+'</div></div>'+
+        '<div class="dmq"><div class="dmq-track" data-rev>'+rowB+'</div></div>';
+    // draggable marquee engine
+    document.querySelectorAll('.dmq').forEach(function(vp){
+        var track=vp.querySelector('.dmq-track'); if(!track) return;
+        track.innerHTML+=track.innerHTML;
+        var dir = track.hasAttribute('data-rev') ? -1 : 1;
+        var off=0, half=0, drag=false, sx=0, so=0, vel=0, lx=0, speed=0.4*dir;
+        function meas(){ half=track.scrollWidth/2; }
+        meas(); window.addEventListener('load',meas); window.addEventListener('resize',meas);
+        function frame(){
+            if(!drag){ off-=speed; off+=vel; vel*=0.9; if(Math.abs(vel)<0.02)vel=0; }
+            if(half){ if(off<=-half)off+=half; if(off>0)off-=half; }
+            track.style.transform='translate3d('+off.toFixed(2)+'px,0,0)';
             requestAnimationFrame(frame);
-            vp.addEventListener('pointerdown', function (e) { drag = true; sx = e.clientX; so = off; lx = e.clientX; vel = 0; vp.classList.add('grab'); try { vp.setPointerCapture(e.pointerId); } catch (_) {} });
-            window.addEventListener('pointermove', function (e) { if (!drag) return; off = so + (e.clientX - sx); vel = e.clientX - lx; lx = e.clientX; });
-            window.addEventListener('pointerup', function () { drag = false; vp.classList.remove('grab'); });
-        });
-    })();
+        }
+        requestAnimationFrame(frame);
+        vp.addEventListener('pointerdown',function(e){drag=true;sx=e.clientX;so=off;lx=e.clientX;vel=0;vp.classList.add('grab');try{vp.setPointerCapture(e.pointerId);}catch(_){}});
+        window.addEventListener('pointermove',function(e){if(!drag)return;off=so+(e.clientX-sx);vel=e.clientX-lx;lx=e.clientX;});
+        window.addEventListener('pointerup',function(){drag=false;vp.classList.remove('grab');});
+    });
 </script>
 </body>
 </html>
