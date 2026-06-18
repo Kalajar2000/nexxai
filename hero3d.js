@@ -567,7 +567,7 @@ export function createHero(canvas, opts) {
   let scrollN = 0, current = 0, raf = 0, stopped = false, last = performance.now();
   const NAMES = ['orb', 'brain', 'software'];
 
-  function resize() { const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1; renderer.setSize(w, h, false); camera.aspect = w / h; camera.position.x = w > 900 ? -0.85 : 0; camera.updateProjectionMatrix(); if (composer) composer.setSize(w, h); }
+  function resize() { const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1; renderer.setSize(w, h, false); camera.aspect = w / h; camera.position.x = w > 900 ? -0.42 : 0; camera.updateProjectionMatrix(); if (composer) composer.setSize(w, h); }
   resize();
   const ro = new ResizeObserver(resize); ro.observe(canvas);
   function onMove(e) { pointer.tx = e.clientX / window.innerWidth - 0.5; pointer.ty = e.clientY / window.innerHeight - 0.5; }
