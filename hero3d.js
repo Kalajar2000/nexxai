@@ -468,7 +468,7 @@ export function createHero(canvas, opts) {
           var w = canvas.clientWidth || 1, h = canvas.clientHeight || 1;
           composer = new m[0].EffectComposer(renderer);
           composer.addPass(new m[1].RenderPass(scene, camera));
-          bloomPass = new m[2].UnrealBloomPass(new THREE.Vector2(w, h), 0.32, 0.4, 0.82);
+          bloomPass = new m[2].UnrealBloomPass(new THREE.Vector2(w, h), 0.22, 0.4, 0.85);
           composer.addPass(bloomPass); composer.setSize(w, h); usePost = true;
         } catch (e) { usePost = false; }
       }).catch(function () { usePost = false; });
@@ -511,11 +511,11 @@ export function createHero(canvas, opts) {
           model.traverse(function (o) {
             if (o.isMesh && o.material) {
               (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) {
-                if ('envMapIntensity' in m) m.envMapIntensity = 1.15;
+                if ('envMapIntensity' in m) m.envMapIntensity = 0.5;
                 if (m.color && m.emissive) {
                   var mx = Math.max(m.color.r, m.color.g, m.color.b), mn = Math.min(m.color.r, m.color.g, m.color.b), sat = mx > 0 ? (mx - mn) / mx : 0;
-                  if (sat > 0.3 && mx > 0.2) { m.emissive.copy(m.color); m.emissiveIntensity = Math.max(m.emissiveIntensity || 1, 1.35); }
-                  else if ((m.emissive.r + m.emissive.g + m.emissive.b) > 0.05) m.emissiveIntensity = (m.emissiveIntensity || 1) * 1.8;
+                  if (sat > 0.3 && mx > 0.2) { m.emissive.copy(m.color); m.emissiveIntensity = Math.max(m.emissiveIntensity || 1, 1.1); }
+                  else { m.color.multiplyScalar(0.62); }  // darken the bright white porcelain (robot only; cloud untouched)
                 }
                 m.needsUpdate = true;
               });
