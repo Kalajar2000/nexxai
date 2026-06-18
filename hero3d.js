@@ -125,7 +125,7 @@ function makeOrb() {
         col+=fres*0.6;
         float iri=0.5+0.5*sin(fres*10.0 + vN*5.0 + uTime*1.2);
         col+=vec3(0.12,0.06,0.18)*iri*0.5;
-        gl_FragColor=vec4(col*1.28 + fres*0.35, 1.0);
+        gl_FragColor=vec4(col*1.06 + fres*0.16, 1.0);
       }`
   });
   const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(1.5, 5), mat);
@@ -468,7 +468,7 @@ export function createHero(canvas, opts) {
           var w = canvas.clientWidth || 1, h = canvas.clientHeight || 1;
           composer = new m[0].EffectComposer(renderer);
           composer.addPass(new m[1].RenderPass(scene, camera));
-          bloomPass = new m[2].UnrealBloomPass(new THREE.Vector2(w, h), 0.7, 0.55, 0.6);
+          bloomPass = new m[2].UnrealBloomPass(new THREE.Vector2(w, h), 0.32, 0.4, 0.82);
           composer.addPass(bloomPass); composer.setSize(w, h); usePost = true;
         } catch (e) { usePost = false; }
       }).catch(function () { usePost = false; });
@@ -487,12 +487,12 @@ export function createHero(canvas, opts) {
   // lights (only the GLB robot's PBR materials respond; unlit scene elements ignore these).
   // Brighter + a hemisphere fill + a RoomEnvironment env map (added in loadRobot) so her
   // full porcelain colours and glowing circuitry read clearly instead of looking dark.
-  scene.add(new THREE.AmbientLight(0xc7ccff, 1.2));
+  scene.add(new THREE.AmbientLight(0xc7ccff, 0.8));
   scene.add(new THREE.HemisphereLight(0xbcd0ff, 0x3a2d5c, 0.85));
   var kl = new THREE.DirectionalLight(0xffffff, 2.1); kl.position.set(2, 3, 4); scene.add(kl);
   var fl = new THREE.DirectionalLight(0x8aa0ff, 0.85); fl.position.set(-3, -1, 2); scene.add(fl);
   var rimL = new THREE.DirectionalLight(0xff79c6, 0.7); rimL.position.set(0, 2, -4); scene.add(rimL);
-  var frontL = new THREE.DirectionalLight(0xffffff, 1.25); frontL.position.set(0, 0.6, 6); scene.add(frontL);
+  var frontL = new THREE.DirectionalLight(0xffffff, 0.8); frontL.position.set(0, 0.6, 6); scene.add(frontL);
 
   // robot (Higgsfield porcelain GLB), lazy-loaded after first paint, shown in the brain state
   var HH = 2.0;
@@ -511,7 +511,7 @@ export function createHero(canvas, opts) {
           model.traverse(function (o) {
             if (o.isMesh && o.material) {
               (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) {
-                if ('envMapIntensity' in m) m.envMapIntensity = 1.6;
+                if ('envMapIntensity' in m) m.envMapIntensity = 1.15;
                 if (m.color && m.emissive) {
                   var mx = Math.max(m.color.r, m.color.g, m.color.b), mn = Math.min(m.color.r, m.color.g, m.color.b), sat = mx > 0 ? (mx - mn) / mx : 0;
                   if (sat > 0.3 && mx > 0.2) { m.emissive.copy(m.color); m.emissiveIntensity = Math.max(m.emissiveIntensity || 1, 1.35); }
