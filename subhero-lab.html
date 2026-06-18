@@ -26,8 +26,8 @@
     </style>
 </head>
 <body>
-    <div class="lab-top">Subpage hero visuals — preview<span class="build-pill">build 4</span></div>
-    <p class="lab-note">Real continents, 3D bubbles, a real lab, the whole team, a realistic eye. <b>Click</b> Services capabilities &amp; Company hubs (hover a hub for the target).</p>
+    <div class="lab-top">Subpage hero visuals — preview<span class="build-pill">build 5</span></div>
+    <p class="lab-note">A real textured globe (painted earth), 3D bubbles, a real lab, the whole team, a realistic eye. <b>Click</b> Services capabilities &amp; Company hubs (hover a hub for the target).</p>
 
     <section class="demo"><div><div class="eyebrow">Services</div><h2>Ship your whole product.</h2><p>Click a capability — it blooms into a bubble and tells you what we build.</p><a class="btn-glass solid">Start a Project <i class="fas fa-arrow-right"></i></a></div><div class="viz"><canvas data-viz="services"></canvas></div><div class="cap">① Services — capability bubbles (click)</div></section>
 
@@ -37,7 +37,7 @@
 
     <section class="demo"><div><div class="eyebrow">Portfolio</div><h2>Products we've shipped.</h2><p>See all the projects — and be amazed.</p><a class="btn-glass solid">View our work <i class="fas fa-arrow-right"></i></a></div><div class="viz"><canvas data-viz="portfolio"></canvas></div><div class="cap">④ Portfolio — a realistic eye + see-all</div></section>
 
-    <section class="demo"><div><div class="eyebrow">Company</div><h2>Builders, worldwide.</h2><p>Hover a hub for the target, click to meet the office.</p><a class="btn-glass solid">Work With Us <i class="fas fa-arrow-right"></i></a></div><div class="viz"><canvas data-viz="company"></canvas><div class="detail"></div></div><div class="cap">⑤ Company — real-continent globe + hubs</div></section>
+    <section class="demo"><div><div class="eyebrow">Company</div><h2>Builders, worldwide.</h2><p>Hover a hub for the target, click to meet the office.</p><a class="btn-glass solid">Work With Us <i class="fas fa-arrow-right"></i></a></div><div class="viz"><canvas data-viz="company"></canvas><div class="detail"></div></div><div class="cap">⑤ Company — real textured world globe + hubs</div></section>
 
     <script>
     var TAU=Math.PI*2;
@@ -117,18 +117,44 @@
         ctx.strokeStyle='rgba(200,180,255,.95)';ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(cx-12,ay-6);ctx.lineTo(cx,ay+7);ctx.lineTo(cx+12,ay-6);ctx.stroke();
         if(t-clickT<0.95){var oa=Math.max(0,1-(t-clickT)/0.95);ctx.globalAlpha=oa;ctx.fillStyle='rgba(255,205,80,1)';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.font='800 26px "Instrument Serif",serif';ctx.fillText('Ouch!',cx,cy-eh*0.5-14-(t-clickT)*26);ctx.globalAlpha=1;}},
         hit:function(x,y){clickT=now;return false;}};}
-    // ⑤ company — real-continent globe + clickable hubs + hover target
-    function company(){var MW=512,MH=256,dots=[],ready=false,clickHub=-1,cp=2;
-        var img=new Image();img.onload=function(){try{var oc=document.createElement('canvas');oc.width=MW;oc.height=MH;var o=oc.getContext('2d');o.drawImage(img,0,0,MW,MH);var d=o.getImageData(0,0,MW,MH).data;
-            for(var la=-78;la<=82;la+=2.3)for(var lo=-180;lo<180;lo+=2.3){var px=Math.min(MW-1,Math.max(0,Math.floor((lo+180)/360*MW))),py=Math.min(MH-1,Math.max(0,Math.floor((90-la)/180*MH))),k=(py*MW+px)*4;if((d[k]+d[k+1]+d[k+2])/3<15){var a=la*Math.PI/180,q=lo*Math.PI/180;dots.push([Math.cos(a)*Math.sin(q),Math.sin(a),Math.cos(a)*Math.cos(q)]);}}ready=true;}catch(e){}};img.src='assets/img/earth-dark.jpg';
+    // ⑤ company — REAL textured globe (earth texture painted per-pixel onto the visible hemisphere) + clickable hubs + hover target
+    function company(){var MW=1024,MH=512,texData=null,ready=false,clickHub=-1,cp=2;
+        var img=new Image();img.onload=function(){try{var oc=document.createElement('canvas');oc.width=MW;oc.height=MH;var o=oc.getContext('2d');o.drawImage(img,0,0,MW,MH);texData=o.getImageData(0,0,MW,MH).data;ready=true;}catch(e){}};img.src='assets/img/earth-dark.jpg';
         var hubs=[[41.39,2.16,'<b>Barcelona</b> — HQ, product &amp; design.'],[42.36,-71.06,'<b>Boston</b> — client &amp; delivery.'],[27.99,-81.76,'<b>Florida</b> — operations.'],[31.55,74.34,'<b>Lahore</b> — engineering hub.']];
         function rot(v,ry,rx){var x=v[0],y=v[1],z=v[2],c=Math.cos(ry),s=Math.sin(ry),x1=x*c+z*s,z1=-x*s+z*c,c2=Math.cos(rx),s2=Math.sin(rx),y1=y*c2-z1*s2,z2=y*s2+z1*c2;return [x1,y1,z2];}
         var spots=[];
+        // painted-globe buffer: each visible pixel is the EXACT inverse of rot(), so the texture continents register perfectly with the pins. North kept up (screen-y negated). Per-pixel trig is cached; only a cheap longitude shift runs per frame.
+        var gc=document.createElement('canvas'),gx=gc.getContext('2d'),gimg=null,gbuf=null,D=0,NP=0,lastRx=9,idxA,nxA,nyA,z2A,shA,spA,aA,rowA,phiA;
+        function buildPix(d){D=d;gc.width=D;gc.height=D;gimg=gx.createImageData(D,D);gbuf=gimg.data;var hf=D/2,iv=1/hf,Ls=[];
+            for(var j=0;j<D;j++){var ny=(j+0.5-hf)*iv;for(var i=0;i<D;i++){var nx=(i+0.5-hf)*iv;if(nx*nx+ny*ny>1)continue;Ls.push(i,j,nx,ny);}}
+            NP=Ls.length/4;idxA=new Int32Array(NP);nxA=new Float32Array(NP);nyA=new Float32Array(NP);z2A=new Float32Array(NP);shA=new Float32Array(NP);spA=new Float32Array(NP);aA=new Float32Array(NP);rowA=new Int32Array(NP);phiA=new Float32Array(NP);
+            var Lx=-.5,Ly=-.55,Lz=.66,Ll=Math.sqrt(Lx*Lx+Ly*Ly+Lz*Lz);Lx/=Ll;Ly/=Ll;Lz/=Ll;var Hx=Lx,Hy=Ly,Hz=Lz+1,Hl=Math.sqrt(Hx*Hx+Hy*Hy+Hz*Hz);Hx/=Hl;Hy/=Hl;Hz/=Hl;
+            for(var k=0;k<NP;k++){var ii=Ls[k*4],jj=Ls[k*4+1],nx=Ls[k*4+2],ny=Ls[k*4+3],r2=nx*nx+ny*ny,z2=Math.sqrt(1-r2>0?1-r2:0);
+                idxA[k]=(jj*D+ii)*4;nxA[k]=nx;nyA[k]=ny;z2A[k]=z2;
+                var df=nx*Lx+ny*Ly+z2*Lz;if(df<0)df=0;shA[k]=(.34+.66*df)*(.72+.28*z2);
+                var s=nx*Hx+ny*Hy+z2*Hz;if(s<0)s=0;spA[k]=Math.pow(s,28);
+                var ed=(1-Math.sqrt(r2))*hf;aA[k]=ed>1?1:(ed<0?0:ed);}
+            lastRx=9;}
+        function buildTable(rx){var c2=Math.cos(rx),s2=Math.sin(rx),P=Math.PI;
+            for(var k=0;k<NP;k++){var ny=nyA[k],z2=z2A[k],y=z2*s2-ny*c2,z1=ny*s2+z2*c2;if(y>1)y=1;else if(y<-1)y=-1;
+                var row=((.5-Math.asin(y)/P)*MH)|0;rowA[k]=(row<0?0:row>=MH?MH-1:row)*MW;phiA[k]=Math.atan2(nxA[k],z1);}lastRx=rx;}
+        function paint(ry){var td=texData,bf=gbuf,LO=10,HI=20,LI=1/(HI-LO);
+            for(var k=0;k<NP;k++){var lon=phiA[k]-ry,u=lon/TAU+.5;u-=Math.floor(u);var b=td[(rowA[k]+((u*MW)|0))*4];
+                var lnd=(HI-b)*LI;if(lnd<0)lnd=0;else if(lnd>1)lnd=1;var sh=shA[k];
+                var dr=8+56*lnd,dg=13+35*lnd,db=34+106*lnd,lr=34+142*lnd,lg=64+88*lnd,lb=130+125*lnd;
+                var cr=dr+(lr-dr)*sh,cg=dg+(lg-dg)*sh,cb=db+(lb-db)*sh,sp=spA[k]*(1-lnd*.75);
+                cr+=sp*120;cg+=sp*140;cb+=sp*195;var o=idxA[k];bf[o]=cr;bf[o+1]=cg;bf[o+2]=cb;bf[o+3]=aA[k]*255;}
+            gx.putImageData(gimg,0,0);}
         return {draw:function(ctx,t,w,h,p){var cx=w/2,cy=h/2,R=Math.min(w,h)*0.4,ry=t*0.16+(p.x-.5)*1.3,rx=(p.y-.5)*0.5,mx=p.x*w,my=p.y*h;
-            var sg=ctx.createRadialGradient(cx-R*0.3,cy-R*0.3,R*0.2,cx,cy,R);sg.addColorStop(0,'rgba(34,38,78,.55)');sg.addColorStop(1,'rgba(10,12,28,.6)');ctx.fillStyle=sg;ctx.beginPath();ctx.arc(cx,cy,R,0,TAU);ctx.fill();ctx.strokeStyle='rgba(110,120,200,.18)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,R,0,TAU);ctx.stroke();
-            dots.forEach(function(v){var r=rot(v,ry,rx);if(r[2]<-0.02)return;var x=cx+r[0]*R,y=cy+r[1]*R,d=(r[2]+1)/2;ctx.fillStyle='rgba(150,180,255,'+(0.2+d*0.55)+')';ctx.beginPath();ctx.arc(x,y,0.8+d*1.2,0,TAU);ctx.fill();});
-            if(!ready){ctx.fillStyle='rgba(150,160,200,.5)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='500 11px Inter';ctx.fillText('loading world…',cx,cy);}
-            spots=[];hubs.forEach(function(hb,hi){var la=hb[0]*Math.PI/180,lo=hb[1]*Math.PI/180,v=[Math.cos(la)*Math.sin(lo),Math.sin(la),Math.cos(la)*Math.cos(lo)],r=rot(v,ry,rx);if(r[2]<-0.08)return;var x=cx+r[0]*R,y=cy+r[1]*R;spots.push({x:x,y:y,r:16,d:hb[2],i:hi});var hover=Math.hypot(mx-x,my-y)<24,pl=0.6+0.4*Math.sin(t*3+hi);
+            var ag=ctx.createRadialGradient(cx,cy,R*0.82,cx,cy,R*1.32);ag.addColorStop(0,'rgba(120,110,240,0)');ag.addColorStop(.42,'rgba(126,114,250,.22)');ag.addColorStop(1,'rgba(80,70,200,0)');ctx.fillStyle=ag;ctx.beginPath();ctx.arc(cx,cy,R*1.32,0,TAU);ctx.fill();
+            if(ready){var want=Math.max(160,Math.min(Math.round(2*R),360));if(D!==want)buildPix(want);if(Math.abs(rx-lastRx)>0.004)buildTable(rx);paint(ry);
+                ctx.imageSmoothingEnabled=true;ctx.drawImage(gc,cx-R,cy-R,2*R,2*R);
+                ctx.lineWidth=1;ctx.strokeStyle='rgba(150,170,255,.07)';var gi,gj,X,Y,vv,r3,seg;
+                for(gi=-60;gi<=60;gi+=30){var la=gi*Math.PI/180;seg=false;ctx.beginPath();for(gj=0;gj<=360;gj+=6){var lo=gj*Math.PI/180;vv=[Math.cos(la)*Math.sin(lo),Math.sin(la),Math.cos(la)*Math.cos(lo)];r3=rot(vv,ry,rx);if(r3[2]<0.03){seg=false;continue;}X=cx+r3[0]*R;Y=cy-r3[1]*R;if(seg)ctx.lineTo(X,Y);else{ctx.moveTo(X,Y);seg=true;}}ctx.stroke();}
+                for(gi=0;gi<360;gi+=30){var lo2=gi*Math.PI/180;seg=false;ctx.beginPath();for(gj=-78;gj<=78;gj+=6){var la2=gj*Math.PI/180;vv=[Math.cos(la2)*Math.sin(lo2),Math.sin(la2),Math.cos(la2)*Math.cos(lo2)];r3=rot(vv,ry,rx);if(r3[2]<0.03){seg=false;continue;}X=cx+r3[0]*R;Y=cy-r3[1]*R;if(seg)ctx.lineTo(X,Y);else{ctx.moveTo(X,Y);seg=true;}}ctx.stroke();}
+                ctx.lineWidth=1.4;ctx.strokeStyle='rgba(155,170,255,.42)';ctx.beginPath();ctx.arc(cx,cy,R,0,TAU);ctx.stroke();
+            }else{var sg=ctx.createRadialGradient(cx-R*0.3,cy-R*0.3,R*0.2,cx,cy,R);sg.addColorStop(0,'rgba(34,38,78,.55)');sg.addColorStop(1,'rgba(10,12,28,.6)');ctx.fillStyle=sg;ctx.beginPath();ctx.arc(cx,cy,R,0,TAU);ctx.fill();ctx.fillStyle='rgba(150,160,200,.5)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='500 11px Inter';ctx.fillText('loading world…',cx,cy);}
+            spots=[];hubs.forEach(function(hb,hi){var la=hb[0]*Math.PI/180,lo=hb[1]*Math.PI/180,v=[Math.cos(la)*Math.sin(lo),Math.sin(la),Math.cos(la)*Math.cos(lo)],r=rot(v,ry,rx);if(r[2]<-0.08)return;var x=cx+r[0]*R,y=cy-r[1]*R;spots.push({x:x,y:y,r:16,d:hb[2],i:hi});var hover=Math.hypot(mx-x,my-y)<24,pl=0.6+0.4*Math.sin(t*3+hi);
                 var g=ctx.createRadialGradient(x,y,0,x,y,10+pl*3);g.addColorStop(0,'rgba(255,90,150,.95)');g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,10+pl*3,0,TAU);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x,y,2.4,0,TAU);ctx.fill();
                 if(hover){var tr=13+Math.sin(t*5)*3;ctx.strokeStyle='rgba(255,150,190,.95)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,tr,0,TAU);ctx.stroke();for(var a=0;a<4;a++){var an=a/4*TAU+0.4;ctx.beginPath();ctx.moveTo(x+Math.cos(an)*(tr-3),y+Math.sin(an)*(tr-3));ctx.lineTo(x+Math.cos(an)*(tr+6),y+Math.sin(an)*(tr+6));ctx.stroke();}}});
             if(clickHub>=0&&cp<1){cp+=0.03;var sp2=null;for(var i=0;i<spots.length;i++)if(spots[i].i===clickHub)sp2=spots[i];if(sp2){ctx.strokeStyle='rgba(255,130,180,'+(1-cp)+')';ctx.lineWidth=2;ctx.beginPath();ctx.arc(sp2.x,sp2.y,12+cp*34,0,TAU);ctx.stroke();}}
