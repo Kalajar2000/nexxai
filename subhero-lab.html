@@ -26,7 +26,7 @@
     </style>
 </head>
 <body>
-    <div class="lab-top">Subpage hero visuals — preview<span class="build-pill">build 3</span></div>
+    <div class="lab-top">Subpage hero visuals — preview<span class="build-pill">build 4</span></div>
     <p class="lab-note">Real continents, 3D bubbles, a real lab, the whole team, a realistic eye. <b>Click</b> Services capabilities &amp; Company hubs (hover a hub for the target).</p>
 
     <section class="demo"><div><div class="eyebrow">Services</div><h2>Ship your whole product.</h2><p>Click a capability — it blooms into a bubble and tells you what we build.</p><a class="btn-glass solid">Start a Project <i class="fas fa-arrow-right"></i></a></div><div class="viz"><canvas data-viz="services"></canvas></div><div class="cap">① Services — capability bubbles (click)</div></section>
@@ -61,7 +61,7 @@
         return {draw:function(ctx,t,w,h,p){var cx=w/2,cy=h/2,R=Math.min(w,h)*0.31,ox=(p.x-.5)*18,oy=(p.y-.5)*11;grow+=(((sel>=0)?1:0)-grow)*0.12;
             var cg=ctx.createRadialGradient(cx+ox,cy+oy,0,cx+ox,cy+oy,R*0.5);cg.addColorStop(0,'rgba(180,150,255,.65)');cg.addColorStop(1,'rgba(120,90,240,0)');ctx.fillStyle=cg;ctx.beginPath();ctx.arc(cx+ox,cy+oy,R*0.5,0,TAU);ctx.fill();
             ctx.fillStyle='rgba(255,255,255,.85)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='800 10px Inter';ctx.fillText('FULL',cx+ox,cy+oy-5);ctx.fillText('STACK',cx+ox,cy+oy+6);
-            spots=[];var arr=caps.map(function(c,i){var a=t*0.38+i/caps.length*TAU,ex=Math.cos(a)*R,ey=Math.sin(a)*R*0.42;return {x:cx+ex+ox,y:cy+ey+oy,d:(ey/(R*0.42)+1)/2,c:c,i:i};});arr.sort(function(a,b){return a.d-b.d;});
+            spots=[];var arr=caps.map(function(c,i){var a=t*0.38+i/caps.length*TAU,ex=Math.cos(a)*R,ey=Math.sin(a)*R*0.42;return {x:cx+ex+ox,y:cy+ey+oy,d:(ey/(R*0.42)+1)/2,c:c,i:i};});arr.sort(function(a,b){return a.d-b.d;});var selData=null;
             arr.forEach(function(it){var isSel=it.i===sel,rad=(11+it.d*6)*(isSel?1+grow*1.25:1);
                 ctx.strokeStyle='rgba(150,130,255,'+(0.05+it.d*0.13)+')';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx+ox,cy+oy);ctx.lineTo(it.x,it.y);ctx.stroke();
                 var bg=ctx.createRadialGradient(it.x-rad*0.36,it.y-rad*0.42,rad*0.08,it.x,it.y,rad);
@@ -71,10 +71,11 @@
                 ctx.fillStyle='rgba(255,255,255,'+(0.7+it.d*0.3)+')';ctx.textBaseline='middle';ctx.font='900 '+Math.round(rad*0.8)+'px "Font Awesome 6 Free"';ctx.fillText(it.c[0],it.x,it.y);
                 if(!isSel){ctx.fillStyle='rgba(225,220,255,'+(0.3+it.d*0.5)+')';ctx.font='600 10px Inter';ctx.fillText(it.c[1],it.x,it.y+rad+10);}
                 spots.push({x:it.x,y:it.y,r:rad+5,i:it.i});
-                if(isSel&&grow>0.25){var bw=212,bx=it.x+rad+14,by=it.y-32;if(bx+bw>w-8)bx=it.x-rad-14-bw;if(by<8)by=8;if(by+70>h-8)by=h-78;
-                    ctx.globalAlpha=Math.min(1,(grow-0.25)/0.5);rr(ctx,bx,by,bw,68,12);ctx.fillStyle='rgba(16,14,34,.96)';ctx.fill();ctx.strokeStyle='rgba(165,140,255,.55)';ctx.lineWidth=1;ctx.stroke();
-                    ctx.fillStyle='#fff';ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.font='700 13px Inter';ctx.fillText(it.c[1],bx+14,by+22);
-                    ctx.fillStyle='rgba(205,208,228,.92)';ctx.font='400 11px Inter';wrap(ctx,it.c[2],bx+14,by+39,bw-28,14);ctx.globalAlpha=1;ctx.textAlign='center';}});
+                if(isSel)selData={x:it.x,y:it.y,rad:rad,c:it.c};});
+            if(selData&&grow>0.25){var sd=selData,bw=216,bx=sd.x+sd.rad+14,by=sd.y-38;if(bx+bw>w-8)bx=sd.x-sd.rad-14-bw;if(by<8)by=8;if(by+76>h-8)by=h-84;
+                ctx.globalAlpha=Math.min(1,(grow-0.25)/0.5);rr(ctx,bx,by,bw,76,13);ctx.fillStyle='rgba(12,10,26,.98)';ctx.fill();ctx.strokeStyle='rgba(185,160,255,.8)';ctx.lineWidth=1.4;ctx.stroke();
+                ctx.fillStyle='#fff';ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.font='800 15px Inter';ctx.fillText(sd.c[1],bx+15,by+26);
+                ctx.fillStyle='rgba(214,216,236,.96)';ctx.font='400 12px Inter';wrap(ctx,sd.c[2],bx+15,by+46,bw-30,15);ctx.globalAlpha=1;ctx.textAlign='center';}
             if(sel<0){ctx.fillStyle='rgba(150,140,180,.5)';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.font='500 10px Inter';ctx.fillText('click a capability',cx+ox,h-8);}},
         hit:function(x,y){for(var i=0;i<spots.length;i++){var s=spots[i];if(Math.hypot(x-s.x,y-s.y)<s.r){sel=(sel===s.i?-1:s.i);return null;}}sel=-1;return null;}};}
     // ② ai lab — a lab/team shipping software products
@@ -91,17 +92,15 @@
                 var g=ctx.createRadialGradient(x,y,0,x,y,13);g.addColorStop(0,'rgba(150,200,255,'+(0.6*al)+')');g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,13,0,TAU);ctx.fill();ctx.fillStyle='rgba(255,255,255,'+al+')';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='900 12px "Font Awesome 6 Free"';ctx.fillText(s.ic,x,y);}
             ctx.fillStyle='rgba(120,200,255,.55)';ctx.textAlign='right';ctx.textBaseline='alphabetic';ctx.font='700 10px Inter';ctx.fillText('SHIPPING →',w-14,h-12);}};}
     // ③ upskilling — growth curve + the whole team climbing
-    function upskill(){var sp=[];for(var i=0;i<18;i++)sp.push({x:Math.random(),y:Math.random(),s:.2+Math.random()*.6});var team=8;
-        return {draw:function(ctx,t,w,h,p){sp.forEach(function(s){s.y-=s.s*.0045;if(s.y<0){s.y=1;s.x=Math.random();}ctx.fillStyle='rgba(175,150,255,'+(0.1+s.s*0.16)+')';ctx.beginPath();ctx.arc(s.x*w,s.y*h,1+s.s*1.3,0,TAU);ctx.fill();});
-            var x0=w*0.1,x1=w*0.92,base=h*0.84,n=44,lvl=0.78+0.16*Math.sin(t*0.4);function cY(fr){return base-(0.1+fr*0.66*lvl)*h*0.62;}
-            ctx.beginPath();for(var i=0;i<=n;i++){var fr=i/n,x=x0+(x1-x0)*fr,y=cY(fr);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.lineTo(x1,base);ctx.lineTo(x0,base);ctx.closePath();var ag=ctx.createLinearGradient(0,h*0.18,0,base);ag.addColorStop(0,'rgba(139,92,246,.28)');ag.addColorStop(1,'rgba(139,92,246,0)');ctx.fillStyle=ag;ctx.fill();
-            ctx.strokeStyle='rgba(205,185,255,.8)';ctx.lineWidth=2.4;ctx.beginPath();for(var i=0;i<=n;i++){var fr=i/n,x=x0+(x1-x0)*fr,y=cY(fr);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();
-            var lead=0.66+0.12*Math.sin(t*0.5);for(var k=team-1;k>=0;k--){var fr=lead-k*0.05;if(fr<0.02)continue;var x=x0+(x1-x0)*fr,y=cY(fr)-11,sz=k===0?9:7;
-                var g=ctx.createRadialGradient(x,y,0,x,y,sz+8);g.addColorStop(0,'rgba(150,120,255,'+(k===0?0.7:0.45)+')');g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,sz+8,0,TAU);ctx.fill();
-                ctx.fillStyle='rgba(30,24,60,.96)';ctx.beginPath();ctx.arc(x,y,sz,0,TAU);ctx.fill();ctx.strokeStyle='rgba(185,160,255,.85)';ctx.lineWidth=1.2;ctx.stroke();ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='900 '+(sz)+'px "Font Awesome 6 Free"';ctx.fillText('',x,y);}
-            ctx.fillStyle='rgba(170,160,210,.65)';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.font='700 10px Inter';ctx.fillText('YOUR WHOLE TEAM — LEVELLING UP TOGETHER',w/2,h-12);}};}
+    function upskill(){var sp=[];for(var i=0;i<24;i++)sp.push({x:Math.random(),y:Math.random(),s:.2+Math.random()*.6});
+        return {draw:function(ctx,t,w,h,p){sp.forEach(function(s){s.y-=s.s*.0045;if(s.y<0){s.y=1;s.x=Math.random();}ctx.fillStyle='rgba(175,150,255,'+(0.1+s.s*0.2)+')';ctx.beginPath();ctx.arc(s.x*w,s.y*h,1+s.s*1.5,0,TAU);ctx.fill();});
+            var n=6,x0=w*0.18,x1=w*0.84,base=h*0.78,pts=[];
+            for(var i=0;i<n;i++){var fr=i/(n-1),val=0.18+fr*0.6+0.05*Math.sin(t*1.2+i),hh=val*h*0.55,x=x0+(x1-x0)*fr,y=base-hh;pts.push([x,y]);var near=Math.max(0,1-Math.abs(p.x*w-x)/64);var bg=ctx.createLinearGradient(0,y,0,base);bg.addColorStop(0,'rgba(139,92,246,'+(0.5+near*0.45)+')');bg.addColorStop(1,'rgba(59,130,246,.06)');ctx.fillStyle=bg;rr(ctx,x-13,y,26,hh,5);ctx.fill();}
+            ctx.strokeStyle='rgba(205,185,255,.85)';ctx.lineWidth=2.4;ctx.beginPath();pts.forEach(function(q,i){i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);});ctx.stroke();
+            pts.forEach(function(q){var near=Math.max(0,1-Math.abs(p.x*w-q[0])/64),rad=11+near*9;var g=ctx.createRadialGradient(q[0],q[1],0,q[0],q[1],rad);g.addColorStop(0,'rgba(222,206,255,'+(0.7+near*0.3)+')');g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.beginPath();ctx.arc(q[0],q[1],rad,0,TAU);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(q[0],q[1],2.6+near*1.6,0,TAU);ctx.fill();});
+            ctx.fillStyle='rgba(170,160,210,.6)';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.font='700 10px Inter';ctx.fillText('SKILL GROWTH - hover the points',w/2,h-12);}};}
     // ④ portfolio — realistic almond eye + see-all
-    function portfolio(){return {draw:function(ctx,t,w,h,p){var cx=w/2,cy=h*0.45,ew=Math.min(w*0.78,h*1.5),eh=ew*0.4;var bt=t%4.6,open=bt>4.25?Math.abs(Math.cos((bt-4.25)/0.35*Math.PI)):1;
+    function portfolio(){var clickT=-9,now=0;return {draw:function(ctx,t,w,h,p){now=t;var cx=w/2,cy=h*0.45,ew=Math.min(w*0.78,h*1.5),eh=ew*0.4;var bt=t%4.6,open=bt>4.25?Math.abs(Math.cos((bt-4.25)/0.35*Math.PI)):1;if(t-clickT<0.5)open=Math.abs(Math.cos((t-clickT)/0.5*Math.PI));
         ctx.save();eyePath(ctx,cx,cy,ew,eh,open);ctx.clip();
         var sg=ctx.createRadialGradient(cx,cy,0,cx,cy,ew*0.5);sg.addColorStop(0,'rgba(228,231,247,.96)');sg.addColorStop(.68,'rgba(178,184,214,.85)');sg.addColorStop(1,'rgba(110,116,152,.7)');ctx.fillStyle=sg;ctx.fill();
         var ir=eh*0.56,ix=cx+(p.x-.5)*ew*0.22,iy=cy+(p.y-.5)*eh*0.34;
@@ -115,7 +114,9 @@
         ctx.strokeStyle='rgba(175,155,255,.85)';ctx.lineWidth=2.6;ctx.beginPath();ctx.moveTo(cx-ew/2,cy);ctx.quadraticCurveTo(cx,cy-eh/2*open,cx+ew/2,cy);ctx.stroke();
         ctx.strokeStyle='rgba(120,110,180,.5)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(cx-ew/2,cy);ctx.quadraticCurveTo(cx,cy+eh/2*open,cx+ew/2,cy);ctx.stroke();
         var ay=h*0.93+Math.sin(t*2)*3;ctx.fillStyle='rgba(200,180,255,.9)';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.font='700 12px Inter';ctx.fillText('SEE ALL PROJECTS',cx,ay-15);
-        ctx.strokeStyle='rgba(200,180,255,.95)';ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(cx-12,ay-6);ctx.lineTo(cx,ay+7);ctx.lineTo(cx+12,ay-6);ctx.stroke();}};}
+        ctx.strokeStyle='rgba(200,180,255,.95)';ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(cx-12,ay-6);ctx.lineTo(cx,ay+7);ctx.lineTo(cx+12,ay-6);ctx.stroke();
+        if(t-clickT<0.95){var oa=Math.max(0,1-(t-clickT)/0.95);ctx.globalAlpha=oa;ctx.fillStyle='rgba(255,205,80,1)';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.font='800 26px "Instrument Serif",serif';ctx.fillText('Ouch!',cx,cy-eh*0.5-14-(t-clickT)*26);ctx.globalAlpha=1;}},
+        hit:function(x,y){clickT=now;return false;}};}
     // ⑤ company — real-continent globe + clickable hubs + hover target
     function company(){var MW=512,MH=256,dots=[],ready=false,clickHub=-1,cp=2;
         var img=new Image();img.onload=function(){try{var oc=document.createElement('canvas');oc.width=MW;oc.height=MH;var o=oc.getContext('2d');o.drawImage(img,0,0,MW,MH);var d=o.getImageData(0,0,MW,MH).data;
