@@ -13,80 +13,50 @@
         .lab-wrap{max-width:1180px;margin:0 auto;padding:54px 24px 120px}
         .lab-top{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600}
         .build-pill{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#9b8cff;border:1px solid rgba(155,140,255,.4);border-radius:999px;padding:3px 9px;margin-left:10px;vertical-align:middle}
-        .lab-h{font-family:'Poppins',sans-serif;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:#9b8cff;margin:50px 0 14px}
-        .lab-sub{color:#8b93ad;font-size:.95rem;margin:6px 0 24px}
+        .lab-h{font-family:'Poppins',sans-serif;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:#9b8cff;margin:48px 0 14px}
+        .lab-sub{color:#8b93ad;font-size:.95rem;margin:6px 0 22px}
 
-        /* shared approved card base: glass + tilt */
+        /* approved: glass + tilt; light = BIGGER border glow */
         .rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:22px}
         .rcard{position:relative;border-radius:18px;padding:26px;background:rgba(255,255,255,.032);border:1px solid rgba(255,255,255,.08);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);overflow:hidden;transition:transform .16s ease,box-shadow .25s;transform-style:preserve-3d;will-change:transform}
         .rcard>*{position:relative;z-index:3}
         .rcard .ic{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff;background:linear-gradient(135deg,var(--violet),#3b82f6);margin-bottom:15px;box-shadow:0 8px 20px rgba(124,58,237,.4)}
         .rcard h3{font-size:1.08rem;margin:0 0 7px}
         .rcard p{color:var(--muted);font-size:.9rem;margin:0;line-height:1.5}
-        .rcard .tag{position:absolute;top:12px;right:14px;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:#9b8cff;z-index:4}
         .rcard:hover{box-shadow:0 24px 60px rgba(0,0,0,.5)}
+        /* BIGGER border glow (approved + enlarged) */
+        .rcard::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),rgba(185,150,255,1),rgba(100,150,255,.5) 42%,transparent 62%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .3s;pointer-events:none;z-index:1}
+        .rcard:hover::after{opacity:1}
 
-        /* OPTION 1 — soft, smaller spotlight (toned-down original) */
-        .opt1::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(150px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.09),transparent 42%);opacity:0;transition:opacity .3s;pointer-events:none;z-index:1}
-        .opt1:hover::before{opacity:1}
-
-        /* OPTION 2 — border-glow only (no surface wash) */
-        .opt2::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.4px;background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),rgba(170,140,255,.95),rgba(90,140,255,.35) 45%,transparent 62%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .3s;pointer-events:none;z-index:1}
-        .opt2:hover::after{opacity:1}
-
-        /* OPTION 3 — glowing dot follows the cursor */
-        .opt3::before{content:"";position:absolute;left:var(--mx,50%);top:var(--my,50%);width:120px;height:120px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(150,130,255,.5),rgba(90,140,255,.16) 45%,transparent 70%);filter:blur(8px);opacity:0;transition:opacity .3s;pointer-events:none;z-index:1}
-        .opt3:hover::before{opacity:1}
-
-        /* OPTION 4 — diagonal sheen sweep on hover (no radial) */
-        .opt4::after{content:"";position:absolute;top:0;left:-70%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.16),transparent);transform:skewX(-18deg);transition:left .7s ease;pointer-events:none;z-index:1}
-        .opt4:hover::after{left:130%}
-
-        /* OPTION 5 — tilt only, no light */
-
-        /* ---------- logo board ---------- */
-        .board{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
-        .ltile{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px 12px 10px;text-align:center}
-        .ltile img{height:58px;width:100%;opacity:.85;filter:grayscale(1) brightness(0) invert(1);object-fit:contain}
-        .ltile .fn{font-size:.66rem;color:#7c84a0;margin-top:10px;font-family:monospace}
-
-        .mq{margin-top:26px;overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
-        .mq-track{display:flex;gap:64px;width:max-content;align-items:center;animation:mqs 40s linear infinite}
+        /* logo size rows */
+        .mqrow{margin:8px 0 22px}
+        .mqrow .lbl{font-size:.78rem;color:#9b8cff;font-family:monospace;margin-bottom:8px}
+        .mq{overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+        .mq-track{display:flex;gap:60px;width:max-content;align-items:center;animation:mqs 42s linear infinite}
         .mq:hover .mq-track{animation-play-state:paused}
-        .mq-track img{height:56px;width:auto;opacity:.72;filter:grayscale(1) brightness(0) invert(1);object-fit:contain}
+        .mq-track img{width:auto;opacity:.74;filter:grayscale(1) brightness(0) invert(1);object-fit:contain}
         @keyframes mqs{to{transform:translateX(-50%)}}
     </style>
 </head>
 <body>
     <div class="lab-wrap">
-        <div class="lab-top">UI Lab — hover light options + logos<span class="build-pill">build 2</span></div>
-        <p class="lab-sub">Buttons, tilt &amp; liquid glass are approved. Pick which <b>hover light</b> feels right, and use the logo board to tell me the duplicate + the order.</p>
+        <div class="lab-top">UI Lab — border glow (bigger) + logo sizes<span class="build-pill">build 3</span></div>
+        <p class="lab-sub">Border glow approved &amp; enlarged. Hover the cards to confirm, then pick a logo size from the rows below (all logos, scrolling).</p>
 
-        <div class="lab-h">Pick the hover light (tilt + glass stay the same)</div>
+        <div class="lab-h">Bigger border glow — hover to confirm</div>
         <div class="rgrid">
-            <div class="rcard opt1"><span class="tag">Option 1 · soft spotlight</span><div class="ic"><i class="fas fa-robot"></i></div><h3>AI &amp; Agentic Systems</h3><p>Smaller, softer glow that follows the cursor.</p></div>
-            <div class="rcard opt2"><span class="tag">Option 2 · border glow</span><div class="ic"><i class="fas fa-cloud"></i></div><h3>Custom Software</h3><p>Only the edge lights up near the cursor. No surface wash.</p></div>
-            <div class="rcard opt3"><span class="tag">Option 3 · cursor orb</span><div class="ic"><i class="fas fa-mobile-screen-button"></i></div><h3>Mobile Development</h3><p>A small glowing orb trails your cursor inside the card.</p></div>
-            <div class="rcard opt4"><span class="tag">Option 4 · sheen sweep</span><div class="ic"><i class="fas fa-code"></i></div><h3>Web Development</h3><p>A light streak sweeps across once on hover.</p></div>
-            <div class="rcard opt1" style="--mx:50%;--my:50%"><span class="tag">Option 5 · tilt only</span><div class="ic"><i class="fas fa-server"></i></div><h3>DevOps &amp; Cloud</h3><p>No light at all — just the tilt + glass. (This card has the soft glow disabled.)</p></div>
+            <div class="rcard"><div class="ic"><i class="fas fa-robot"></i></div><h3>AI &amp; Agentic Systems</h3><p>Bigger, brighter edge glow that follows your cursor.</p></div>
+            <div class="rcard"><div class="ic"><i class="fas fa-cloud"></i></div><h3>Custom Software &amp; SaaS</h3><p>Tilt + liquid glass + the enlarged border glow.</p></div>
+            <div class="rcard"><div class="ic"><i class="fas fa-mobile-screen-button"></i></div><h3>Mobile Development</h3><p>Sweep across to see the glow track the edge.</p></div>
         </div>
 
-        <div class="lab-h">Logo board — which one is the duplicate J&amp;J? Which are missing?</div>
-        <p class="lab-sub">Every logo file we have. Tell me the filename(s) to drop and the ones to keep, and I'll set the final lineup.</p>
-        <div class="board" id="board"></div>
-
-        <div class="lab-h">Marquee preview (bigger)</div>
-        <div class="mq"><div class="mq-track" id="mqt"></div></div>
+        <div class="lab-h">Logo size — pick one (all logos shown)</div>
+        <div id="rows"></div>
     </div>
 
     <script>
         var MAX = 9;
         document.querySelectorAll('.rcard').forEach(function (el) {
-            if (el.querySelector('.tag') && /tilt only/.test(el.querySelector('.tag').textContent)) {
-                el.addEventListener('pointermove', function (e) { var r = el.getBoundingClientRect(); var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height; el.style.transform = 'perspective(900px) rotateY(' + ((x - .5) * MAX) + 'deg) rotateX(' + ((.5 - y) * MAX) + 'deg) translateY(-4px)'; });
-                el.addEventListener('pointerleave', function () { el.style.transform = ''; });
-                return;
-            }
             el.addEventListener('pointermove', function (e) {
                 var r = el.getBoundingClientRect(); var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
                 el.style.setProperty('--mx', (x * 100) + '%'); el.style.setProperty('--my', (y * 100) + '%');
@@ -94,14 +64,11 @@
             });
             el.addEventListener('pointerleave', function () { el.style.transform = ''; });
         });
-        // logo board (all files) + marquee
         var files = ['9','10','11','12','13','14','15','16','17','18','19','IntroSlide','IntroSlide(2)','IntroSlide(3)','IntroSlide(4)','IntroSlide(5)','IntroSlide(6)','IntroSlide(7)','IntroSlide(8)'];
-        var b = document.getElementById('board'), bh = '';
-        files.forEach(function (f) { bh += '<div class="ltile"><img src="assets/logos/' + f + '.svg" alt=""><div class="fn">' + f + '.svg</div></div>'; });
-        b.innerHTML = bh;
-        var t = document.getElementById('mqt'), mh = '';
-        for (var k = 0; k < 2; k++) files.forEach(function (f) { mh += '<img src="assets/logos/' + f + '.svg" alt="">'; });
-        t.innerHTML = mh;
+        function track(h){ var s=''; for(var k=0;k<2;k++) files.forEach(function(f){ s+='<img src="assets/logos/'+f+'.svg" style="height:'+h+'px" alt="">'; }); return s; }
+        var sizes = [['Now',54],['+10%',59],['+20%',65],['+30%',70],['+40%',76]];
+        var out=''; sizes.forEach(function(z){ out+='<div class="mqrow"><div class="lbl">'+z[0]+' — '+z[1]+'px</div><div class="mq"><div class="mq-track">'+track(z[1])+'</div></div></div>'; });
+        document.getElementById('rows').innerHTML = out;
     </script>
 </body>
 </html>
