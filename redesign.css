@@ -13,7 +13,7 @@ section[id],.hero{scroll-margin-top:92px}
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 ul{list-style:none}
-.serif{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-.01em}
+.serif{font-family:'Poppins',sans-serif;font-style:normal;font-weight:600;letter-spacing:-.015em}
 .wrap{width:100%;max-width:1240px;margin:0 auto;padding:0 24px}
 
 /* ---- background ---- */
@@ -63,7 +63,7 @@ ul{list-style:none}
 .chip{display:inline-flex;align-items:center;gap:9px;padding:8px 8px 8px 14px;border-radius:999px;font-size:.82rem;color:var(--muted);margin-bottom:26px}
 .chip b{font-size:.7rem;font-weight:700;letter-spacing:.04em;color:#fff;background:linear-gradient(45deg,var(--violet),var(--blue));padding:4px 10px;border-radius:999px}
 
-.hero h1{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(2.5rem,5.2vw,4.8rem);line-height:.98;letter-spacing:-.02em;margin-bottom:24px;overflow-wrap:break-word}
+.hero h1{font-family:'Poppins',sans-serif;font-style:normal;font-weight:600;font-size:clamp(2.4rem,5vw,4.4rem);line-height:1.05;letter-spacing:-.022em;margin-bottom:24px;overflow-wrap:break-word}
 .hero h1 .grad,.gradtext{background:linear-gradient(100deg,#fff 28%,var(--violet) 65%,var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero .sub{font-size:1.12rem;color:var(--muted);max-width:540px;margin-bottom:32px;font-weight:300}
 
@@ -85,7 +85,7 @@ ul{list-style:none}
 /* ---- blur-in reveal ---- */
 .rv{opacity:0;filter:blur(14px);transform:translateY(38px);display:inline-block;will-change:opacity,transform,filter}
 .rv.in{opacity:1;filter:blur(0);transform:none;transition:opacity .9s cubic-bezier(.16,1,.3,1),filter .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
-@media(prefers-reduced-motion:reduce){.rv,.rv.in{opacity:1!important;filter:none!important;transform:none!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){.rv,.rv.in{opacity:1!important;filter:none!important;transform:none!important;transition:none!important}#cf button[type="submit"]{animation:none!important}}
 
 /* ---- stats ---- */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:64px}
@@ -106,7 +106,7 @@ ul{list-style:none}
 /* ---- sections ---- */
 .sec{padding:122px 0;position:relative}
 .eyebrow{font-family:'Poppins',sans-serif;font-size:.76rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--violet);display:block;margin-bottom:14px}
-.sec h2{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(2.2rem,4.4vw,3.6rem);line-height:1.02;letter-spacing:-.02em;margin-bottom:14px}
+.sec h2{font-family:'Poppins',sans-serif;font-style:normal;font-weight:600;font-size:clamp(2rem,4vw,3.2rem);line-height:1.1;letter-spacing:-.022em;margin-bottom:14px}
 .head{margin-bottom:56px;max-width:640px}
 .head.center{margin:0 auto 56px;text-align:center}
 .head p{color:var(--muted);font-weight:300;font-size:1.1rem}
@@ -181,6 +181,10 @@ ul{list-style:none}
 .cinfo p{color:var(--muted);font-weight:300;margin-bottom:18px}
 .cinfo .row{display:flex;align-items:center;gap:12px;color:var(--muted);margin-bottom:12px;font-size:.95rem}
 .cinfo .row i{color:var(--violet);width:18px}
+/* contact button heartbeat */
+#cf button[type="submit"]{animation:beat 2.1s ease-in-out infinite}
+#cf button[type="submit"]:hover{animation-play-state:paused}
+@keyframes beat{0%,30%,100%{transform:scale(1)}8%{transform:scale(1.05)}16%{transform:scale(1)}23%{transform:scale(1.025)}}
 
 /* closing cta */
 .cta-band{text-align:center;padding:84px 40px;margin:30px 0 0}
@@ -236,7 +240,7 @@ body.menu-open,body.modal-open{overflow:hidden}
 .phero{position:relative;padding:172px 0 64px;overflow:hidden}
 .phero .wrap{position:relative;z-index:2}
 .phero-glow{position:absolute;width:520px;height:520px;right:-4%;top:-8%;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.32),transparent 60%);filter:blur(50px);z-index:0;pointer-events:none}
-.phero h1{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(2.4rem,5.6vw,4.6rem);line-height:.99;letter-spacing:-.02em;margin:18px 0 20px;max-width:17ch;overflow-wrap:break-word}
+.phero h1{font-family:'Poppins',sans-serif;font-style:normal;font-weight:600;font-size:clamp(2.2rem,5vw,4rem);line-height:1.06;letter-spacing:-.022em;margin:18px 0 20px;max-width:20ch;overflow-wrap:break-word}
 .phero .sub{font-size:1.15rem;color:var(--muted);max-width:640px;font-weight:300;margin-bottom:30px}
 
 /* ---- feature cards (services / capabilities / benefits) ---- */
@@ -288,7 +292,7 @@ body.menu-open,body.modal-open{overflow:hidden}
 
 /* ---- story ---- */
 .story{display:grid;grid-template-rows:auto auto;grid-auto-flow:column;grid-template-columns:1fr 1fr;column-gap:54px;row-gap:6px}
-.story h3{font-family:'Instrument Serif',serif;font-style:italic;font-size:1.85rem;margin:0 0 8px;font-weight:400}
+.story h3{font-family:'Poppins',sans-serif;font-style:normal;font-size:1.3rem;margin:0 0 8px;font-weight:600}
 @media(max-width:760px){.story{display:block}.story h3{margin:26px 0 8px}.story h3:first-child{margin-top:0}}
 .story p{color:var(--muted);font-weight:300;font-size:1.08rem}
 
@@ -327,7 +331,7 @@ body.menu-open,body.modal-open{overflow:hidden}
 .work-modal-media video,.work-modal-media iframe{width:100%;height:100%;object-fit:contain;display:block;border:0;background:#000}
 .work-modal-body{padding:30px}
 .work-modal-cat{color:var(--blue);font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
-.work-modal-body h3{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:1.9rem;line-height:1.1;margin-bottom:14px}
+.work-modal-body h3{font-family:'Poppins',sans-serif;font-style:normal;font-weight:600;font-size:1.5rem;line-height:1.15;margin-bottom:14px}
 .work-modal-body p{color:var(--muted);font-weight:300;font-size:1rem;margin-bottom:20px}
 .work-modal-stack-label{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
 .work-modal-stack{display:flex;flex-wrap:wrap;gap:8px}
