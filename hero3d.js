@@ -617,10 +617,10 @@ export function createHero(canvas, opts) {
     }
     if (opts.speechEl) {
       if (current === 1 && robotShown > 0.5) {
-        tmp.set(0, 0.6, 0.7).project(camera);
+        tmp.set(0, -0.95, 0.7).project(camera);
         const rect = canvas.getBoundingClientRect();
         var sx = rect.left + (tmp.x * 0.5 + 0.5) * rect.width, sy = rect.top + (-tmp.y * 0.5 + 0.5) * rect.height;
-        sx = Math.min(Math.max(sx, 130), window.innerWidth - 130); sy = Math.max(sy, 92);
+        sx = Math.min(Math.max(sx, 130), window.innerWidth - 130); sy = Math.min(Math.max(sy, 120), window.innerHeight - 150);
         opts.speechEl.style.left = sx + 'px'; opts.speechEl.style.top = sy + 'px';
         opts.speechEl.classList.add('show');
       } else { opts.speechEl.classList.remove('show'); }
