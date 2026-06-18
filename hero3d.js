@@ -122,10 +122,10 @@ function makeOrb() {
         col=mix(col,pink,smoothstep(0.5,1.0,m)*0.6);
         col=mix(col,cyan,smoothstep(0.0,-1.0,vN)*0.22);
         float fres=pow(1.0-max(dot(normalize(vNrm),normalize(vView)),0.0),2.2);
-        col+=fres*0.6;
+        col+=fres*0.26;
         float iri=0.5+0.5*sin(fres*10.0 + vN*5.0 + uTime*1.2);
-        col+=vec3(0.12,0.06,0.18)*iri*0.5;
-        gl_FragColor=vec4(col*1.06 + fres*0.16, 1.0);
+        col+=vec3(0.12,0.06,0.18)*iri*0.26;
+        gl_FragColor=vec4(col*0.86, 1.0);
       }`
   });
   const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(1.5, 5), mat);
@@ -444,7 +444,7 @@ function makeCloud() {
       mtex.step();
       if (!dragging) spin += dt * 0.22;
       cloudGrp.rotation.set(dRX, spin + dRY, 0);
-      cloudGrp.position.y = Math.sin(t * 0.8) * 0.05;
+      cloudGrp.position.y = 0.15 + Math.sin(t * 0.8) * 0.05;
     }
   };
 }
@@ -496,7 +496,7 @@ export function createHero(canvas, opts) {
 
   // robot (Higgsfield porcelain GLB), lazy-loaded after first paint, shown in the brain state
   var HH = 2.0;
-  var robotHolder = new THREE.Group(); robotHolder.visible = false; robotHolder.scale.setScalar(0.001); robotHolder.position.set(0, -0.3, 0.7); scene.add(robotHolder);
+  var robotHolder = new THREE.Group(); robotHolder.visible = false; robotHolder.scale.setScalar(0.001); robotHolder.position.set(0, 0.12, 0.7); scene.add(robotHolder);
   var robot = null, robotShown = 0, robotLoading = false;
   function loadRobot() {
     if (robotLoading) return; robotLoading = true;
@@ -567,7 +567,7 @@ export function createHero(canvas, opts) {
   let scrollN = 0, current = 0, raf = 0, stopped = false, last = performance.now();
   const NAMES = ['orb', 'brain', 'software'];
 
-  function resize() { const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); if (composer) composer.setSize(w, h); }
+  function resize() { const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1; renderer.setSize(w, h, false); camera.aspect = w / h; camera.position.x = w > 900 ? -0.85 : 0; camera.updateProjectionMatrix(); if (composer) composer.setSize(w, h); }
   resize();
   const ro = new ResizeObserver(resize); ro.observe(canvas);
   function onMove(e) { pointer.tx = e.clientX / window.innerWidth - 0.5; pointer.ty = e.clientY / window.innerHeight - 0.5; }
@@ -613,7 +613,7 @@ export function createHero(canvas, opts) {
     if (robot) {
       robotHolder.rotation.y = pointer.x * 0.5 + Math.sin(t * 0.5) * 0.06;
       robotHolder.rotation.x = pointer.y * 0.28 + Math.sin(t * 0.4) * 0.03;
-      robotHolder.position.y = -0.3 + Math.sin(t * 1.2) * 0.04;
+      robotHolder.position.y = 0.12 + Math.sin(t * 1.2) * 0.04;
     }
     if (opts.speechEl) {
       if (current === 1 && robotShown > 0.5) {
