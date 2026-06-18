@@ -12,7 +12,7 @@
     <meta property="og:title" content="NEXXAI | AI-First Product &amp; Software Studio">
     <meta property="og:description" content="We design, build and ship the AI and software products that move your business, from first idea to production.">
     <meta name="twitter:card" content="summary">
-    <link rel="stylesheet" href="redesign.css?v=3">
+    <link rel="stylesheet" href="redesign.css?v=4">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,9 +22,6 @@
     </script>
     <style>
         .h3d{width:100%;height:100%;display:block;cursor:pointer}
-        /* trusted-by logos: bigger + aligned */
-        .hero-trust{gap:30px}
-        .hero-trust img{height:40px;width:auto;opacity:.72;filter:grayscale(1) brightness(0) invert(1);object-fit:contain;vertical-align:middle}
         /* robot speech bubble (sits below her) */
         .speech{position:fixed;z-index:30;transform:translate(-50%,16%);opacity:0;pointer-events:none;transition:opacity .35s ease;width:236px;max-width:72vw}
         .speech.show{opacity:1;pointer-events:auto}
@@ -100,9 +97,8 @@
                     <a href="#contact" class="btn-glass solid">Start a Project <i class="fas fa-arrow-right"></i></a>
                     <a href="work.html" class="btn-ghost">View our work <i class="fas fa-play" style="font-size:.8em"></i></a>
                 </div>
-                <div class="hero-trust rv">
+                <div class="hero-trust rv" id="herotrust">
                     <span>Trusted by teams at</span>
-                    <img src="assets/logos/12.svg" alt=""><img src="assets/logos/15.svg" alt=""><img src="assets/logos/17.svg" alt=""><img src="assets/logos/13.svg" alt="">
                 </div>
             </div>
         </div>
@@ -118,10 +114,7 @@
         </div>
         <div class="marquee">
             <p class="mq-label">Clients we've served</p>
-            <div class="marquee-track">
-                <img src="assets/logos/10.svg" alt=""><img src="assets/logos/11.svg" alt=""><img src="assets/logos/12.svg" alt=""><img src="assets/logos/13.svg" alt=""><img src="assets/logos/14.svg" alt=""><img src="assets/logos/15.svg" alt=""><img src="assets/logos/16.svg" alt=""><img src="assets/logos/17.svg" alt=""><img src="assets/logos/18.svg" alt="">
-                <img src="assets/logos/10.svg" alt=""><img src="assets/logos/11.svg" alt=""><img src="assets/logos/12.svg" alt=""><img src="assets/logos/13.svg" alt=""><img src="assets/logos/14.svg" alt=""><img src="assets/logos/15.svg" alt=""><img src="assets/logos/16.svg" alt=""><img src="assets/logos/17.svg" alt=""><img src="assets/logos/18.svg" alt="">
-            </div>
+            <div class="marquee-track" id="mqtrack"></div>
         </div>
     </section>
 
@@ -269,9 +262,15 @@
         </div>
     </div>
 
-    <script src="redesign.js?v=3"></script>
+    <script src="redesign.js?v=4"></script>
     <script type="module">
         import { createHero } from './hero3d.js?v=18';
+        // fill logos (all of them): full set in the marquee, a curated set in the trusted-by row
+        (function () {
+            var L = ['9','10','11','12','13','14','15','16','17','18','19','IntroSlide','IntroSlide(2)','IntroSlide(3)','IntroSlide(4)','IntroSlide(5)','IntroSlide(6)','IntroSlide(7)','IntroSlide(8)'];
+            var mq = document.getElementById('mqtrack'); if (mq) { var s = ''; for (var k = 0; k < 2; k++) L.forEach(function (f) { s += '<img src="assets/logos/' + f + '.svg" alt="">'; }); mq.innerHTML = s; }
+            var ht = document.getElementById('herotrust'); if (ht) { ['9','12','13','15','17','19','IntroSlide','IntroSlide(4)'].forEach(function (f) { var i = new Image(); i.src = 'assets/logos/' + f + '.svg'; i.alt = ''; ht.appendChild(i); }); }
+        })();
         var cv = document.getElementById('h3d');
         var speech = document.getElementById('speech');
         var speechtext = document.getElementById('speechtext');

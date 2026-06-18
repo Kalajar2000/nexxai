@@ -94,4 +94,18 @@ document.addEventListener('DOMContentLoaded', function () {
         workModal.querySelector('.work-modal-overlay').addEventListener('click', closeModal);
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
     }
+
+    // cursor-reactive cards: 3D tilt toward the pointer (the border glow is CSS)
+    if (window.matchMedia && window.matchMedia('(pointer:fine)').matches) {
+        document.querySelectorAll('.stat, .card, .svc, .wk, .step, .tcard, .work-card').forEach(function (el) {
+            el.addEventListener('pointermove', function (e) {
+                var r = el.getBoundingClientRect();
+                var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+                el.style.setProperty('--mx', (x * 100) + '%');
+                el.style.setProperty('--my', (y * 100) + '%');
+                el.style.transform = 'perspective(900px) rotateY(' + ((x - .5) * 8) + 'deg) rotateX(' + ((.5 - y) * 8) + 'deg) translateY(-4px)';
+            });
+            el.addEventListener('pointerleave', function () { el.style.transform = ''; });
+        });
+    }
 });
