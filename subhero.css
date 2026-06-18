@@ -1,0 +1,14 @@
+/* NEXXAI — subpage hero visual (right-side canvas). Pairs with subhero.js. */
+.phero-viz{display:none}
+.phero-viz .detail{position:absolute;left:14px;bottom:14px;right:14px;padding:11px 14px;border-radius:12px;background:rgba(18,18,30,.92);border:1px solid rgba(150,140,255,.42);font-size:.86rem;color:#eef0ff;opacity:0;transform:translateY(8px);transition:.3s;pointer-events:none;z-index:2}
+.phero-viz .detail.show{opacity:1;transform:none}
+
+@media(min-width:901px){
+  .phero{min-height:520px}
+  /* let pointer events fall through the text layer to the canvas, but keep links/inputs clickable */
+  .phero .wrap{pointer-events:none}
+  .phero .wrap a,.phero .wrap button,.phero .wrap input,.phero .wrap textarea,.phero .wrap label{pointer-events:auto}
+  .phero .sub{max-width:46%}
+  .phero-viz{display:block;position:absolute;top:50%;transform:translateY(-50%);right:0;width:min(42%,480px);height:420px;z-index:1}
+  .phero-viz canvas{width:100%;height:100%;display:block;pointer-events:auto}
+}
