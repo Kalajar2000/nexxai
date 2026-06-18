@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isNaN(num)) return;
         if (reduceMo) { el.textContent = pre + num + suf; return; }
         var dur = 1500, t0 = null;
-        (function step(ts) { if (!t0) t0 = ts; var pr = Math.min(1, (ts - t0) / dur), e = 1 - Math.pow(1 - pr, 3); el.textContent = pre + Math.round(num * e) + suf; if (pr < 1) requestAnimationFrame(step); })();
+        requestAnimationFrame(function step(ts) { if (!t0) t0 = ts; var pr = Math.min(1, (ts - t0) / dur), e = 1 - Math.pow(1 - pr, 3); el.textContent = pre + Math.round(num * e) + suf; if (pr < 1) requestAnimationFrame(step); });
     }
     var nEls = document.querySelectorAll('.stat .n, [data-countup]');
     nEls.forEach(function (el) { el.dataset.to = el.textContent.trim(); });

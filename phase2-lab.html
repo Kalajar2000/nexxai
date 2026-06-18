@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase-2 Lab · NEXXAI</title>
+    <meta name="robots" content="noindex">
+    <link rel="stylesheet" href="redesign.css?v=7">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body{background:#06060f;color:#f5f5fa;font-family:'Inter',sans-serif;min-height:100vh}
+        .lab-wrap{max-width:1200px;margin:0 auto;padding:0 28px}
+        .lab-top{font-family:'Poppins';font-weight:600;font-size:1.15rem;padding:34px 0 0}
+        .pill{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#9b8cff;border:1px solid rgba(155,140,255,.4);border-radius:999px;padding:3px 9px;margin-left:10px;vertical-align:middle}
+        .lab-note{color:#8b93ad;font-size:.92rem;padding:10px 0 6px;max-width:760px;line-height:1.55}
+        .lab-note b{color:#cbbcff}
+        .lab-sec{padding:46px 0;border-top:1px solid rgba(255,255,255,.08)}
+        .lab-h{font-family:'Poppins';font-weight:600;font-size:1.25rem;margin-bottom:6px}
+        .lab-d{color:#8b93ad;font-size:.9rem;margin-bottom:10px;max-width:720px}
+        .opt{margin:30px 0;border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:26px 24px;background:rgba(255,255,255,.02);position:relative}
+        .opt .tag{position:absolute;top:-12px;left:18px;font-family:'Poppins';font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#dcd2ff;background:#14122a;border:1px solid rgba(155,140,255,.45);border-radius:999px;padding:5px 13px}
+        .opt .note{color:#7e86a3;font-size:.8rem;margin-top:14px}
+        /* title samples */
+        .g{background:linear-gradient(100deg,#fff 26%,#8b5cf6 62%,#3b82f6);-webkit-background-clip:text;background-clip:text;color:transparent}
+        .ttl{line-height:1.03;letter-spacing:-.02em;font-size:clamp(2rem,4.6vw,3.5rem);margin-bottom:12px}
+        .ttl2{font-size:clamp(1.3rem,2.4vw,1.9rem);color:#d6d8ec;line-height:1.1}
+        .f-cur{font-family:'Instrument Serif';font-style:italic}
+        .f-up{font-family:'Instrument Serif';font-style:normal}
+        .f-fr{font-family:'Fraunces';font-weight:540;font-style:normal}
+        .f-fri{font-family:'Fraunces';font-weight:500;font-style:italic}
+        .f-nr{font-family:'Newsreader';font-weight:500;font-style:italic}
+        .f-pop{font-family:'Poppins';font-weight:600;letter-spacing:-.015em;font-size:clamp(1.7rem,3.7vw,2.9rem)}
+        /* logo strip */
+        .mqx{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+        .mqx-track{display:flex;align-items:center;gap:54px;width:max-content;animation:mqx 26s linear infinite}
+        .mqx:hover .mqx-track{animation-play-state:paused}
+        .mqx-track.rev{animation-direction:reverse}
+        @keyframes mqx{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+        .lw{font-family:'Poppins';font-weight:600;font-size:1.5rem;color:#fff;white-space:nowrap;opacity:.5;letter-spacing:.01em;transition:.3s}
+        .mqx:hover .lw{opacity:.5}.lw:hover{opacity:1!important}
+        .lpill{display:inline-flex;align-items:center;gap:11px;padding:13px 24px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);white-space:nowrap}
+        .lpill i{color:#9b8cff;font-size:1rem}.lpill span{font-family:'Poppins';font-weight:500;font-size:1.05rem;color:#e7e8f4}
+        .lrow{display:flex;flex-wrap:wrap;gap:18px 40px;align-items:center;justify-content:center;padding:8px 0}
+        .lrow .lw{font-size:1.35rem}
+        /* testimonials */
+        .tcardx{flex:0 0 360px;width:360px;padding:26px;border-radius:20px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.09);display:flex;flex-direction:column;white-space:normal}
+        .tcardx.lg{flex-basis:480px;width:480px;padding:34px}
+        .tcardx .stars{color:#f5b740;letter-spacing:2px;margin-bottom:12px;font-size:.9rem}
+        .tcardx .q{color:#e9eaf5;font-weight:300;font-size:.98rem;line-height:1.55;flex:1}
+        .tcardx.lg .q{font-size:1.12rem}
+        .tcardx .who{display:flex;align-items:center;gap:12px;margin-top:20px}
+        .av{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;background:linear-gradient(140deg,#8b5cf6,#3b82f6);flex-shrink:0}
+        .who .nm{font-weight:600;font-size:.92rem}.who .rl{color:#8b8fb0;font-size:.8rem}
+        .trow{margin:14px 0}
+        /* contact */
+        .cwrap{max-width:440px}
+        .cform2{padding:28px;border-radius:20px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.09)}
+        .cform2 .fg{margin-bottom:14px}
+        .cform2 label{display:block;font-size:.82rem;color:#aeb1cc;margin-bottom:6px}
+        .cform2 input,.cform2 textarea{width:100%;padding:12px 15px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:#fff;font-family:inherit;font-size:.93rem}
+        .cbtn{width:100%;border:none;cursor:pointer;padding:14px;border-radius:999px;font-family:inherit;font-weight:600;font-size:1rem;color:#fff;background:linear-gradient(135deg,#7c3aed,#3b82f6);display:inline-flex;align-items:center;justify-content:center;gap:9px}
+        /* A: button heartbeat pulse */
+        @keyframes beat{0%,32%,100%{transform:scale(1);box-shadow:0 8px 30px rgba(124,58,237,.45)}8%{transform:scale(1.045);box-shadow:0 10px 40px rgba(124,58,237,.75)}16%{transform:scale(1)}24%{transform:scale(1.025)}}
+        .cbtn.beat{animation:beat 2.1s ease-in-out infinite}
+        /* B: EKG line */
+        .ekg{display:block;width:100%;height:46px;margin-bottom:8px}
+        .ekg polyline{fill:none;stroke:#9b8cff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px rgba(139,92,246,.9));stroke-dasharray:340;stroke-dashoffset:340;animation:draw 2.2s linear infinite}
+        @keyframes draw{0%{stroke-dashoffset:340}55%{stroke-dashoffset:0}100%{stroke-dashoffset:-340}}
+        .ekg-label{font-family:'Poppins';font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:#9b8cff;text-align:center;margin-bottom:6px}
+        /* C: border heartbeat */
+        @keyframes bord{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0),inset 0 0 0 1px rgba(255,255,255,.09)}12%{box-shadow:0 0 34px 2px rgba(139,92,246,.55),inset 0 0 0 1px rgba(155,140,255,.7)}26%{box-shadow:0 0 0 0 rgba(139,92,246,0),inset 0 0 0 1px rgba(255,255,255,.09)}}
+        .cform2.bord{animation:bord 2.1s ease-in-out infinite;border-color:transparent}
+        .twocol{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
+        @media(max-width:760px){.twocol{grid-template-columns:1fr}.tcardx,.tcardx.lg{flex-basis:300px;width:300px}}
+    </style>
+</head>
+<body>
+<div class="lab-wrap">
+    <div class="lab-top">Phase-2 preview — pick your options<span class="pill">build 1</span></div>
+    <p class="lab-note">Reply with your picks, e.g. <b>Title B · Logos 2 · Testimonials 1 · Contact A</b>. Hover the marquees to pause; hover a logo to light it. (These testimonials are sample copy — we'll drop in your real ones.)</p>
+
+    <!-- TITLES -->
+    <section class="lab-sec">
+        <div class="lab-h">1 · Title font — readability</div>
+        <div class="lab-d">Same words in each option (hero size + section size) so you can compare. Pick the one that reads cleanest; I'll apply it to every title site-wide.</div>
+
+        <div class="opt"><span class="tag">Title A — Instrument Serif italic (current)</span>
+            <div class="ttl f-cur">Builders since 2015, <span class="g">AI-first</span> by default.</div>
+            <div class="ttl2 f-cur">An AI Lab inside your company</div>
+            <div class="note">What's live now — elegant but the italic + gradient is the hard-to-read one.</div>
+        </div>
+        <div class="opt"><span class="tag">Title B — Instrument Serif upright</span>
+            <div class="ttl f-up">Builders since 2015, <span class="g">AI-first</span> by default.</div>
+            <div class="ttl2 f-up">An AI Lab inside your company</div>
+            <div class="note">Same brand font, no italic — much more legible, keeps the editorial feel.</div>
+        </div>
+        <div class="opt"><span class="tag">Title C — Fraunces (soft serif)</span>
+            <div class="ttl f-fr">Builders since 2015, <span class="g">AI-first</span> by default.</div>
+            <div class="ttl2 f-fr">An AI Lab inside your company</div>
+            <div class="note">Modern display serif — characterful and very readable.</div>
+        </div>
+        <div class="opt"><span class="tag">Title D — Newsreader (editorial italic)</span>
+            <div class="ttl f-nr">Builders since 2015, <span class="g">AI-first</span> by default.</div>
+            <div class="ttl2 f-nr">An AI Lab inside your company</div>
+            <div class="note">Keeps an italic touch but far clearer than the current one.</div>
+        </div>
+        <div class="opt"><span class="tag">Title E — Poppins (clean sans)</span>
+            <div class="ttl f-pop">Builders since 2015, <span class="g">AI-first</span> by default.</div>
+            <div class="ttl2 f-pop">An AI Lab inside your company</div>
+            <div class="note">Maximum readability, modern — drops the serif character.</div>
+        </div>
+    </section>
+
+    <!-- LOGO STRIP -->
+    <section class="lab-sec">
+        <div class="lab-h">2 · Tech-stack strip</div>
+        <div class="lab-d">The tools you build on. (Wordmarks for now — true brand logos need their SVGs; I can source those next.)</div>
+
+        <div class="opt"><span class="tag">Logos 1 — monochrome wordmark marquee</span>
+            <div class="mqx"><div class="mqx-track" data-clone>
+                <span class="lw">Claude</span><span class="lw">GPT</span><span class="lw">Grok</span><span class="lw">Zapier</span><span class="lw">GoHighLevel</span><span class="lw">Higgsfield</span><span class="lw">n8n</span>
+            </div></div>
+            <div class="note">Quiet "trusted tooling" bar that scrolls; brightens on hover.</div>
+        </div>
+        <div class="opt"><span class="tag">Logos 2 — glass pills marquee</span>
+            <div class="mqx"><div class="mqx-track" data-clone>
+                <span class="lpill"><i class="fas fa-robot"></i><span>Claude</span></span><span class="lpill"><i class="fas fa-comment-dots"></i><span>GPT</span></span><span class="lpill"><i class="fas fa-bolt"></i><span>Grok</span></span><span class="lpill"><i class="fas fa-plug"></i><span>Zapier</span></span><span class="lpill"><i class="fas fa-diagram-project"></i><span>GoHighLevel</span></span><span class="lpill"><i class="fas fa-wand-magic-sparkles"></i><span>Higgsfield</span></span><span class="lpill"><i class="fas fa-circle-nodes"></i><span>n8n</span></span>
+            </div></div>
+            <div class="note">More substantial — each tool in a liquid-glass pill with an icon.</div>
+        </div>
+        <div class="opt"><span class="tag">Logos 3 — static centered row</span>
+            <div class="lrow">
+                <span class="lw">Claude</span><span class="lw">GPT</span><span class="lw">Grok</span><span class="lw">Zapier</span><span class="lw">GoHighLevel</span><span class="lw">Higgsfield</span><span class="lw">n8n</span>
+            </div>
+            <div class="note">No motion — a calm, classic logo wall.</div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="lab-sec">
+        <div class="lab-h">3 · Testimonials — infinite marquee</div>
+        <div class="lab-d">Auto-scrolling client stories (pause on hover).</div>
+
+        <div class="opt"><span class="tag">Testimonials 1 — single row</span>
+            <div class="mqx trow"><div class="mqx-track" data-clone>
+                <div class="tcardx"><div class="stars">★★★★★</div><p class="q">"Their ability to understand our business goals and deliver on time was impressive. They made the whole process seamless."</p><div class="who"><div class="av">MT</div><div><div class="nm">Marvin T.</div><div class="rl">Founder</div></div></div></div>
+                <div class="tcardx"><div class="stars">★★★★★</div><p class="q">"We've never worked with a team so dedicated to understanding our needs. Quick delivery kept every milestone on time."</p><div class="who"><div class="av">SU</div><div><div class="nm">Shigeto Umeda</div><div class="rl">COO</div></div></div></div>
+                <div class="tcardx"><div class="stars">★★★★★</div><p class="q">"They shipped our AI assistant in weeks, not quarters. It now handles a third of our support load."</p><div class="who"><div class="av">AR</div><div><div class="nm">Ana R.</div><div class="rl">Head of Ops</div></div></div></div>
+                <div class="tcardx"><div class="stars">★★★★★</div><p class="q">"Senior team, zero hand-holding. They embedded with us and just delivered."</p><div class="who"><div class="av">DK</div><div><div class="nm">David K.</div><div class="rl">CTO</div></div></div></div>
+            </div></div>
+        </div>
+        <div class="opt"><span class="tag">Testimonials 2 — two rows, opposite directions</span>
+            <div class="mqx trow"><div class="mqx-track" data-clone>
+                <div class="tcardx"><div class="stars">★★★★★</div><p class="q">"Their ability to understand our goals and deliver on time was impressive."</p><div class="who"><div class="av">MT</div><div><div class="nm">Marvin T.</div><div class="rl">Founder</div></div></div></div>
+                <div class="tcardx"><div class="stars">★★★★★</div><p class="q">"A team so dedicated to understanding our needs. Every milestone on time."</p><div class="who"><div class="av">SU</div><div><div class="nm">Shigeto Umeda</div><div class="rl">COO</div></div></div></div>
+                <div class="tcardx"><div class="stars">★★★★★</div><p class="q">"Shipped our AI assistant in weeks. Handles a third of support now."</p><div class="who"><div class="av">AR</div><div><div class="nm">Ana R.</div><div class="rl">Head of Ops</div></div></div></div>
+            </div></div>
+            <div class="mqx trow"><div class="mqx-track rev" data-clone>
+                <div class="tcardx"><div class="stars">★★★★★</div><p class="q">"Senior team, zero hand-holding. They embedded with us and delivered."</p><div class="who"><div class="av">DK</div><div><div class="nm">David K.</div><div class="rl">CTO</div></div></div></div>
+                <div class="tcardx"><div class="stars">★★★★★</div><p class="q">"Clear communication, real ownership, results we can measure."</p><div class="who"><div class="av">LP</div><div><div class="nm">Lucia P.</div><div class="rl">VP Product</div></div></div></div>
+                <div class="tcardx"><div class="stars">★★★★★</div><p class="q">"They turned our messy idea into a product our customers love."</p><div class="who"><div class="av">JM</div><div><div class="nm">Jon M.</div><div class="rl">Founder</div></div></div></div>
+            </div></div>
+            <div class="note">Denser, more dynamic — good if you have lots of testimonials.</div>
+        </div>
+        <div class="opt"><span class="tag">Testimonials 3 — large cards, slow</span>
+            <div class="mqx trow"><div class="mqx-track" data-clone style="animation-duration:40s">
+                <div class="tcardx lg"><div class="stars">★★★★★</div><p class="q">"Their ability to understand our business goals and deliver on time was impressive. They addressed every question and made the whole process seamless from start to finish."</p><div class="who"><div class="av">MT</div><div><div class="nm">Marvin T.</div><div class="rl">Founder</div></div></div></div>
+                <div class="tcardx lg"><div class="stars">★★★★★</div><p class="q">"We've never worked with a team so dedicated to understanding our needs. Their quick delivery and problem-solving kept every milestone on time."</p><div class="who"><div class="av">SU</div><div><div class="nm">Shigeto Umeda</div><div class="rl">COO</div></div></div></div>
+                <div class="tcardx lg"><div class="stars">★★★★★</div><p class="q">"They shipped our AI assistant in weeks, not quarters, and it now resolves a third of our support tickets automatically."</p><div class="who"><div class="av">AR</div><div><div class="nm">Ana R.</div><div class="rl">Head of Ops</div></div></div></div>
+            </div></div>
+            <div class="note">Fewer, bigger, premium — slower scroll.</div>
+        </div>
+    </section>
+
+    <!-- CONTACT HEARTBEAT -->
+    <section class="lab-sec">
+        <div class="lab-h">4 · Contact form — "heartbeat"</div>
+        <div class="lab-d">A subtle living pulse on the contact form. Three flavors:</div>
+        <div class="twocol">
+            <div class="opt"><span class="tag">Contact A — button heartbeat</span>
+                <div class="cwrap"><div class="cform2">
+                    <div class="fg"><label>Name</label><input type="text"></div>
+                    <div class="fg"><label>Email</label><input type="email"></div>
+                    <button class="cbtn beat">Let's Talk <i class="fas fa-arrow-right"></i></button>
+                </div></div>
+                <div class="note">The CTA gently beats (lub-dub) to draw the eye.</div>
+            </div>
+            <div class="opt"><span class="tag">Contact B — EKG pulse line</span>
+                <div class="cwrap"><div class="cform2">
+                    <div class="ekg-label">Let's build something alive</div>
+                    <svg class="ekg" viewBox="0 0 340 40" preserveAspectRatio="none"><polyline points="0,20 120,20 134,20 142,6 150,34 158,12 166,20 200,20 214,20 222,10 230,28 238,20 340,20"/></svg>
+                    <div class="fg"><label>Name</label><input type="text"></div>
+                    <button class="cbtn">Let's Talk <i class="fas fa-arrow-right"></i></button>
+                </div></div>
+                <div class="note">A heartbeat-monitor line traces across the top of the form.</div>
+            </div>
+            <div class="opt"><span class="tag">Contact C — border heartbeat</span>
+                <div class="cwrap"><div class="cform2 bord">
+                    <div class="fg"><label>Name</label><input type="text"></div>
+                    <div class="fg"><label>Email</label><input type="email"></div>
+                    <button class="cbtn">Let's Talk <i class="fas fa-arrow-right"></i></button>
+                </div></div>
+                <div class="note">The whole card's glow pulses like a heartbeat.</div>
+            </div>
+        </div>
+    </section>
+
+    <div style="height:60px"></div>
+</div>
+<script>
+    // duplicate marquee tracks for a seamless loop
+    document.querySelectorAll('.mqx-track[data-clone]').forEach(function(t){ t.innerHTML += t.innerHTML; });
+</script>
+</body>
+</html>
