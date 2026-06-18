@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // cursor-reactive cards: 3D tilt toward the pointer (the border glow is CSS)
     if (window.matchMedia && window.matchMedia('(pointer:fine)').matches) {
-        document.querySelectorAll('.stat, .card, .svc, .wk, .step, .tcard, .work-card').forEach(function (el) {
+        document.querySelectorAll('.stat, .card, .svc, .feat, .wk, .work-card, .step, .tcard, .box, .ladder-item, .loc, .value, .tech-card, .cinfo, .faq-item').forEach(function (el) {
             el.addEventListener('pointermove', function (e) {
                 var r = el.getBoundingClientRect();
                 var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;

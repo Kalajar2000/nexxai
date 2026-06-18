@@ -34,9 +34,9 @@ ul{list-style:none}
   -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
 
 /* ---- cursor-reactive cards: 3D tilt (JS) + border glow that follows the cursor ---- */
-.stat,.card,.svc,.wk,.step,.tcard,.work-card{position:relative;transform-style:preserve-3d;transition:transform .12s ease,box-shadow .25s;will-change:transform}
-.stat::after,.card::after,.svc::after,.wk::after,.step::after,.tcard::after,.work-card::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),rgba(185,150,255,1),rgba(100,150,255,.5) 42%,transparent 62%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .3s;pointer-events:none;z-index:6}
-.stat:hover::after,.card:hover::after,.svc:hover::after,.wk:hover::after,.step:hover::after,.tcard:hover::after,.work-card:hover::after{opacity:1}
+.stat,.card,.svc,.feat,.wk,.work-card,.step,.tcard,.box,.ladder-item,.loc,.value,.tech-card,.cinfo,.faq-item{position:relative;transform-style:preserve-3d;transition:transform .12s ease,box-shadow .25s;will-change:transform}
+.stat::after,.card::after,.svc::after,.feat::after,.wk::after,.work-card::after,.step::after,.tcard::after,.box::after,.ladder-item::after,.loc::after,.value::after,.tech-card::after,.cinfo::after,.faq-item::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),rgba(185,150,255,1),rgba(100,150,255,.5) 42%,transparent 62%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .3s;pointer-events:none;z-index:6}
+.stat:hover::after,.card:hover::after,.svc:hover::after,.feat:hover::after,.wk:hover::after,.work-card:hover::after,.step:hover::after,.tcard:hover::after,.box:hover::after,.ladder-item:hover::after,.loc:hover::after,.value:hover::after,.tech-card:hover::after,.cinfo:hover::after,.faq-item:hover::after{opacity:1}
 
 /* ---- nav ---- */
 .nav{position:fixed;top:18px;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 28px}
