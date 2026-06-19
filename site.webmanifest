@@ -1,0 +1,14 @@
+{
+  "name": "NEXXAI — AI-First Product & Software Studio",
+  "short_name": "NEXXAI",
+  "description": "We design, build and ship AI agents, web and mobile apps, and custom platforms.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06060c",
+  "theme_color": "#0d0f1e",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
