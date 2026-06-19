@@ -13,6 +13,7 @@
     <meta property="og:description" content="We design, build and ship the AI and software products that move your business, from first idea to production.">
     <meta name="twitter:card" content="summary">
     <link rel="stylesheet" href="redesign.css?v=8">
+    <link rel="stylesheet" href="toolstack.css?v=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -154,6 +155,21 @@
         </div>
     </section>
 
+    <!-- Tools & Tech Stack -->
+    <section class="sec" id="stack" style="padding-top:0">
+        <div class="wrap">
+            <div class="head"><span class="eyebrow rv">Tools &amp; tech</span><h2 class="rv">The tools we build &amp; ship with</h2><p class="rv">AI models, creative AI, automation, APIs and the stores we publish to. Drag a row to spin through them.</p></div>
+            <div class="ts-rows rv">
+                <div class="ts-row"><div class="ts-track" id="tsRowA"></div></div>
+                <div class="ts-row"><div class="ts-track" id="tsRowB"></div></div>
+            </div>
+            <div class="ts-card rv">
+                <div class="ts-cardhead"><h3>The engineering stack</h3><p>Every technology with its real logo, color-coded by layer.</p></div>
+                <div id="tsTech"></div>
+            </div>
+        </div>
+    </section>
+
     <!-- Featured work -->
     <section class="sec" id="work" style="padding-top:0">
         <div class="wrap">
@@ -263,6 +279,7 @@
     </div>
 
     <script src="redesign.js?v=8"></script>
+    <script src="toolstack.js?v=1"></script>
     <script type="module">
         import { createHero } from './hero3d.js?v=18';
         // fill logos (all of them): full set in the marquee, a curated set in the trusted-by row

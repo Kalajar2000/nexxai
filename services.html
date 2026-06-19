@@ -7,6 +7,7 @@
     <meta name="description" content="NEXXAI builds AI agents, custom software, SaaS, mobile and web apps, UI/UX, and DevOps. One senior team takes your product from first idea to production.">
     <meta name="keywords" content="AI development, agentic systems, custom software, SaaS development, mobile app development, web development, UI UX design, DevOps, cloud, dedicated teams">
     <link rel="stylesheet" href="redesign.css?v=8">
+    <link rel="stylesheet" href="toolstack.css?v=1">
     <link rel="stylesheet" href="subhero.css?v=4">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -152,35 +153,17 @@
         </div>
     </section>
 
-    <!-- Tech stack -->
-    <section class="sec" style="padding-top:0">
+    <!-- Tools & Tech Stack -->
+    <section class="sec" id="stack" style="padding-top:0">
         <div class="wrap">
-            <div class="head"><span class="eyebrow rv">Technology</span><h2 class="rv">The stack we build on</h2><p class="rv">A deep, modern toolkit, so we pick the right technology for your product, not the one we happen to be stuck with.</p></div>
-            <div class="tech-card glass rv">
-                <div class="tech-group">
-                    <h4>AI &amp; Machine Learning</h4>
-                    <div class="tech-pills"><span class="tech-pill">TensorFlow</span><span class="tech-pill">PyTorch</span><span class="tech-pill">LangChain</span><span class="tech-pill">Hugging Face</span><span class="tech-pill">Scikit-learn</span><span class="tech-pill">OpenCV</span><span class="tech-pill">Keras</span><span class="tech-pill">Pandas</span><span class="tech-pill">NumPy</span></div>
-                </div>
-                <div class="tech-group">
-                    <h4>Backend</h4>
-                    <div class="tech-pills"><span class="tech-pill">.NET Core</span><span class="tech-pill">Node.js</span><span class="tech-pill">NestJS</span><span class="tech-pill">Express</span><span class="tech-pill">Django</span><span class="tech-pill">FastAPI</span><span class="tech-pill">Spring Boot</span><span class="tech-pill">Ruby on Rails</span><span class="tech-pill">Laravel</span><span class="tech-pill">GoLang</span></div>
-                </div>
-                <div class="tech-group">
-                    <h4>Frontend</h4>
-                    <div class="tech-pills"><span class="tech-pill">React</span><span class="tech-pill">Next.js</span><span class="tech-pill">Vue.js</span><span class="tech-pill">Angular</span><span class="tech-pill">Tailwind CSS</span><span class="tech-pill">Bootstrap</span><span class="tech-pill">HTML5</span><span class="tech-pill">CSS3</span></div>
-                </div>
-                <div class="tech-group">
-                    <h4>Mobile</h4>
-                    <div class="tech-pills"><span class="tech-pill">Flutter</span><span class="tech-pill">React Native</span><span class="tech-pill">Swift</span><span class="tech-pill">Kotlin</span><span class="tech-pill">Xamarin</span><span class="tech-pill">Ionic</span></div>
-                </div>
-                <div class="tech-group">
-                    <h4>Databases</h4>
-                    <div class="tech-pills"><span class="tech-pill">PostgreSQL</span><span class="tech-pill">MongoDB</span><span class="tech-pill">MySQL</span><span class="tech-pill">Microsoft SQL</span><span class="tech-pill">Redis</span><span class="tech-pill">Firebase</span><span class="tech-pill">Supabase</span><span class="tech-pill">DynamoDB</span></div>
-                </div>
-                <div class="tech-group">
-                    <h4>Cloud &amp; DevOps</h4>
-                    <div class="tech-pills"><span class="tech-pill">AWS</span><span class="tech-pill">Azure</span><span class="tech-pill">Google Cloud</span><span class="tech-pill">Docker</span><span class="tech-pill">Kubernetes</span><span class="tech-pill">Jenkins</span><span class="tech-pill">Git</span><span class="tech-pill">CI/CD</span></div>
-                </div>
+            <div class="head"><span class="eyebrow rv">Tools &amp; tech</span><h2 class="rv">The tools we build &amp; ship with</h2><p class="rv">AI models, creative AI, automation, APIs and the stores we publish to. Drag a row to spin through them.</p></div>
+            <div class="ts-rows rv">
+                <div class="ts-row"><div class="ts-track" id="tsRowA"></div></div>
+                <div class="ts-row"><div class="ts-track" id="tsRowB"></div></div>
+            </div>
+            <div class="ts-card rv">
+                <div class="ts-cardhead"><h3>The engineering stack</h3><p>Every technology with its real logo, color-coded by layer.</p></div>
+                <div id="tsTech"></div>
             </div>
         </div>
     </section>
@@ -237,5 +220,6 @@
 
     <script src="redesign.js?v=8"></script>
     <script src="subhero.js?v=1"></script>
+    <script src="toolstack.js?v=1"></script>
 </body>
 </html>
