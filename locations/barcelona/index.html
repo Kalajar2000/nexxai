@@ -31,7 +31,15 @@
     <script type="importmap">
     {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
     </script>
-    <style>.phero-viz{position:relative;min-height:460px}canvas[data-locviz]{display:block;width:100%;height:100%}@media(max-width:820px){.phero-viz{min-height:300px}}</style>
+    <style>
+      .phero-viz{position:relative}
+      .artframe{position:relative;padding:15px;border-radius:7px;background:linear-gradient(135deg,#d9b65e,#7c5d27 24%,#f2dc93 49%,#6b4f1f 74%,#c2a04a);box-shadow:0 30px 66px rgba(0,0,0,.6),inset 0 2px 1px rgba(255,255,255,.55),inset 0 -3px 6px rgba(0,0,0,.5)}
+      .artframe::before{content:"";position:absolute;inset:7px;border-radius:4px;box-shadow:inset 0 0 0 2px rgba(90,66,22,.85),inset 0 0 16px rgba(0,0,0,.45);pointer-events:none;z-index:4}
+      .artframe .mat{background:#0b0913;padding:13px;border-radius:3px}
+      .artframe .glass-in{position:relative;overflow:hidden;border-radius:2px;background:#05050b;height:430px;box-shadow:inset 0 0 44px rgba(0,0,0,.92)}
+      .artframe canvas[data-locviz]{display:block;width:100%;height:100%}
+      @media(max-width:820px){.artframe .glass-in{height:300px}.artframe{padding:11px}.artframe .mat{padding:9px}}
+    </style>
     <script type="application/ld+json">
     {"@context":"https://schema.org","@graph":[
       {"@type":"BreadcrumbList","itemListElement":[
@@ -74,7 +82,7 @@
     <section class="phero">
         <div class="phero-glow"></div>
         <div class="wrap">
-            <div class="phero-viz"><canvas data-locviz="barcelona"></canvas></div>
+            <div class="phero-viz"><div class="artframe"><div class="mat"><div class="glass-in"><canvas data-locviz="barcelona"></canvas></div></div></div></div>
             <div class="phero-text">
             <span class="chip glass rv"><b>BARCELONA</b> · our European hub</span>
             <h1><span class="rv">AI &amp;</span> <span class="rv">software</span> <span class="rv">development</span> <span class="rv gradtext">in</span> <span class="rv gradtext">Barcelona.</span></h1>
