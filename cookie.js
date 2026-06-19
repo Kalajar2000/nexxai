@@ -15,16 +15,13 @@
   function loadAnalytics() {
     if (window.__nxAnalyticsLoaded) return;
     window.__nxAnalyticsLoaded = true;
-    /* ===========================================================
-       PASTE YOUR APOLLO WEBSITE TRACKING PIXEL HERE.
-       Example shape (replace with the real snippet from Apollo):
-
-       var s=document.createElement('script');
-       s.src='https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache='+Math.random();
-       s.async=true;
-       s.onload=function(){ window.trackingFunctions.onLoad({appId:'YOUR_APP_ID'}); };
-       document.head.appendChild(s);
-       =========================================================== */
+    // Apollo website visitor tracking (loads only after analytics consent)
+    var n = Math.random().toString(36).substring(7);
+    var o = document.createElement('script');
+    o.src = 'https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache=' + n;
+    o.async = true; o.defer = true;
+    o.onload = function () { if (window.trackingFunctions && window.trackingFunctions.onLoad) window.trackingFunctions.onLoad({ appId: '6a311c8e6824f3001c0fa90c' }); };
+    document.head.appendChild(o);
   }
 
   // ---- styles ----
