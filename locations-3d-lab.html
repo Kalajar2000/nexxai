@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0d0f1e">
+<title>Location 3D viz · Barcelona reference · NEXXAI</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+    body{margin:0;background:#06060c;color:#f4f4fb;font-family:'Inter',sans-serif;line-height:1.6}
+    .wrap{max-width:1180px;margin:0 auto;padding:40px 24px 80px}
+    h1{font-family:'Poppins';font-weight:700;font-size:1.7rem;margin:0 0 8px}
+    .lead{color:#9a9cbb;max-width:820px;font-size:.97rem;margin:0 0 26px}
+    .demo{position:relative;display:grid;grid-template-columns:1fr 1.1fr;gap:10px;align-items:center;border:1px solid rgba(255,255,255,.1);border-radius:24px;overflow:hidden;background:radial-gradient(120% 120% at 85% 10%,rgba(40,30,80,.5),rgba(8,8,18,.65));min-height:520px}
+    .demo .txt{padding:48px 40px}
+    .eyebrow{font-family:'Poppins';font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:#a78bfa;margin-bottom:14px}
+    .demo h2{font-family:'Poppins';font-weight:600;font-size:2.3rem;line-height:1.05;margin:0 0 16px}
+    .grad{background:linear-gradient(100deg,#fff 30%,#a78bfa 65%,#3b82f6);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .demo p{color:#b9bcd6;font-weight:300;max-width:420px;margin:0 0 24px}
+    .btn{display:inline-flex;align-items:center;gap:9px;padding:13px 24px;border-radius:999px;font-weight:600;color:#fff;background:linear-gradient(135deg,rgba(139,92,246,.5),rgba(59,130,246,.34));border:1px solid rgba(190,170,255,.4);text-decoration:none}
+    .stage{position:relative;height:520px}
+    .stage canvas{display:block;width:100%;height:100%}
+    .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;color:#8b8da8;font-size:.9rem}
+    .note{color:#7d7fa0;font-size:.86rem;margin-top:22px;line-height:1.7}
+    .note b{color:#cbbcff}
+    @media(max-width:820px){.demo{grid-template-columns:1fr}.stage{height:380px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+    <h1>Location visual - 3D reference (Barcelona)</h1>
+    <p class="lead">New quality bar: a real <b>Three.js</b> scene, not flat drawings. Faceted Sagrada-style spires in 3D, an AI particle constellation and a neural halo, with bloom glow. <b>Move your mouse</b> over it - the camera and light react. If you like the direction, I build one per city (mosque domes + minarets for Lahore/Istanbul, skyline for Boston, a rocket for Florida, Kyiv domes) and ship them into the location heroes.</p>
+
+    <div class="demo">
+        <div class="txt">
+            <div class="eyebrow">Barcelona · our European hub</div>
+            <h2>AI &amp; software development in <span class="grad">Barcelona.</span></h2>
+            <p>From our Barcelona hub we build AI agents, custom software and mobile &amp; web apps for European startups and enterprises.</p>
+            <a class="btn" href="#">Start a Project →</a>
+        </div>
+        <div class="stage"><canvas id="c"></canvas><div class="fallback" id="fb">3D needs WebGL - try a desktop browser.</div></div>
+    </div>
+
+    <p class="note">Honest note: free libraries do not have premium, specific-landmark assets I can pull automatically (SVGRepo is bot-blocked, Iconify only has generic icons). So this is <b>stylized 3D</b> - recognizable by silhouette and clearly "city + AI". If you have a Flaticon / Iconscout / Sketchfab license, drop me an exact model or SVG per city and I will drop the real ones in. Otherwise this 3D direction is what I will roll out to all six.</p>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+const canvas = document.getElementById('c');
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true }); }
+catch(e){ document.getElementById('fb').style.display='flex'; }
+
+if (renderer) {
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
+
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x06060c, 0.035);
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+  camera.position.set(0, 4.5, 16);
+  camera.lookAt(0, 4.5, 0);
+
+  // lights
+  scene.add(new THREE.AmbientLight(0x5a4f8c, 0.7));
+  const key = new THREE.DirectionalLight(0x9b8cff, 1.5); key.position.set(-6, 12, 8); scene.add(key);
+  const rim = new THREE.PointLight(0x3b82f6, 120, 60); rim.position.set(8, 6, -8); scene.add(rim);
+  const warm = new THREE.PointLight(0xff7ab0, 30, 40); warm.position.set(-8, 2, 6); scene.add(warm);
+
+  const world = new THREE.Group(); scene.add(world);
+
+  // ---- Sagrada-style spires (faceted cones, glowing finials) ----
+  const spireMat = new THREE.MeshStandardMaterial({ color:0x161433, roughness:0.45, metalness:0.35, emissive:0x2a1f55, emissiveIntensity:0.5 });
+  const spires = [
+    [-3.4,5.5],[-2.1,7.6],[-0.85,9.6],[0.5,11.2],[1.8,9.4],[3.0,7.2],[4.1,5.3]
+  ];
+  const finials = [];
+  spires.forEach(function(s, i){
+    const x=s[0], hgt=s[1];
+    const geo = new THREE.ConeGeometry(0.55 - i*0.005, hgt, 5, 1);
+    const m = new THREE.Mesh(geo, spireMat);
+    m.position.set(x, hgt/2, (i%2?-0.6:0.6));
+    m.rotation.y = i*0.5;
+    world.add(m);
+    // glowing finial at tip
+    const f = new THREE.Mesh(new THREE.IcosahedronGeometry(0.16,0), new THREE.MeshBasicMaterial({ color:0xc9b8ff }));
+    f.position.set(x, hgt + 0.25, (i%2?-0.6:0.6));
+    world.add(f); finials.push(f);
+    // vertical ridge light line up the spire
+  });
+
+  // ground grid fading out
+  const grid = new THREE.GridHelper(60, 60, 0x3a3470, 0x241f48);
+  grid.material.transparent = true; grid.material.opacity = 0.18; grid.position.y = 0; world.add(grid);
+
+  // ---- AI particle constellation ----
+  const N = 460;
+  const pg = new THREE.BufferGeometry();
+  const pos = new Float32Array(N*3), spd = new Float32Array(N);
+  for (let i=0;i<N;i++){
+    pos[i*3]   = (Math.random()-0.5)*22;
+    pos[i*3+1] = Math.random()*16;
+    pos[i*3+2] = (Math.random()-0.5)*14;
+    spd[i] = 0.2 + Math.random()*0.6;
+  }
+  pg.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  const pm = new THREE.PointsMaterial({ color:0x9fb6ff, size:0.09, transparent:true, opacity:0.85, blending:THREE.AdditiveBlending, depthWrite:false, sizeAttenuation:true });
+  const points = new THREE.Points(pg, pm); world.add(points);
+
+  // ---- neural halo ring above the spires ----
+  const ringN = 40, rg = new THREE.BufferGeometry(), rp = new Float32Array(ringN*3);
+  for (let i=0;i<ringN;i++){ const a=i/ringN*Math.PI*2; rp[i*3]=Math.cos(a)*3.4; rp[i*3+1]=12.6; rp[i*3+2]=Math.sin(a)*3.4; }
+  rg.setAttribute('position', new THREE.BufferAttribute(rp,3));
+  const ring = new THREE.Points(rg, new THREE.PointsMaterial({ color:0xc9b8ff, size:0.16, transparent:true, opacity:0.95, blending:THREE.AdditiveBlending, depthWrite:false }));
+  world.add(ring);
+
+  // ---- neural connecting lines (finials -> halo) ----
+  const lineMat = new THREE.LineBasicMaterial({ color:0x7c6bf0, transparent:true, opacity:0.3, blending:THREE.AdditiveBlending });
+  const lgeo = new THREE.BufferGeometry();
+  const lpos = []; finials.forEach(function(f){ lpos.push(f.position.x, f.position.y, f.position.z, Math.cos(Math.random()*6.28)*3.4, 12.6, Math.sin(Math.random()*6.28)*3.4); });
+  lgeo.setAttribute('position', new THREE.Float32BufferAttribute(lpos,3));
+  scene.add(new THREE.LineSegments(lgeo, lineMat));
+
+  // postprocessing bloom
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  const bloom = new UnrealBloomPass(new THREE.Vector2(1,1), 0.95, 0.5, 0.08);
+  composer.addPass(bloom);
+
+  function size(){ const r = canvas.getBoundingClientRect(); const w=Math.max(1,r.width), h=Math.max(1,r.height); renderer.setSize(w,h,false); composer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+  size(); addEventListener('resize', size);
+
+  // pointer parallax
+  let px=0, py=0, tx=0, ty=0;
+  canvas.addEventListener('pointermove', e=>{ const r=canvas.getBoundingClientRect(); tx=((e.clientX-r.left)/r.width-0.5); ty=((e.clientY-r.top)/r.height-0.5); });
+  canvas.addEventListener('pointerleave', ()=>{ tx=0; ty=0; });
+
+  let vis=true; try{ new IntersectionObserver(es=>{ vis=es[0].isIntersecting; },{threshold:0}).observe(canvas); }catch(e){}
+  const clock = new THREE.Clock();
+  function frame(){
+    requestAnimationFrame(frame);
+    if(!vis) return;
+    const t = clock.getElapsedTime();
+    px += (tx-px)*0.05; py += (ty-py)*0.05;
+    world.rotation.y = Math.sin(t*0.12)*0.22 + px*0.5;
+    camera.position.x = px*4; camera.position.y = 4.5 - py*2.5; camera.lookAt(0,5.2,0);
+    // particle drift
+    const arr = pg.attributes.position.array;
+    for(let i=0;i<N;i++){ arr[i*3+1]+=0.004*spd[i]; if(arr[i*3+1]>16) arr[i*3+1]=0; }
+    pg.attributes.position.needsUpdate = true;
+    points.rotation.y = t*0.04;
+    ring.rotation.y = -t*0.25;
+    finials.forEach((f,i)=>{ const s=0.9+0.4*Math.sin(t*2.4+i); f.scale.setScalar(s); });
+    key.position.x = -6 + px*5;
+    composer.render();
+  }
+  frame();
+}
+</script>
+</body>
+</html>
