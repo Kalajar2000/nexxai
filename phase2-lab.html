@@ -16,24 +16,31 @@
         .lab-note{color:#8b93ad;font-size:.92rem;padding:10px 0 6px;max-width:880px;line-height:1.6}
         .lab-note b{color:#cbbcff}
         .done{display:inline-block;margin:4px 8px 4px 0;padding:6px 12px;border-radius:999px;background:rgba(80,220,150,.12);border:1px solid rgba(80,220,150,.35);color:#86e6b4;font-size:.8rem}
-        /* unified card */
-        .stack-card{margin:30px 0 70px;border:1px solid rgba(255,255,255,.09);border-radius:26px;padding:40px 38px;background:radial-gradient(120% 120% at 85% 0%,rgba(40,30,80,.4),rgba(10,10,20,.5))}
-        .blk{margin-bottom:38px}
-        .blk:last-child{margin-bottom:0}
-        .blk-h{font-family:'Poppins';font-weight:600;font-size:1.45rem;margin:0 0 4px}
-        .blk-s{color:#8b93ad;font-size:.92rem;margin-bottom:24px}
+
+        /* ---- block headings ---- */
+        .blk{margin:34px 0 30px}
+        .blk-h{font-family:'Poppins';font-weight:600;font-size:1.6rem;margin:0 0 4px}
+        .blk-s{color:#8b93ad;font-size:.95rem;margin-bottom:22px}
+
+        /* ---- moving tool rows ---- */
+        .mqx{overflow:hidden;cursor:grab;padding:7px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);touch-action:pan-y;user-select:none}
+        .mqx:active{cursor:grabbing}
+        .mqx+.mqx{margin-top:14px}
+        .mqtrack{display:flex;gap:15px;width:max-content;will-change:transform}
+        .chip{display:inline-flex;align-items:center;gap:13px;flex:0 0 auto;padding:13px 22px 13px 15px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);white-space:nowrap;position:relative;overflow:hidden;transition:transform .2s,border-color .2s,background .2s}
+        .chip::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(80% 130% at 18% 0%,var(--c),transparent 62%);opacity:0;transition:.3s;pointer-events:none}
+        .chip:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.075)}
+        .chip:hover::after{opacity:.18}
+        .chip img{height:30px;width:30px;object-fit:contain;position:relative;z-index:1;pointer-events:none}
+        .chip b{font-family:'Poppins';font-weight:500;font-size:.97rem;color:#e8eaf5;position:relative;z-index:1;pointer-events:none}
+
+        /* ---- engineering stack big card ---- */
+        .stack-card{margin:18px 0 70px;border:1px solid rgba(255,255,255,.09);border-radius:26px;padding:40px 38px;background:radial-gradient(120% 120% at 85% 0%,rgba(40,30,80,.4),rgba(10,10,20,.5))}
+        .stack-card .blk{margin:0}
         .cat{margin-bottom:24px}
+        .cat:last-child{margin-bottom:0}
         .cat h4{font-family:'Poppins';font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:9px}
         .cat h4::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 12px var(--c)}
-        /* tool tiles */
-        .tiles-row{display:flex;flex-wrap:wrap;gap:14px}
-        .tile{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;width:120px;height:108px;border-radius:18px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);transition:.25s;position:relative;overflow:hidden}
-        .tile::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(80% 70% at 50% 0%,var(--c),transparent 70%);opacity:0;transition:.3s}
-        .tile:hover{transform:translateY(-5px);border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.07)}
-        .tile:hover::after{opacity:.14}
-        .tile img{height:42px;width:42px;object-fit:contain;position:relative;z-index:1}
-        .tile b{font-family:'Poppins';font-weight:500;font-size:.82rem;color:#e2e4f1;position:relative;z-index:1}
-        /* tech pills */
         .pills2{display:flex;flex-wrap:wrap;gap:10px}
         .pill2{display:inline-flex;align-items:center;gap:10px;padding:10px 17px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);font-size:.92rem;color:#e7e8f4;white-space:nowrap;transition:.2s}
         .pill2:hover{border-color:var(--c);background:rgba(255,255,255,.07)}
@@ -43,18 +50,22 @@
 </head>
 <body>
 <div class="lab-wrap">
-    <div class="lab-top">Phase-2 preview<span class="pill">build 4</span></div>
+    <div class="lab-top">Phase-2 preview<span class="pill">build 5</span></div>
     <p class="lab-note">
-        <span class="done">✓ Tools = glass tiles</span><span class="done">✓ Tech = colored, categorized</span><span class="done">✓ all real logos</span><br>
-        Combined into one <b>Tools &amp; Tech Stack</b> — brand colors, color-coded categories. I expanded the tools to <b>20</b> (AI models, creative AI, automation). <b>Tell me which tools to keep / drop / add</b>, then I'll drop this onto the homepage + services page.
+        <span class="done">✓ tools = 2 moving rows</span><span class="done">✓ drag to scroll</span><span class="done">✓ App Store · Google Play · M365 · APIs · Power Automate</span><span class="done">✓ engineering = big card</span><br>
+        Condensed the tools into <b>two draggable rows</b> (grab &amp; fling them). Now covers AI <b>and</b> the build/ship tools — <b>27 tools</b> total. The engineering stack stays the big colored card below. <b>Tell me any tool to add / drop</b>, then I'll put this on the homepage + services page.
     </p>
 
+    <!-- TOOLS: two moving rows -->
+    <div class="blk">
+        <h3 class="blk-h">The tools we build &amp; ship with</h3>
+        <div class="blk-s">AI models, creative AI, automation, APIs and the stores we publish to — drag a row to spin through them.</div>
+        <div class="mqx"><div class="mqtrack" id="rowA"></div></div>
+        <div class="mqx"><div class="mqtrack" id="rowB"></div></div>
+    </div>
+
+    <!-- ENGINEERING STACK: big card -->
     <div class="stack-card">
-        <div class="blk">
-            <h3 class="blk-h">The AI tools we build with</h3>
-            <div class="blk-s">Glass tiles, real brand logos, grouped by what they do.</div>
-            <div id="tools"></div>
-        </div>
         <div class="blk">
             <h3 class="blk-h">The engineering stack</h3>
             <div class="blk-s">Every technology with its real logo, color-coded by layer.</div>
@@ -63,11 +74,66 @@
     </div>
 </div>
 <script>
-    var TOOLGROUPS=[
-        ['AI models','#a78bfa',[['Claude','claude.svg'],['GPT','gpt.svg'],['Gemini','gemini.svg'],['Grok','grok.png'],['Perplexity','perplexity.svg'],['Mistral','mistral.svg'],['DeepSeek','deepseek.svg'],['Ollama','ollama.svg']]],
-        ['Creative AI','#f472b6',[['Midjourney','midjourney.png'],['Higgsfield','higgsfield.png'],['Runway','runwayml.png'],['Synthesia','synthesia.png']]],
-        ['Automation & platforms','#60a5fa',[['Zapier','zapier.svg'],['Make','make.svg'],['n8n','n8n.svg'],['GoHighLevel','gohighlevel.png'],['HubSpot','hubspot.svg'],['Airtable','airtable.svg'],['Notion','notion.svg'],['Slack','slack.svg']]]
+    /* ---- tool chips: [name, file, brand color] ---- */
+    var ROWA=[
+        ['Claude','claude.svg','#d97757'],['GPT','gpt.svg','#10a37f'],['Gemini','gemini.svg','#4285f4'],
+        ['Grok','grok.png','#94a3b8'],['Perplexity','perplexity.svg','#20b8cd'],['Mistral','mistral.svg','#fa520f'],
+        ['DeepSeek','deepseek.svg','#4d6bfe'],['Ollama','ollama.svg','#cbd5e1'],['Midjourney','midjourney.png','#818cf8'],
+        ['Higgsfield','higgsfield.png','#ec4899'],['Runway','runwayml.png','#a78bfa'],['Synthesia','synthesia.png','#6366f1'],
+        ['Zapier','zapier.svg','#ff4f00'],['Make','make.svg','#9b5de5']
     ];
+    var ROWB=[
+        ['n8n','n8n.svg','#ea4b71'],['Power Automate','powerautomate.svg','#0b6bf2'],['GoHighLevel','gohighlevel.png','#38bdf8'],
+        ['HubSpot','hubspot.svg','#ff7a59'],['Airtable','airtable.svg','#fcb400'],['Notion','notion.svg','#94a3b8'],
+        ['Slack','slack.svg','#36c5f0'],['Microsoft 365','microsoft365.svg','#f25022'],['App Store','appstore.svg','#0d96f6'],
+        ['Google Play','googleplay.svg','#00c4ff'],['Postman','postman.svg','#ff6c37'],['GraphQL','graphql.svg','#e10098'],
+        ['Swagger','swagger.svg','#85ea2d']
+    ];
+    function chip(t){return '<span class="chip" style="--c:'+t[2]+'"><img src="assets/brand-stack/'+t[1]+'" alt="'+t[0]+'"><b>'+t[0]+'</b></span>';}
+    function fill(id,arr){
+        var html=arr.map(chip).join('');
+        document.getElementById(id).innerHTML=html+html; // duplicate for seamless wrap
+    }
+    fill('rowA',ROWA); fill('rowB',ROWB);
+
+    /* ---- draggable + auto-scrolling marquee ---- */
+    function marquee(trackId, dir, speed){
+        var track=document.getElementById(trackId);
+        var box=track.parentNode;
+        var half=track.scrollWidth/2;
+        var pos=dir<0?0:-half;
+        var vel=0, dragging=false, lastX=0, moved=0;
+        function norm(p){ while(p<=-half)p+=half; while(p>0)p-=half; return p; }
+        function frame(){
+            if(!dragging){
+                pos+=dir*speed+vel;
+                vel*=0.93; if(Math.abs(vel)<0.02)vel=0;
+            }
+            pos=norm(pos);
+            track.style.transform='translateX('+pos+'px)';
+            requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+        box.addEventListener('pointerdown',function(e){
+            dragging=true; lastX=e.clientX; vel=0; moved=0;
+            box.setPointerCapture(e.pointerId);
+        });
+        box.addEventListener('pointermove',function(e){
+            if(!dragging)return;
+            var dx=e.clientX-lastX; lastX=e.clientX; moved+=Math.abs(dx);
+            pos=norm(pos+dx); vel=dx;
+            track.style.transform='translateX('+pos+'px)';
+        });
+        function end(){ dragging=false; }
+        box.addEventListener('pointerup',end);
+        box.addEventListener('pointercancel',end);
+        // recompute width once images have loaded (logos can shift layout)
+        window.addEventListener('load',function(){ half=track.scrollWidth/2; });
+    }
+    marquee('rowA',-1,0.45);
+    marquee('rowB', 1,0.45);
+
+    /* ---- engineering stack ---- */
     var TECH=[
         ['AI & Machine Learning','#a78bfa',[['TensorFlow','tensorflow'],['PyTorch','pytorch'],['LangChain','langchain'],['Hugging Face','huggingface'],['Scikit-learn','scikitlearn'],['OpenCV','opencv'],['Keras','keras'],['Pandas','pandas'],['NumPy','numpy']]],
         ['Backend','#60a5fa',[['.NET Core','dotnet'],['Node.js','nodejs'],['NestJS','nestjs'],['Express','express'],['Django','django'],['FastAPI','fastapi'],['Spring Boot','springboot'],['Ruby on Rails','rubyonrails'],['Laravel','laravel'],['GoLang','go']]],
@@ -76,11 +142,6 @@
         ['Databases','#fbbf24',[['PostgreSQL','postgresql'],['MongoDB','mongodb'],['MySQL','mysql'],['Microsoft SQL','mssql'],['Redis','redis'],['Firebase','firebase'],['Supabase','supabase'],['DynamoDB','dynamodb']]],
         ['Cloud & DevOps','#f472b6',[['AWS','aws'],['Azure','azure'],['Google Cloud','googlecloud'],['Docker','docker'],['Kubernetes','kubernetes'],['Jenkins','jenkins'],['Git','git'],['CI/CD','']]]
     ];
-    var tools=TOOLGROUPS.map(function(g){
-        var tiles=g[2].map(function(t){return '<span class="tile"><img src="assets/brand-stack/'+t[1]+'" alt="'+t[0]+'"><b>'+t[0]+'</b></span>';}).join('');
-        return '<div class="cat" style="--c:'+g[1]+'"><h4 style="color:'+g[1]+'">'+g[0]+'</h4><div class="tiles-row">'+tiles+'</div></div>';
-    }).join('');
-    document.getElementById('tools').innerHTML=tools;
     var tech=TECH.map(function(g){
         var pills=g[2].map(function(it){var ic=it[1]?'<img src="assets/tech/'+it[1]+'.svg" alt="">':'<i class="fas fa-infinity"></i>';return '<span class="pill2" style="--c:'+g[1]+'">'+ic+'<span>'+it[0]+'</span></span>';}).join('');
         return '<div class="cat" style="--c:'+g[1]+'"><h4 style="color:'+g[1]+'">'+g[0]+'</h4><div class="pills2">'+pills+'</div></div>';
