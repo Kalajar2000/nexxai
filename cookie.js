@@ -49,7 +49,7 @@
 @media(max-width:560px){.ckb-in{padding:16px}.ckb-btn{flex:1}}';
 
   var BANNER = '<div class="ckb" role="dialog" aria-label="Cookie consent"><div class="ckb-in">\
-<div class="ckb-txt"><strong>We use cookies.</strong> Essential cookies keep the site running. With your consent we also use analytics and marketing cookies to understand traffic and identify interested companies. Read our <a href="/privacy/">Privacy &amp; Cookie Policy</a>.</div>\
+<div class="ckb-txt"><strong>We use cookies.</strong> Essential cookies keep the site running. We also use analytics and marketing cookies (for example Apollo) to understand traffic and identify interested companies. You can reject these or set preferences anytime. Read our <a href="/privacy/">Privacy &amp; Cookie Policy</a>.</div>\
 <div class="ckb-btns">\
 <button class="ckb-btn" data-ck="reject">Reject non-essential</button>\
 <button class="ckb-btn" data-ck="prefs">Preferences</button>\
@@ -87,8 +87,10 @@
       if (e.target.closest('[data-cookie-settings]')) { e.preventDefault(); openModal(); }
     });
 
+    // opt-out model: load by default unless the visitor has explicitly rejected
     var c = getConsent();
-    if (!c) showBanner(); else if (c.analytics) loadAnalytics();
+    if (!c) { loadAnalytics(); showBanner(); }
+    else if (c.analytics) loadAnalytics();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
