@@ -104,7 +104,7 @@ ul{list-style:none}
 @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* ---- sections ---- */
-.sec{padding:122px 0;position:relative}
+.sec{padding:122px 0;position:relative;content-visibility:auto;contain-intrinsic-size:auto 700px}
 .eyebrow{font-family:'Poppins',sans-serif;font-size:.76rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--violet);display:block;margin-bottom:14px}
 .sec h2{font-family:'Poppins',sans-serif;font-style:normal;font-weight:600;font-size:clamp(2rem,4vw,3.2rem);line-height:1.1;letter-spacing:-.022em;margin-bottom:14px}
 .head{margin-bottom:56px;max-width:640px}
@@ -192,7 +192,7 @@ ul{list-style:none}
 .cta-band p{color:var(--muted);max-width:540px;margin:0 auto 30px;font-size:1.15rem;font-weight:300}
 
 /* footer */
-.foot{margin-top:80px;padding:60px 0 36px;border-top:1px solid rgba(255,255,255,.07)}
+.foot{margin-top:80px;padding:60px 0 36px;border-top:1px solid rgba(255,255,255,.07);content-visibility:auto;contain-intrinsic-size:auto 400px}
 .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px;margin-bottom:40px}
 .foot .brand{font-size:1.6rem;margin-bottom:10px;display:inline-block}
 .foot p{color:var(--dim);font-weight:400;font-size:.92rem;max-width:280px}

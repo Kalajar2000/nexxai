@@ -13,7 +13,8 @@
         canvas.addEventListener('click',function(e){var r=canvas.getBoundingClientRect();var cx=e.clientX-r.left,cy=e.clientY-r.top;if(inst.hit){var res=inst.hit(cx,cy);if(res&&panel){panel.innerHTML=res;panel.classList.add('show');}else if(res===false&&panel){panel.classList.remove('show');}}});
         if(inst.hit)canvas.style.cursor='pointer';
         var t0=performance.now();
-        function loop(now){var t=(now-t0)/1000;p.x+=(p.tx-p.x)*.08;p.y+=(p.ty-p.y)*.08;ctx.clearRect(0,0,w,h);inst.draw(ctx,t,w,h,p);requestAnimationFrame(loop);}
+        var vis=true;try{new IntersectionObserver(function(es){vis=es[0].isIntersecting;},{threshold:0}).observe(canvas);}catch(e){}
+        function loop(now){var t=(now-t0)/1000;if(vis){p.x+=(p.tx-p.x)*.08;p.y+=(p.ty-p.y)*.08;ctx.clearRect(0,0,w,h);inst.draw(ctx,t,w,h,p);}requestAnimationFrame(loop);}
         resize();window.addEventListener('resize',resize);requestAnimationFrame(loop);
     }
     // ① services — capability bubbles, click to bloom + callout

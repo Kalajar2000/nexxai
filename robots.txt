@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Internal previews / sandboxes — not for indexing
+Disallow: /*-lab.html
+Disallow: /hero-robot.html
+Disallow: /redesign.html
+
+Sitemap: https://nexxai.world/sitemap.xml

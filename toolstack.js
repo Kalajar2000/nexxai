@@ -48,10 +48,14 @@
         var pos=dir<0?0:-half;
         var vel=0,dragging=false,lastX=0;
         function norm(p){if(!half)return p;while(p<=-half)p+=half;while(p>0)p-=half;return p;}
+        var visible=true;
+        try{new IntersectionObserver(function(es){visible=es[0].isIntersecting;},{threshold:0}).observe(box);}catch(e){}
         function frame(){
-            if(!dragging){pos+=dir*speed+vel;vel*=0.93;if(Math.abs(vel)<0.02)vel=0;}
-            pos=norm(pos);
-            track.style.transform='translateX('+pos+'px)';
+            if(visible){
+                if(!dragging){pos+=dir*speed+vel;vel*=0.93;if(Math.abs(vel)<0.02)vel=0;}
+                pos=norm(pos);
+                track.style.transform='translateX('+pos+'px)';
+            }
             requestAnimationFrame(frame);
         }
         requestAnimationFrame(frame);

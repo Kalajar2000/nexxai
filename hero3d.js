@@ -625,10 +625,14 @@ export function createHero(canvas, opts) {
         opts.speechEl.classList.add('show');
       } else { opts.speechEl.classList.remove('show'); }
     }
-    if (current === 2) renderer.render(scene, camera);
-    else if (usePost && composer) composer.render(); else renderer.render(scene, camera);
+    if (heroVisible) {
+      if (current === 2) renderer.render(scene, camera);
+      else if (usePost && composer) composer.render(); else renderer.render(scene, camera);
+    }
     raf = requestAnimationFrame(frame);
   }
+  var heroVisible = true;
+  try { new IntersectionObserver(function (es) { heroVisible = es[0].isIntersecting; }, { threshold: 0 }).observe(canvas); } catch (e) {}
   raf = requestAnimationFrame(frame);
 
   return {
