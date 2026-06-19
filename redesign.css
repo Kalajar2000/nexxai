@@ -144,7 +144,7 @@ ul{list-style:none}
 /* process */
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
 .step{padding:28px}
-.step .num{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:'Instrument Serif',serif;font-style:italic;font-size:1.4rem;color:#fff;background:linear-gradient(45deg,var(--violet),var(--blue));box-shadow:0 8px 22px rgba(124,58,237,.5);margin-bottom:16px}
+.step .num{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:'Poppins',sans-serif;font-style:normal;font-weight:600;font-size:1.2rem;color:#fff;background:linear-gradient(45deg,var(--violet),var(--blue));box-shadow:0 8px 22px rgba(124,58,237,.5);margin-bottom:16px}
 .step h3{font-size:1.15rem;font-weight:600;margin-bottom:6px}
 .step p{color:var(--muted);font-size:.92rem;font-weight:400}
 
@@ -271,12 +271,12 @@ body.menu-open,body.modal-open{overflow:hidden}
 /* ---- ladder (upskilling) ---- */
 .ladder{display:grid;gap:16px;max-width:840px;margin:0 auto}
 .ladder-item{display:flex;gap:22px;align-items:flex-start;padding:26px 30px}
-.ladder-num{flex-shrink:0;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:'Instrument Serif',serif;font-style:italic;font-size:1.35rem;color:#fff;background:linear-gradient(45deg,var(--violet),var(--blue));box-shadow:0 8px 22px rgba(124,58,237,.5)}
+.ladder-num{flex-shrink:0;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:'Poppins',sans-serif;font-style:normal;font-weight:600;font-size:1.15rem;color:#fff;background:linear-gradient(45deg,var(--violet),var(--blue));box-shadow:0 8px 22px rgba(124,58,237,.5)}
 .ladder-item h3{font-size:1.15rem;font-weight:600;margin-bottom:5px}
 .ladder-item p{color:var(--muted);font-weight:400;font-size:.95rem}
 
 /* ---- locations ---- */
-.loc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.loc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
 .loc{padding:30px;text-align:center}
 .loc .pin{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;margin:0 auto 14px;font-size:1.2rem;color:#c4b5fd;background:rgba(124,58,237,.16)}
 .loc h3{font-size:1.2rem;font-weight:600;margin-bottom:4px}
