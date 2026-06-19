@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0d0f1e">
+<title>Location viz · 5 directions · NEXXAI</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+    body{margin:0;background:#06060c;color:#f4f4fb;font-family:'Inter',sans-serif;line-height:1.6}
+    .wrap{max-width:1240px;margin:0 auto;padding:42px 22px 90px}
+    h1{font-family:'Poppins';font-weight:700;font-size:1.8rem;margin:0 0 8px}
+    .lead{color:#9a9cbb;max-width:860px;font-size:.97rem;margin:0 0 28px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(500px,1fr));gap:20px}
+    @media(max-width:560px){.grid{grid-template-columns:1fr}}
+    .card{border:1px solid rgba(255,255,255,.12);border-radius:20px;overflow:hidden;position:relative}
+    .card .stage{position:relative;height:340px}
+    .card canvas{display:block;width:100%;height:100%}
+    .card .tag{position:absolute;top:14px;left:14px;z-index:2;font-family:'Poppins';font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:rgba(13,15,30,.55);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:6px 13px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    .card .meta{padding:16px 20px 20px;background:rgba(255,255,255,.02)}
+    .card .meta h3{font-family:'Poppins';font-weight:600;font-size:1.05rem;margin:0 0 3px}
+    .card .meta p{color:#8b8db2;font-size:.86rem;margin:0}
+    .bgA{background:radial-gradient(120% 120% at 70% 15%,#33215e,#0e0a22 70%)}
+    .bgB{background:radial-gradient(120% 120% at 50% 100%,#0c2740,#05101e 75%)}
+    .bgC{background:linear-gradient(180deg,#4b2e86 0%,#7d4fd0 45%,#e85a9c 100%)}
+    .bgD{background:radial-gradient(120% 120% at 50% 30%,#241351,#08071a 72%)}
+    .bgE{background:radial-gradient(120% 120% at 30% 20%,#2a2270,#0a0a24 72%)}
+    .foot{color:#7d7fa0;font-size:.9rem;margin-top:40px;line-height:1.7}
+    .foot b{color:#cbbcff}
+</style>
+</head>
+<body>
+<div class="wrap">
+    <h1>Location visual - 5 directions (Barcelona)</h1>
+    <p class="lead">All brighter and more recognizable than the first attempt, five genuinely different techniques. Same landmark (Sagrada-style spires) so you compare styles fairly. <b>Hover each.</b> Pick a number and I build that style for all six cities (each with its own landmark) and ship it into the location heroes.</p>
+    <div class="grid" id="root"></div>
+    <p class="foot">1 - <b>Lit Monument</b> · 2 - <b>Holographic blueprint</b> · 3 - <b>Low-poly daylight diorama</b> · 4 - <b>Data point-cloud</b> · 5 - <b>Hologram + orbiting AI</b>. Tell me the number (and any tweak: brighter, more/less city, color) and I roll it out.</p>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+const SP=[[-3.4,5.2,0.6],[-2.1,7.2,-0.6],[-0.85,9.2,0.6],[0.5,10.8,-0.5],[1.8,9.0,0.6],[3.0,7.0,-0.6],[4.1,5.0,0.6]];
+
+function engine(canvas, o){
+  let r; try{ r=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true}); }catch(e){ return; }
+  r.setPixelRatio(Math.min(devicePixelRatio,2));
+  r.toneMapping=THREE.ACESFilmicToneMapping; r.toneMappingExposure=o.exposure||1.25;
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(44,1,0.1,200); cam.position.set(0,5.5,17);
+  const api={scene,cam,THREE,r}; o.build(api);
+  let comp=null;
+  if(o.bloom){ comp=new EffectComposer(r); comp.addPass(new RenderPass(scene,cam)); comp.addPass(new UnrealBloomPass(new THREE.Vector2(1,1),o.bloom[0],o.bloom[1],o.bloom[2])); }
+  function size(){ const b=canvas.getBoundingClientRect(),w=Math.max(1,b.width),h=Math.max(1,b.height); r.setSize(w,h,false); if(comp)comp.setSize(w,h); cam.aspect=w/h; cam.updateProjectionMatrix(); }
+  size(); addEventListener('resize',size);
+  let tx=0,ty=0,px=0,py=0;
+  canvas.addEventListener('pointermove',e=>{ const b=canvas.getBoundingClientRect(); tx=(e.clientX-b.left)/b.width-0.5; ty=(e.clientY-b.top)/b.height-0.5; });
+  canvas.addEventListener('pointerleave',()=>{ tx=0; ty=0; });
+  let vis=true; try{ new IntersectionObserver(es=>vis=es[0].isIntersecting,{threshold:0}).observe(canvas); }catch(e){}
+  const clk=new THREE.Clock();
+  (function loop(){ requestAnimationFrame(loop); if(!vis)return; const t=clk.getElapsedTime(); px+=(tx-px)*0.05; py+=(ty-py)*0.05; o.update&&o.update(t,px,py,api); if(comp)comp.render(); else r.render(scene,cam); })();
+}
+
+/* ---------- 1 · Lit Monument ---------- */
+function c1(canvas){ engine(canvas,{ exposure:1.35, bloom:[0.55,0.6,0.2], build(a){
+  const {scene,THREE}=a;
+  scene.add(new THREE.AmbientLight(0x8a7fc0,1.1));
+  const k=new THREE.DirectionalLight(0xffe0b0,2.2); k.position.set(-7,12,9); scene.add(k);
+  const v=new THREE.PointLight(0x9b8cff,180,60); v.position.set(7,7,-4); scene.add(v);
+  const sun=new THREE.Mesh(new THREE.SphereGeometry(2.4,24,24), new THREE.MeshBasicMaterial({color:0xffd9b0})); sun.position.set(6,13,-12); scene.add(sun);
+  const g=new THREE.Group(); scene.add(g); a.g=g; a.fin=[];
+  const mat=new THREE.MeshStandardMaterial({color:0x8b7ad0,roughness:0.5,metalness:0.25,emissive:0x2e2566,emissiveIntensity:0.4});
+  SP.forEach((s,i)=>{ const m=new THREE.Mesh(new THREE.ConeGeometry(0.5,s[1],6,1),mat); m.position.set(s[0],s[1]/2,s[2]); m.rotation.y=i; g.add(m);
+    const f=new THREE.Mesh(new THREE.IcosahedronGeometry(0.17,0),new THREE.MeshBasicMaterial({color:0xfff0c8})); f.position.set(s[0],s[1]+0.25,s[2]); g.add(f); a.fin.push(f); });
+  const gr=new THREE.GridHelper(70,40,0x6a5fae,0x37305e); gr.material.transparent=true; gr.material.opacity=0.25; g.add(gr);
+}, update(t,px,py,a){ a.g.rotation.y=Math.sin(t*0.12)*0.2+px*0.5; a.cam.position.x=px*4; a.cam.position.y=5.5-py*2; a.cam.lookAt(0,5.5,0); a.fin.forEach((f,i)=>f.scale.setScalar(0.85+0.35*Math.sin(t*2+i))); }});}
+
+/* ---------- 2 · Holographic blueprint ---------- */
+function c2(canvas){ engine(canvas,{ exposure:1.2, bloom:[1.1,0.5,0.0], build(a){
+  const {scene,THREE}=a; const g=new THREE.Group(); scene.add(g); a.g=g;
+  const line=new THREE.LineBasicMaterial({color:0x49e0ff,transparent:true,opacity:0.9});
+  SP.forEach((s,i)=>{ const cone=new THREE.ConeGeometry(0.5,s[1],6,2); const eg=new THREE.EdgesGeometry(cone); const ls=new THREE.LineSegments(eg,line); ls.position.set(s[0],s[1]/2,s[2]); ls.rotation.y=i; g.add(ls);
+    const fill=new THREE.Mesh(cone,new THREE.MeshBasicMaterial({color:0x0a3550,transparent:true,opacity:0.25})); fill.position.copy(ls.position); fill.rotation.y=i; g.add(fill); });
+  const gr=new THREE.GridHelper(80,40,0x49e0ff,0x1f6f8c); gr.material.transparent=true; gr.material.opacity=0.4; g.add(gr);
+  // scan plane
+  const scan=new THREE.Mesh(new THREE.PlaneGeometry(20,0.12),new THREE.MeshBasicMaterial({color:0x9fe8ff,transparent:true,opacity:0.8})); scan.rotation.x=-Math.PI/2; g.add(scan); a.scan=scan;
+  // particles
+  const N=200,pp=new Float32Array(N*3); for(let i=0;i<N;i++){pp[i*3]=(Math.random()-.5)*22;pp[i*3+1]=Math.random()*13;pp[i*3+2]=(Math.random()-.5)*12;} const pg=new THREE.BufferGeometry(); pg.setAttribute('position',new THREE.BufferAttribute(pp,3)); g.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0x9fe8ff,size:0.06,transparent:true,opacity:0.7})));
+}, update(t,px,py,a){ a.g.rotation.y=t*0.18+px*0.6; a.scan.position.y=(Math.sin(t*0.7)*0.5+0.5)*12; a.cam.position.x=px*4; a.cam.position.y=5.5-py*2; a.cam.lookAt(0,5.2,0); }});}
+
+/* ---------- 3 · Low-poly daylight diorama (brightest, no bloom) ---------- */
+function c3(canvas){ engine(canvas,{ exposure:1.1, build(a){
+  const {scene,THREE}=a;
+  scene.add(new THREE.AmbientLight(0xffffff,1.05));
+  const k=new THREE.DirectionalLight(0xfff2dd,2.1); k.position.set(-6,12,8); scene.add(k);
+  const k2=new THREE.DirectionalLight(0xff9ad0,0.9); k2.position.set(8,4,4); scene.add(k2);
+  const g=new THREE.Group(); scene.add(g); a.g=g;
+  const cols=[0x8b5cf6,0x6d8bff,0xec4899,0xa78bfa,0x60a5fa,0xf472b6,0x818cf8];
+  SP.forEach((s,i)=>{ const m=new THREE.Mesh(new THREE.ConeGeometry(0.62,s[1],4,1),new THREE.MeshStandardMaterial({color:cols[i],flatShading:true,roughness:0.6,metalness:0.05})); m.position.set(s[0],s[1]/2,s[2]); m.rotation.y=Math.PI/4; g.add(m); });
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(7.5,8.2,1.4,9),new THREE.MeshStandardMaterial({color:0x2b2150,flatShading:true})); base.position.y=-0.7; g.add(base);
+  const top=new THREE.Mesh(new THREE.CylinderGeometry(7.5,7.5,0.3,9),new THREE.MeshStandardMaterial({color:0x3b2f74,flatShading:true})); top.position.y=0.05; g.add(top);
+  // floating AI cubes
+  a.cubes=[]; for(let i=0;i<7;i++){ const c=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.6,0.6),new THREE.MeshStandardMaterial({color:0xffffff,emissive:0x9b8cff,emissiveIntensity:0.5,flatShading:true})); const a0=i/7*Math.PI*2; c.position.set(Math.cos(a0)*6,6+Math.sin(i)*2,Math.sin(a0)*6); g.add(c); a.cubes.push(c); }
+}, update(t,px,py,a){ a.g.rotation.y=t*0.18+px*0.6; a.cubes.forEach((c,i)=>{c.rotation.x=t+i;c.rotation.y=t*0.7+i;c.position.y=6+Math.sin(t+i)*1.6;}); a.cam.position.x=px*4; a.cam.position.y=6-py*2; a.cam.lookAt(0,5,0); }});}
+
+/* ---------- 4 · Data point-cloud ---------- */
+function c4(canvas){ engine(canvas,{ exposure:1.3, bloom:[1.0,0.55,0.0], build(a){
+  const {scene,THREE}=a; const g=new THREE.Group(); scene.add(g); a.g=g;
+  const pts=[],cols=[]; const cA=new THREE.Color(0xffffff),cB=new THREE.Color(0x8b5cf6),cC=new THREE.Color(0x49e0ff);
+  SP.forEach(s=>{ const n=900; for(let i=0;i<n;i++){ const u=Math.random(); const y=u*s[1]; const rad=0.5*(1-u); const an=Math.random()*Math.PI*2; pts.push(s[0]+Math.cos(an)*rad, y, s[2]+Math.sin(an)*rad); const c=cB.clone().lerp(cC,u); if(Math.random()<0.15)c.copy(cA); cols.push(c.r,c.g,c.b);} });
+  for(let i=0;i<300;i++){ pts.push((Math.random()-.5)*22,Math.random()*14,(Math.random()-.5)*12); cols.push(0.6,0.7,1); }
+  const pg=new THREE.BufferGeometry(); pg.setAttribute('position',new THREE.Float32BufferAttribute(pts,3)); pg.setAttribute('color',new THREE.Float32BufferAttribute(cols,3));
+  const pm=new THREE.PointsMaterial({size:0.075,vertexColors:true,transparent:true,opacity:0.95,blending:THREE.AdditiveBlending,depthWrite:false});
+  a.pts=new THREE.Points(pg,pm); g.add(a.pts); a.base=pg.attributes.position.array.slice();
+}, update(t,px,py,a){ a.g.rotation.y=Math.sin(t*0.1)*0.25+px*0.6; const arr=a.pts.geometry.attributes.position.array,b=a.base; for(let i=0;i<arr.length;i+=3){ arr[i]=b[i]+Math.sin(t*1.3+b[i+1])*0.05; arr[i+2]=b[i+2]+Math.cos(t*1.1+b[i+1])*0.05; } a.pts.geometry.attributes.position.needsUpdate=true; a.cam.position.x=px*4; a.cam.position.y=5.5-py*2; a.cam.lookAt(0,5.2,0); }});}
+
+/* ---------- 5 · Hologram + orbiting AI ---------- */
+function c5(canvas){ engine(canvas,{ exposure:1.3, bloom:[0.85,0.55,0.05], build(a){
+  const {scene,THREE}=a; scene.add(new THREE.AmbientLight(0x7a6fc0,1.0));
+  const k=new THREE.DirectionalLight(0xcfe0ff,1.6); k.position.set(-5,10,8); scene.add(k);
+  const g=new THREE.Group(); scene.add(g); a.g=g;
+  const mat=new THREE.MeshStandardMaterial({color:0x6a5fb0,roughness:0.4,metalness:0.4,emissive:0x3a2f7a,emissiveIntensity:0.5,transparent:true,opacity:0.92});
+  SP.forEach((s,i)=>{ const m=new THREE.Mesh(new THREE.ConeGeometry(0.5,s[1],6,1),mat); m.position.set(s[0],s[1]/2,s[2]); m.rotation.y=i; g.add(m); });
+  // holo rings
+  a.rings=[]; [4.6,5.6].forEach((rad,i)=>{ const ring=new THREE.Mesh(new THREE.TorusGeometry(rad,0.04,8,80),new THREE.MeshBasicMaterial({color:i?0x49e0ff:0xb49bff})); ring.rotation.x=Math.PI/2.3; ring.position.y=5.5; g.add(ring); a.rings.push(ring); });
+  // orbiting nodes
+  a.nodes=[]; for(let i=0;i<8;i++){ const nd=new THREE.Mesh(new THREE.SphereGeometry(0.22,12,12),new THREE.MeshBasicMaterial({color:0xd9ccff})); g.add(nd); a.nodes.push(nd); }
+  const gr=new THREE.GridHelper(70,36,0x6a5fae,0x322a5e); gr.material.transparent=true; gr.material.opacity=0.22; g.add(gr);
+}, update(t,px,py,a){ a.g.rotation.y=Math.sin(t*0.12)*0.18+px*0.5; a.rings.forEach((r,i)=>r.rotation.z=t*(i?-0.5:0.4)); a.nodes.forEach((n,i)=>{ const an=t*0.8+i/8*Math.PI*2,rad=5.1; n.position.set(Math.cos(an)*rad,5.5+Math.sin(t+i)*0.4,Math.sin(an)*rad); }); a.cam.position.x=px*4; a.cam.position.y=5.5-py*2; a.cam.lookAt(0,5.4,0); }});}
+
+const CARDS=[
+  ['1','Lit Monument','Properly lit stone spires + warm sun + glow. Real, premium, recognizable.','bgA',c1],
+  ['2','Holographic blueprint','Neon wireframe of the monument + scan line. "We engineer it." Bright, techy.','bgB',c2],
+  ['3','Low-poly daylight','Bright, colorful low-poly diorama on a floating island + AI cubes. Friendly, not dark.','bgC',c3],
+  ['4','Data point-cloud','The monument built from thousands of glowing particles - the city made of data.','bgD',c4],
+  ['5','Hologram + orbiting AI','Translucent monument under holo rings with orbiting AI nodes.','bgE',c5]
+];
+const root=document.getElementById('root');
+CARDS.forEach(c=>{ const el=document.createElement('div'); el.className='card';
+  el.innerHTML='<div class="stage '+c[3]+'"><span class="tag">'+c[0]+' · '+c[1]+'</span><canvas></canvas></div><div class="meta"><h3>'+c[0]+' · '+c[1]+'</h3><p>'+c[2]+'</p></div>';
+  root.appendChild(el); c[4](el.querySelector('canvas'));
+});
+</script>
+</body>
+</html>
