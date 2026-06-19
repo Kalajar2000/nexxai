@@ -37,7 +37,7 @@
         .model-msg .spin { width: 38px; height: 38px; border-radius: 50%; border: 3px solid rgba(139,92,246,.25); border-top-color: #8b5cf6; animation: sp 1s linear infinite; }
         @keyframes sp { to { transform: rotate(360deg); } }
 
-        /* image option — liquid glass frame */
+        /* image option - liquid glass frame */
         #img-tilt { position: relative; width: min(74vw, 900px); aspect-ratio: 1390 / 1160; transition: transform .25s ease; will-change: transform; }
         .glass-frame { position: absolute; inset: -14px; border-radius: 28px; background: rgba(255,255,255,0.012); background-blend-mode: luminosity; -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); box-shadow: 0 30px 80px rgba(0,0,0,.6), inset 0 1px 1px rgba(255,255,255,.15); overflow: hidden; }
         .glass-frame::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1.4px; background: linear-gradient(180deg, rgba(255,255,255,.5) 0%, rgba(255,255,255,.2) 20%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,.2) 80%, rgba(255,255,255,.5) 100%); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
@@ -63,7 +63,7 @@
             <div class="spin"></div>
             <div>The 3D cloud mesh is loading / regenerating.<br>Refresh in a minute.</div>
         </div>
-        <div class="stage-cap">Full 3D scene (laptop + cloud + devices) — drag to rotate, scroll to zoom</div>
+        <div class="stage-cap">Full 3D scene (laptop + cloud + devices) - drag to rotate, scroll to zoom</div>
     </section>
 
     <script type="module" src="cloud-lab.js"></script>

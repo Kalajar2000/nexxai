@@ -1,11 +1,11 @@
-// NEXXAI site script — reveal, nav, FAQ, contact form, portfolio (works site-wide)
+// NEXXAI site script - reveal, nav, FAQ, contact form, portfolio (works site-wide)
 document.addEventListener('DOMContentLoaded', function () {
     // hero / page-hero entrance (staggered blur-in)
     document.querySelectorAll('.hero .rv, .phero .rv').forEach(function (el, i) {
         setTimeout(function () { el.classList.add('in'); }, 150 + i * 60);
     });
     var reduceMo = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    // lower sections reveal on scroll — staggered per group
+    // lower sections reveal on scroll - staggered per group
     var io = new IntersectionObserver(function (es) {
         es.forEach(function (e) {
             if (!e.isIntersecting) return;

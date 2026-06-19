@@ -1,5 +1,5 @@
 /* =====================================================================
-   NEXXAI redesign — liquid-glass + 3D design system (preview, full page)
+   NEXXAI redesign - liquid-glass + 3D design system (preview, full page)
    ===================================================================== */
 :root{
   --bg:#06060c; --bg2:#0b0b18;
@@ -224,7 +224,7 @@ ul{list-style:none}
 @media(max-width:560px){.stats,.foot-grid{grid-template-columns:1fr}.nav{padding:0 16px}.sec{padding:70px 0}}
 
 /* =====================================================================
-   SHARED ADDITIONS — mobile nav, inner-page heroes, portfolio system
+   SHARED ADDITIONS - mobile nav, inner-page heroes, portfolio system
    (used site-wide so redesign.css drives every page)
    ===================================================================== */
 

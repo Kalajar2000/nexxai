@@ -1,4 +1,4 @@
-// NEXXAI site script — defensive (works across all pages)
+// NEXXAI site script - defensive (works across all pages)
 document.addEventListener('DOMContentLoaded', function () {
 
     // ---- Particles background ----

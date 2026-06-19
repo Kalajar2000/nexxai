@@ -1,4 +1,4 @@
-/* Cloud Lab — two options for the "software/cloud" state:
+/* Cloud Lab - two options for the "software/cloud" state:
    ① a properly-rendered 3D mesh (environment lighting + tone-mapping + orbit, like a real model viewer)
    ② the GLOBAL CLOUD reference image, premium-framed with parallax */
 import * as THREE from 'three';
@@ -17,7 +17,7 @@ function radialShadowTex() {
 
 /* Recolor ONLY the data bricks (database stack) with a vertical gradient
    (bottom purple -> top green), gated to a 3D box in the model's local space.
-   Geometry/texture untouched — purely an in-shader color override inside the box,
+   Geometry/texture untouched - purely an in-shader color override inside the box,
    so reverting this restores the model exactly. Box is tunable below. */
 const DB_BOX = { x0: 0.625, x1: 0.97, y0: -0.37, y1: 0.03, z0: -0.45, z1: -0.07 };
 function recolorDataBricks(material) {
@@ -99,7 +99,7 @@ function loop() {
 function start() { if (running) return; running = true; resize(); lastT = performance.now(); loop(); window.addEventListener('resize', resize); }
 function stop() { running = false; cancelAnimationFrame(raf); window.removeEventListener('resize', resize); }
 
-const HINTS = { '3d': 'A properly-lit 3D mesh — drag to rotate, scroll to zoom. Environment lighting, no blow-out.' };
+const HINTS = { '3d': 'A properly-lit 3D mesh - drag to rotate, scroll to zoom. Environment lighting, no blow-out.' };
 function show(which) {
   document.getElementById('stage-3d').hidden = which !== '3d';
   if (which === '3d') start(); else stop();

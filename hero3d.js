@@ -1,4 +1,4 @@
-// NEXXAI hero 3D — living AI scene (build 5). Soft round particles, a
+// NEXXAI hero 3D - living AI scene (build 5). Soft round particles, a
 // holographic robot, a soft cloud, solid holo devices and cursor-reactive
 // matrix code. Click cycles: orb -> AI brain (+robot) -> software -> back.
 import * as THREE from 'three';
@@ -133,7 +133,7 @@ function makeOrb() {
   return { group: grp, update(t, p) { uniforms.uTime.value = t; mesh.rotation.y = t * 0.12 + p.x * 0.6; mesh.rotation.x = p.y * 0.4; } };
 }
 
-/* ---- state 2: interactive neural galaxy — cursor brightens+swells, pulls (gravity) & parallax ---- */
+/* ---- state 2: interactive neural galaxy - cursor brightens+swells, pulls (gravity) & parallax ---- */
 function makeBrain() {
   const N = 112, TILT = -0.3;
   const homes = new Float32Array(N * 3), disp = new Float32Array(N * 3);
@@ -227,7 +227,7 @@ function makeRobot(holo) {
   };
 }
 
-/* ---- state 3: GLOBAL CLOUD — laptop projecting a cloud + data flow to devices/code ---- */
+/* ---- state 3: GLOBAL CLOUD - laptop projecting a cloud + data flow to devices/code ---- */
 function makeSoftware(holo) {
   const grp = new THREE.Group();
   const core = new THREE.Group(); core.scale.setScalar(0.82); grp.add(core);
@@ -459,7 +459,7 @@ export function createHero(canvas, opts) {
   renderer.setClearColor(0x06060f, 1);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100); camera.position.z = 5.2;
-  // glow pipeline (bloom) — loaded after first paint, with graceful fallback to direct render
+  // glow pipeline (bloom) - loaded after first paint, with graceful fallback to direct render
   var composer = null, bloomPass = null, usePost = false;
   (function initPost() {
     function go() {
@@ -533,7 +533,7 @@ export function createHero(canvas, opts) {
   }
   if (window.requestIdleCallback) requestIdleCallback(loadRobot, { timeout: 2500 }); else setTimeout(loadRobot, 1500);
 
-  // cloud diorama GLB — lazy-loaded when approaching the cloud state
+  // cloud diorama GLB - lazy-loaded when approaching the cloud state
   var cloudLoading = false;
   function loadCloud() {
     if (cloudLoading) return; cloudLoading = true;

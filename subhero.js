@@ -1,4 +1,4 @@
-/* NEXXAI subpage hero visuals — engine + approved vizs (auto-wired via canvas[data-viz]). Generated from subhero-lab. */
+/* NEXXAI subpage hero visuals - engine + approved vizs (auto-wired via canvas[data-viz]). Generated from subhero-lab. */
 (function(){
     var TAU=Math.PI*2;
     try{document.fonts.load('900 16px "Font Awesome 6 Free"');}catch(e){}
@@ -17,8 +17,8 @@
         function loop(now){var t=(now-t0)/1000;if(vis){p.x+=(p.tx-p.x)*.08;p.y+=(p.ty-p.y)*.08;ctx.clearRect(0,0,w,h);inst.draw(ctx,t,w,h,p);}requestAnimationFrame(loop);}
         resize();window.addEventListener('resize',resize);requestAnimationFrame(loop);
     }
-    // ① services — capability bubbles, click to bloom + callout
-    function services(){var caps=[['','Mobile','Flutter, React Native & native iOS / Android apps.'],['','Cloud','Scalable cloud platforms & custom SaaS on AWS, Azure & GCP.'],['','Web','Fast, secure web apps & dashboards people love.'],['','AI','Production AI — agents, ML models & RAG assistants.'],['','Data','Pipelines, analytics & predictive systems.'],['','DevOps','CI/CD, security & cloud delivery that keeps you shipping.']];var sel=-1,grow=0,spots=[];
+    // ① services - capability bubbles, click to bloom + callout
+    function services(){var caps=[['','Mobile','Flutter, React Native & native iOS / Android apps.'],['','Cloud','Scalable cloud platforms & custom SaaS on AWS, Azure & GCP.'],['','Web','Fast, secure web apps & dashboards people love.'],['','AI','Production AI - agents, ML models & RAG assistants.'],['','Data','Pipelines, analytics & predictive systems.'],['','DevOps','CI/CD, security & cloud delivery that keeps you shipping.']];var sel=-1,grow=0,spots=[];
         return {draw:function(ctx,t,w,h,p){var cx=w/2,cy=h/2,R=Math.min(w,h)*0.31,ox=(p.x-.5)*18,oy=(p.y-.5)*11;grow+=(((sel>=0)?1:0)-grow)*0.12;
             var cg=ctx.createRadialGradient(cx+ox,cy+oy,0,cx+ox,cy+oy,R*0.5);cg.addColorStop(0,'rgba(180,150,255,.65)');cg.addColorStop(1,'rgba(120,90,240,0)');ctx.fillStyle=cg;ctx.beginPath();ctx.arc(cx+ox,cy+oy,R*0.5,0,TAU);ctx.fill();
             ctx.fillStyle='rgba(255,255,255,.85)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='800 10px Inter';ctx.fillText('FULL',cx+ox,cy+oy-5);ctx.fillText('STACK',cx+ox,cy+oy+6);
@@ -39,7 +39,7 @@
                 ctx.fillStyle='rgba(214,216,236,.96)';ctx.font='400 12px Inter';wrap(ctx,sd.c[2],bx+15,by+46,bw-30,15);ctx.globalAlpha=1;ctx.textAlign='center';}
             if(sel<0){ctx.fillStyle='rgba(150,140,180,.5)';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.font='500 10px Inter';ctx.fillText('click a capability',cx+ox,h-8);}},
         hit:function(x,y){for(var i=0;i<spots.length;i++){var s=spots[i];if(Math.hypot(x-s.x,y-s.y)<s.r){sel=(sel===s.i?-1:s.i);return null;}}sel=-1;return null;}};}
-    // ② ai lab — a real lab: workstations writing code + a build line that assembles & ships finished products (cursor: spotlight; hover a station to speed the line; hover a product to inspect)
+    // ② ai lab - a real lab: workstations writing code + a build line that assembles & ships finished products (cursor: spotlight; hover a station to speed the line; hover a product to inspect)
     function ailab(){var screens=[0,1,2].map(function(i){var c=[];for(var j=0;j<7;j++)c.push({y:Math.random(),w:0.3+Math.random()*0.6,k:Math.random()<0.3});return {code:c,heat:0,emit:Math.random()*40};});
         var prods=[],spawn=24,types=['web','mobile','ai','data'],names={web:'Web App',mobile:'Mobile App',ai:'AI Agent',data:'Dashboard'},ti=0,modules=[],shipped=0,conv=0;
         function icon(ctx,type,x,y,s,a){ctx.save();ctx.globalAlpha=a;ctx.strokeStyle='rgba(236,239,255,0.95)';ctx.fillStyle='rgba(150,175,255,0.22)';ctx.lineWidth=Math.max(1,s*0.05);ctx.lineJoin='round';
@@ -66,9 +66,9 @@
                 icon(ctx,prd.type,prd.x,py,sz*(0.55+prd.asm*0.45),(0.25+prd.asm*0.75)*oa);
                 if(shipping){ctx.globalAlpha=oa;ctx.strokeStyle='rgba(120,255,180,0.95)';ctx.lineWidth=2.6;ctx.lineCap='round';var ky=py-sz*0.78;ctx.beginPath();ctx.moveTo(prd.x-6,ky);ctx.lineTo(prd.x-1,ky+5);ctx.lineTo(prd.x+7,ky-6);ctx.stroke();ctx.globalAlpha=1;}
                 if(hovP){ctx.font='600 11px Inter';var lw=ctx.measureText(names[prd.type]).width;ctx.fillStyle='rgba(18,16,38,0.96)';rr(ctx,prd.x-lw/2-9,py-sz-25,lw+18,20,6);ctx.fill();ctx.strokeStyle='rgba(150,200,255,0.75)';ctx.lineWidth=1;ctx.stroke();ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(names[prd.type],prd.x,py-sz-15);ctx.textBaseline='alphabetic';}}
-            ctx.fillStyle='rgba(170,160,210,0.62)';ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.font='700 10px Inter';ctx.fillText('AI LAB — hover a station to speed the line',cx0,h-12);
+            ctx.fillStyle='rgba(170,160,210,0.62)';ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.font='700 10px Inter';ctx.fillText('AI LAB - hover a station to speed the line',cx0,h-12);
             ctx.fillStyle='rgba(120,235,175,0.82)';ctx.textAlign='right';ctx.font='700 10px Inter';ctx.fillText('SHIPPED '+shipped+'  →',cx1,h-12);}};}
-    // ③ upskilling — growth curve + the whole team climbing
+    // ③ upskilling - growth curve + the whole team climbing
     function upskill(){var sp=[];for(var i=0;i<24;i++)sp.push({x:Math.random(),y:Math.random(),s:.2+Math.random()*.6});
         var team=[[0.15,0.13,'present',0.0],[0.3,0.11,'stand',1.4],[0.45,0.14,'cheer',2.1],[0.6,0.115,'stand',0.7],[0.73,0.145,'cheer',3.0],[0.86,0.115,'stand',1.1]];
         function pr2(ctx,x,gy,H,pose,t,ph,br){var yo=br>0.5?Math.abs(Math.sin(t*5+ph))*H*0.1:0;ctx.save();ctx.translate(0,-yo);
@@ -87,8 +87,8 @@
             var gy=h*0.94,hov=-1,hd=1e9;team.forEach(function(m,k){var d=Math.abs(p.x*w-m[0]*w);if(d<hd){hd=d;hov=k;}});
             ctx.strokeStyle='rgba(150,140,200,.16)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(w*0.08,gy);ctx.lineTo(w*0.92,gy);ctx.stroke();
             team.forEach(function(m,k){var br=(k===hov&&hd<w*0.075)?1:0;pr2(ctx,m[0]*w,gy,m[1]*h,br?'cheer':m[2],t,m[3],br);});
-            ctx.fillStyle='rgba(170,160,210,.6)';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.font='700 10px Inter';ctx.fillText('THE WHOLE TEAM, LEVELLING UP — hover the team & the points',w/2,h-9);}};}
-    // ④ portfolio — realistic almond eye + see-all
+            ctx.fillStyle='rgba(170,160,210,.6)';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.font='700 10px Inter';ctx.fillText('THE WHOLE TEAM, LEVELLING UP - hover the team & the points',w/2,h-9);}};}
+    // ④ portfolio - realistic almond eye + see-all
     function portfolio(){var clickT=-9,now=0;return {draw:function(ctx,t,w,h,p){now=t;var cx=w/2,cy=h*0.45,ew=Math.min(w*0.78,h*1.5),eh=ew*0.5;var bt=t%4.6,open=bt>4.25?Math.abs(Math.cos((bt-4.25)/0.35*Math.PI)):1;if(t-clickT<0.5)open=Math.abs(Math.cos((t-clickT)/0.5*Math.PI));
         ctx.save();eyePath(ctx,cx,cy,ew,eh,open);ctx.clip();
         var sg=ctx.createRadialGradient(cx,cy,0,cx,cy,ew*0.5);sg.addColorStop(0,'rgba(228,231,247,.96)');sg.addColorStop(.68,'rgba(178,184,214,.85)');sg.addColorStop(1,'rgba(110,116,152,.7)');ctx.fillStyle=sg;ctx.fill();
@@ -106,7 +106,7 @@
         ctx.strokeStyle='rgba(200,180,255,.95)';ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(cx-12,ay-6);ctx.lineTo(cx,ay+7);ctx.lineTo(cx+12,ay-6);ctx.stroke();
         if(t-clickT<0.95){var oa=Math.max(0,1-(t-clickT)/0.95);ctx.globalAlpha=oa;ctx.fillStyle='rgba(255,205,80,1)';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.font='800 26px "Instrument Serif",serif';ctx.fillText('Ouch!',cx,cy-eh*0.5-14-(t-clickT)*26);ctx.globalAlpha=1;}},
         hit:function(x,y){clickT=now;return false;}};}
-    // ⑤ company — REAL textured globe (earth texture painted per-pixel onto the visible hemisphere) + clickable hubs + hover target
+    // ⑤ company - REAL textured globe (earth texture painted per-pixel onto the visible hemisphere) + clickable hubs + hover target
     function company(){var MW=1024,MH=512,texData=null,ready=false,clickHub=-1,cp=2;
         var img=new Image();img.onload=function(){try{var oc=document.createElement('canvas');oc.width=MW;oc.height=MH;var o=oc.getContext('2d');o.drawImage(img,0,0,MW,MH);texData=o.getImageData(0,0,MW,MH).data;ready=true;}catch(e){}};img.src='assets/img/earth-dark.jpg';
         var hubs=[[41.39,2.16,'<b>Barcelona</b>'],[42.36,-71.06,'<b>Boston</b>'],[27.99,-81.76,'<b>Florida</b>'],[31.55,74.34,'<b>Lahore</b>'],[50.45,30.52,'<b>Ukraine</b>'],[41.01,28.98,'<b>Turkey</b>']];

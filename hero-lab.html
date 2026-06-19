@@ -163,8 +163,8 @@
         var MSG = "Hey. You're right where you need to be. If you need AI, we're here for you. Anything AI, anything automation you can dream of.";
         var HINTS = [
             'Click the core to wake the AI',
-            'Meet your AI — sweep your cursor through her galaxy. Click again for what we build',
-            'The software we build — hold &amp; drag to rotate it 360°; use the arrow to return to the orb'
+            'Meet your AI - sweep your cursor through her galaxy. Click again for what we build',
+            'The software we build - hold &amp; drag to rotate it 360°; use the arrow to return to the orb'
         ];
         var typer = null;
         function typeMsg(text) { clearInterval(typer); speechtext.textContent = ''; var i = 0; typer = setInterval(function () { speechtext.textContent = text.slice(0, ++i); if (i >= text.length) clearInterval(typer); }, 26); }

@@ -46,17 +46,17 @@
 </head>
 <body>
     <div class="lab-wrap">
-        <div class="lab-top">UI Lab — border glow (bigger) + logo sizes<span class="build-pill">build 3</span></div>
+        <div class="lab-top">UI Lab - border glow (bigger) + logo sizes<span class="build-pill">build 3</span></div>
         <p class="lab-sub">Border glow approved &amp; enlarged. Hover the cards to confirm, then pick a logo size from the rows below (all logos, scrolling).</p>
 
-        <div class="lab-h">Bigger border glow — hover to confirm</div>
+        <div class="lab-h">Bigger border glow - hover to confirm</div>
         <div class="rgrid">
             <div class="rcard"><div class="ic"><i class="fas fa-robot"></i></div><h3>AI &amp; Agentic Systems</h3><p>Bigger, brighter edge glow that follows your cursor.</p></div>
             <div class="rcard"><div class="ic"><i class="fas fa-cloud"></i></div><h3>Custom Software &amp; SaaS</h3><p>Tilt + liquid glass + the enlarged border glow.</p></div>
             <div class="rcard"><div class="ic"><i class="fas fa-mobile-screen-button"></i></div><h3>Mobile Development</h3><p>Sweep across to see the glow track the edge.</p></div>
         </div>
 
-        <div class="lab-h">Logo size — pick one (all logos shown)</div>
+        <div class="lab-h">Logo size - pick one (all logos shown)</div>
         <div id="rows"></div>
     </div>
 
@@ -73,7 +73,7 @@
         var files = ['9','10','11','12','13','14','15','16','17','18','19','IntroSlide','IntroSlide(2)','IntroSlide(3)','IntroSlide(4)','IntroSlide(5)','IntroSlide(6)','IntroSlide(7)','IntroSlide(8)'];
         function track(h){ var s=''; for(var k=0;k<2;k++) files.forEach(function(f){ s+='<img src="assets/logos/'+f+'.svg" style="height:'+h+'px" alt="">'; }); return s; }
         var sizes = [['Now',54],['+10%',59],['+20%',65],['+30%',70],['+40%',76]];
-        var out=''; sizes.forEach(function(z){ out+='<div class="mqrow"><div class="lbl">'+z[0]+' — '+z[1]+'px</div><div class="mq"><div class="mq-track">'+track(z[1])+'</div></div></div>'; });
+        var out=''; sizes.forEach(function(z){ out+='<div class="mqrow"><div class="lbl">'+z[0]+' - '+z[1]+'px</div><div class="mq"><div class="mq-track">'+track(z[1])+'</div></div></div>'; });
         document.getElementById('rows').innerHTML = out;
     </script>
 </body>

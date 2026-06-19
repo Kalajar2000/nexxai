@@ -1,10 +1,10 @@
-/* NEXXAI — subpage hero visual (right column). Pairs with subhero.js. */
+/* NEXXAI - subpage hero visual (right column). Pairs with subhero.js. */
 .phero-viz{display:none}
 .phero-viz .detail{position:absolute;left:14px;bottom:14px;right:14px;padding:11px 14px;border-radius:12px;background:rgba(18,18,30,.92);border:1px solid rgba(150,140,255,.42);font-size:.86rem;color:#eef0ff;opacity:0;transform:translateY(8px);transition:.3s;pointer-events:none;z-index:2}
 .phero-viz .detail.show{opacity:1;transform:none}
 
 @media(min-width:901px){
-  /* copy + CTAs on the left, the visual on the right — both pinned to row 1 so they sit side by side */
+  /* copy + CTAs on the left, the visual on the right - both pinned to row 1 so they sit side by side */
   .phero .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:40px;align-items:center}
   .phero-text{grid-column:1;grid-row:1;min-width:0}
   .phero-viz{display:block;grid-column:2;grid-row:1;position:relative;height:420px;min-width:0}

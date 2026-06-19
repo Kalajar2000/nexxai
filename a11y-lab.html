@@ -105,24 +105,24 @@
 <div class="ctrl"><div class="wrap2">
     <b>Reduced-motion test:</b>
     <label class="switch"><input type="checkbox" id="rmSim"> Simulate the OS "Reduce motion" setting</label>
-    <span style="color:#6a6c8a;font-size:.82rem">(watch blocks 6 — only the Proposed side should freeze)</span>
+    <span style="color:#6a6c8a;font-size:.82rem">(watch blocks 6 - only the Proposed side should freeze)</span>
 </div></div>
 
 <div class="wrap2">
     <div class="top">
-        <h1>Accessibility &amp; design — Now vs Proposed</h1>
-        <p>Left = your live site exactly as it is today. Right = the same thing with the proposed change applied. Nothing here touches the real pages — once you pick what you like, I'll ship only those to the homepage &amp; subpages.</p>
+        <h1>Accessibility &amp; design - Now vs Proposed</h1>
+        <p>Left = your live site exactly as it is today. Right = the same thing with the proposed change applied. Nothing here touches the real pages - once you pick what you like, I'll ship only those to the homepage &amp; subpages.</p>
         <div class="legend"><span class="tag a11y">Accessibility</span><span class="tag viz">Visual / less packed</span></div>
     </div>
 
     <!-- 1 focus ring -->
     <div class="cmp">
         <h3>1 · Visible keyboard-focus ring <span class="tag a11y">Accessibility</span></h3>
-        <p class="why">Today only the contact inputs have a focus style — every link, button and card gives keyboard users no clear "you are here." <b>Press the Tab key</b> to move through the buttons below and compare. Top-right of each panel shows an always-on example.</p>
+        <p class="why">Today only the contact inputs have a focus style - every link, button and card gives keyboard users no clear "you are here." <b>Press the Tab key</b> to move through the buttons below and compare. Top-right of each panel shows an always-on example.</p>
         <div class="cols">
             <div class="col"><span class="lbl now">Now</span>
                 <div class="demo-row"><button class="ring-sample forced">Always-on example</button><button class="ring-sample">Tab to me</button><button class="ring-sample">…and me</button></div>
-                <div class="cap">Browser default only — faint, inconsistent, easy to lose on a dark background.</div>
+                <div class="cap">Browser default only - faint, inconsistent, easy to lose on a dark background.</div>
             </div>
             <div class="col proposed"><span class="lbl prop">Proposed</span>
                 <div class="demo-row"><button class="ring-sample forced">Always-on example</button><button class="ring-sample">Tab to me</button><button class="ring-sample">…and me</button></div>
@@ -133,8 +133,8 @@
 
     <!-- 2 text legibility -->
     <div class="cmp">
-        <h3>2 · Text legibility — faint color + light weight <span class="tag a11y">Accessibility</span></h3>
-        <p class="why">Your faintest label colour sits at ~4.6:1 (passes AA, but barely) and 18 places use <code>font-weight:300</code> — thin light text on near-black is the weak point. Brighten the dim tone and move body copy to 400.</p>
+        <h3>2 · Text legibility - faint color + light weight <span class="tag a11y">Accessibility</span></h3>
+        <p class="why">Your faintest label colour sits at ~4.6:1 (passes AA, but barely) and 18 places use <code>font-weight:300</code> - thin light text on near-black is the weak point. Brighten the dim tone and move body copy to 400.</p>
         <div class="cols">
             <div class="col"><span class="lbl now">Now</span>
                 <div class="smalllabel demo-dim">Capabilities <span class="badge bad">4.6:1</span></div>
@@ -151,8 +151,8 @@
 
     <!-- 3 chip colours -->
     <div class="cmp">
-        <h3>3 · Tool-chip colour — calmer logo wall <span class="tag viz">Visual / less packed</span></h3>
-        <p class="why">The thing you called "a little cartoony." Proposed: logos rest gently desaturated and bloom to full colour on hover (same trick as your client marquee) — a calmer wall that still pops on interaction. Hover the chips in each panel.</p>
+        <h3>3 · Tool-chip colour - calmer logo wall <span class="tag viz">Visual / less packed</span></h3>
+        <p class="why">The thing you called "a little cartoony." Proposed: logos rest gently desaturated and bloom to full colour on hover (same trick as your client marquee) - a calmer wall that still pops on interaction. Hover the chips in each panel.</p>
         <div class="cols">
             <div class="col"><span class="lbl now">Now</span><div class="ts-row" style="cursor:default"><div class="ts-track" id="nowChips" style="flex-wrap:wrap;width:auto"></div></div>
                 <div class="cap">All logos at full colour, all the time.</div></div>
@@ -163,7 +163,7 @@
 
     <!-- 4 gradient overuse -->
     <div class="cmp">
-        <h3>4 · Gradient overuse — reserve it for the CTA <span class="tag viz">Visual / less packed</span></h3>
+        <h3>4 · Gradient overuse - reserve it for the CTA <span class="tag viz">Visual / less packed</span></h3>
         <p class="why">The violet→blue gradient repeats on buttons, icon boxes, avatars, stat numbers and step numbers. Flattening the secondary uses (icon boxes, avatars) and keeping the gradient for the primary button makes the page feel less busy.</p>
         <div class="cols">
             <div class="col"><span class="lbl now">Now</span>
@@ -178,7 +178,7 @@
     <!-- 5 engineering stack density -->
     <div class="cmp">
         <h3>5 · Engineering-stack density <span class="tag viz">Visual / less packed</span></h3>
-        <p class="why">The densest object on the site — ~50 pills in one card. Proposed shows 3 layers up front with a "Show full stack" toggle, so it reads as a clean summary instead of a wall (full list still one click away).</p>
+        <p class="why">The densest object on the site - ~50 pills in one card. Proposed shows 3 layers up front with a "Show full stack" toggle, so it reads as a clean summary instead of a wall (full list still one click away).</p>
         <div class="cols">
             <div class="col"><span class="lbl now">Now</span><div id="nowTech"></div><div class="density-note">All 6 layers, ~50 pills, always expanded.</div></div>
             <div class="col proposed"><span class="lbl prop">Proposed</span><div id="propTechTop"></div><div id="propTechRest" hidden></div><button class="showall" id="showAll">Show full stack <i class="fas fa-chevron-down"></i></button><div class="density-note">3 layers shown · rest one tap away.</div></div>
@@ -188,7 +188,7 @@
     <!-- 6 reduced motion -->
     <div class="cmp">
         <h3>6 · Respect "Reduce motion" <span class="tag a11y">Accessibility</span></h3>
-        <p class="why">Your reveals &amp; heartbeat already stop for motion-sensitive users — but the client logo marquee and the spinning globe don't. Tick the toggle in the top bar and watch: only the Proposed side should freeze.</p>
+        <p class="why">Your reveals &amp; heartbeat already stop for motion-sensitive users - but the client logo marquee and the spinning globe don't. Tick the toggle in the top bar and watch: only the Proposed side should freeze.</p>
         <div class="cols">
             <div class="col"><span class="lbl now">Now</span>
                 <div class="mini-mq"><div class="mini-mq-track" id="nowMq"></div></div>
@@ -197,7 +197,7 @@
             <div class="col proposed"><span class="lbl prop">Proposed</span>
                 <div class="mini-mq"><div class="mini-mq-track" id="propMq"></div></div>
                 <div class="spin-wrap"><div class="spin"></div> globe pauses when asked</div>
-                <div class="rm-note">✓ Frozen — respects the user's setting.</div></div>
+                <div class="rm-note">✓ Frozen - respects the user's setting.</div></div>
         </div>
     </div>
 
@@ -216,7 +216,7 @@
         </div>
     </div>
 
-    <div class="foot-note">This is a sandbox (noindex). Tell me which blocks to ship — all of it, or just the ones you like — and I'll apply them to the real pages and push live.</div>
+    <div class="foot-note">This is a sandbox (noindex). Tell me which blocks to ship - all of it, or just the ones you like - and I'll apply them to the real pages and push live.</div>
 </div>
 
 <script>

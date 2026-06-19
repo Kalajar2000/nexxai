@@ -1,4 +1,4 @@
-/* Tools & Tech Stack — two draggable, auto-scrolling tool rows + the engineering stack card.
+/* Tools & Tech Stack - two draggable, auto-scrolling tool rows + the engineering stack card.
    Safe to load anywhere: it no-ops if the section markup isn't present. */
 (function(){
     /* tool chips: [name, file, brand color] */
