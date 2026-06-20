@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#0d0f1e">
+
+    <title>NEXXAI | Estudio de Producto y Software AI-First</title>
+    <meta name="description" content="NEXXAI es un estudio de producto y software AI-first. Diseñamos, construimos y lanzamos agentes de IA, apps web y móviles, y plataformas a medida, desde la primera idea hasta producción. Construyendo desde 2015.">
+    <meta name="keywords" content="estudio de producto IA, desarrollo de software con IA, agentes de IA, sistemas agénticos, software a medida, SaaS, desarrollo de apps móviles, desarrollo web, consultoría de IA, capacitación en IA">
+    <link rel="canonical" href="https://nexxai.world/es/">
+    <link rel="alternate" hreflang="en" href="https://nexxai.world/">
+    <link rel="alternate" hreflang="es" href="https://nexxai.world/es/">
+    <link rel="alternate" hreflang="x-default" href="https://nexxai.world/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nexxai.world/es/">
+    <meta property="og:title" content="NEXXAI | Estudio de Producto y Software AI-First">
+    <meta property="og:description" content="Diseñamos, construimos y lanzamos los productos de IA y software que impulsan tu negocio, desde la primera idea hasta producción.">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="/redesign.css?v=11">
+    <link rel="stylesheet" href="/toolstack.css?v=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+      /* mobile: let taps reach the orb canvas instead of the hero text layered over it */
+      #h3d{touch-action:manipulation}
+      @media(max-width:900px){.hero-content{pointer-events:none}.hero-content a,.hero-content button{pointer-events:auto}}
+    </style>
+    <script type="importmap">
+    {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+    </script>
+    <style>
+        .h3d{width:100%;height:100%;display:block;cursor:pointer}
+        /* robot speech bubble (sits below her) */
+        .speech{position:fixed;z-index:30;transform:translate(-50%,16%);opacity:0;pointer-events:none;transition:opacity .35s ease;width:236px;max-width:72vw}
+        .speech.show{opacity:1;pointer-events:auto}
+        .speech-in{position:relative;padding:13px 15px;border-radius:16px;background:rgba(18,18,30,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);box-shadow:0 14px 34px rgba(0,0,0,.55)}
+        .speech-in::after{content:"";position:absolute;left:50%;top:-7px;transform:translateX(-50%);border:7px solid transparent;border-bottom-color:rgba(18,18,30,.94)}
+        .speech p{font-size:.86rem;color:var(--txt);margin:0 0 8px;font-weight:300;line-height:1.4}
+        .speech a{font-size:.82rem;font-weight:700;color:var(--violet)}
+        .speech a:hover{color:#fff}
+        .speech-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+        .speech-hint{font-size:.72rem;color:var(--dim);white-space:nowrap}
+        /* state-0 hint + state-2 cloud UI, centred over the 3D area */
+        .hero-hint{position:absolute;left:50%;bottom:7%;transform:translateX(-50%);z-index:4;display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:rgba(18,18,30,.7);border:1px solid rgba(255,255,255,.12);font-size:.82rem;color:var(--muted);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .35s;white-space:nowrap}
+        .hero-hint.show{opacity:1}
+        .hero-hint i{color:var(--violet)}
+        @keyframes hpulse{0%,100%{opacity:.5}50%{opacity:1}}
+        .hero-hint .dot{width:7px;height:7px;border-radius:50%;background:var(--violet);animation:hpulse 1.4s ease-in-out infinite}
+        .cloud-ui{opacity:0;pointer-events:none;transition:opacity .35s ease}
+        .cloud-ui.show{opacity:1;pointer-events:auto}
+        .cloud-hint{position:absolute;left:50%;top:9%;transform:translateX(-50%);z-index:4;display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:rgba(18,18,30,.82);border:1px solid rgba(255,255,255,.14);font-size:.82rem;color:var(--txt);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);white-space:nowrap}
+        .cloud-hint i{color:var(--violet)}
+        .cloud-actions{position:absolute;left:50%;bottom:6%;transform:translateX(-50%);z-index:4;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
+        .cloud-back{padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:var(--txt);font:inherit;font-size:.84rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:.2s}
+        .cloud-back:hover{color:#fff;border-color:var(--violet)}
+        .cloud-cta{padding:10px 20px;border-radius:999px;background:linear-gradient(135deg,var(--violet),#3b82f6);color:#fff;font-weight:700;font-size:.84rem;display:flex;align-items:center;gap:8px;text-decoration:none}
+    </style>
+    <meta property="og:site_name" content="NEXXAI">
+    <meta property="og:image" content="https://nexxai.world/og-image.png">
+    <meta name="twitter:image" content="https://nexxai.world/og-image.png">
+    <script type="application/ld+json">
+{"@context": "https://schema.org","@graph": [{"@type": "Organization","@id": "https://nexxai.world/#org","name": "NEXXAI","alternateName": ["Nexx AI","NEXX AI","Nexxai"],"url": "https://nexxai.world/","logo": "https://nexxai.world/icon-512.png","image": "https://nexxai.world/og-image.png","description": "Estudio de producto y software AI-first. Diseñamos, construimos y lanzamos agentes de IA, apps web y móviles, y plataformas a medida, desde la primera idea hasta producción.","foundingDate": "2015","email": "santiago@nexxai.world","telephone": "+34603352552","knowsAbout": ["Artificial Intelligence","AI agents","Agentic systems","Machine Learning","Custom Software Development","SaaS","Mobile App Development","Web Development","Cloud","DevOps","AI Upskilling"],"address": [{"@type": "PostalAddress","addressLocality": "Barcelona","addressCountry": "ES"},{"@type": "PostalAddress","addressLocality": "Boston","addressRegion": "MA","addressCountry": "US"},{"@type": "PostalAddress","addressLocality": "Florida","addressCountry": "US"},{"@type": "PostalAddress","addressLocality": "Lahore","addressCountry": "PK"},{"@type": "PostalAddress","addressLocality": "Kyiv","addressCountry": "UA"},{"@type": "PostalAddress","addressLocality": "Istanbul","addressCountry": "TR"}],"contactPoint": {"@type": "ContactPoint","telephone": "+34603352552","email": "santiago@nexxai.world","contactType": "sales","areaServed": "Worldwide","availableLanguage": ["en","es"]}},{"@type": "WebSite","@id": "https://nexxai.world/#website","url": "https://nexxai.world/","name": "NEXXAI","inLanguage":"es","publisher": {"@id": "https://nexxai.world/#org"}}]}
+    </script>
+</head>
+<body>
+    <div class="bg-fx"></div>
+    <div class="bg-grid"></div>
+
+    <!-- Nav -->
+    <nav class="nav">
+        <a href="/es/" class="brand">NEXXAI</a>
+        <div class="nav-pill glass">
+            <a href="/es/" class="active">Inicio</a>
+            <a href="/es/services.html">Servicios</a>
+            <a href="/ai-lab.html">AI Lab</a>
+            <a href="/upskilling.html">Capacitación</a>
+            <a href="/work.html">Portafolio</a>
+            <a href="/es/company.html">Empresa</a>
+        </div>
+        <a href="/" class="nav-lang" style="display:inline-flex;align-items:center;padding:8px 12px;margin-right:6px;border-radius:999px;border:1px solid rgba(255,255,255,.18);color:#cbbcff;text-decoration:none;font-weight:600;font-size:.85rem">EN</a>
+        <a href="/es/#contact" class="nav-cta">Iniciar un Proyecto</a>
+        <div class="nav-burger"><span></span><span></span><span></span></div>
+    </nav>
+    <div class="mnav">
+        <span class="x">&times;</span>
+        <a href="/es/">Inicio</a><a href="/es/services.html">Servicios</a><a href="/ai-lab.html">AI Lab</a><a href="/upskilling.html">Capacitación</a><a href="/work.html">Portafolio</a><a href="/es/company.html">Empresa</a><a href="/es/#contact">Contacto</a><a href="/">EN</a>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero" id="home">
+        <div class="hero-glow"></div>
+        <div class="hero-3d">
+            <canvas id="h3d" class="h3d"></canvas>
+            <div class="hero-hint" id="herohint"><span class="dot"></span> Haz clic en el núcleo para despertar a la IA</div>
+            <div class="cloud-ui" id="cloudui">
+                <div class="cloud-hint"><i class="fas fa-arrows-rotate"></i> Mantén pulsado y arrastra para rotar 360°</div>
+                <div class="cloud-actions">
+                    <button class="cloud-back" id="cloudback"><i class="fas fa-arrow-left"></i> Volver al orbe</button>
+                    <a href="/es/#contact" class="cloud-cta">Iniciar un proyecto <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <div class="hero-content">
+                <span class="chip glass rv">estudio de producto y software <b>AI-FIRST</b></span>
+                <h1>
+                    <span class="rv">Construimos</span> <span class="rv">los</span> <span class="rv">productos</span> <span class="rv">de</span> <span class="rv">IA</span> <span class="rv">y</span> <span class="rv">software</span>
+                    <span class="rv gradtext">que</span> <span class="rv gradtext">impulsan</span> <span class="rv gradtext">tu</span> <span class="rv gradtext">negocio.</span>
+                </h1>
+                <p class="sub rv">Desde agentes de IA y sistemas predictivos hasta plataformas web y móviles en la nube. Un único equipo senior te lleva desde la primera idea hasta el producto lanzado.</p>
+                <div class="cta-row rv">
+                    <a href="/es/#contact" class="btn-glass solid">Iniciar un Proyecto <i class="fas fa-arrow-right"></i></a>
+                    <a href="/work.html" class="btn-ghost">Ver nuestro trabajo <i class="fas fa-play" style="font-size:.8em"></i></a>
+                </div>
+                <div class="hero-trust rv" id="herotrust">
+                    <span>Con la confianza de equipos en</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats + marquee -->
+    <section class="wrap" style="position:relative;z-index:2;margin-top:-30px">
+        <div class="stats">
+            <div class="stat glass"><div class="n rv">2015</div><div class="l">Construyendo desde</div></div>
+            <div class="stat glass"><div class="n rv">100+</div><div class="l">Ingenieros y diseñadores</div></div>
+            <div class="stat glass"><div class="n rv">49</div><div class="l">Productos lanzados</div></div>
+            <div class="stat glass"><div class="n rv">6</div><div class="l">Centros de entrega globales</div></div>
+        </div>
+        <div class="marquee">
+            <p class="mq-label">Clientes a los que hemos servido</p>
+            <div class="marquee-track" id="mqtrack"></div>
+        </div>
+    </section>
+
+    <!-- Dual offering -->
+    <section class="sec">
+        <div class="wrap">
+            <div class="head"><span class="eyebrow rv">Lo que hacemos</span><h2 class="rv">AI-first. Full-stack por defecto.</h2><p class="rv">Hacemos ambas cosas, y creemos que la IA solo importa cuando se lanza como un producto que tus clientes realmente usan.</p></div>
+            <div class="bento">
+                <div class="card glass rv">
+                    <div class="icbox"><i class="fas fa-robot"></i></div>
+                    <h3>Productos y Agentes de IA</h3>
+                    <p>IA en producción, no demos. Agentes, sistemas predictivos y asistentes conectados a tus flujos de trabajo reales.</p>
+                    <ul><li>Agentes de IA y automatización agéntica</li><li>Analítica predictiva y modelos de ML</li><li>Asistentes RAG sobre tus propios datos</li></ul>
+                </div>
+                <div class="card glass rv">
+                    <div class="icbox"><i class="fas fa-layer-group"></i></div>
+                    <h3>Ingeniería de Software</h3>
+                    <p>Toda la capacidad de desarrollo detrás de la IA: plataformas móviles, web y en la nube diseñadas para escalar.</p>
+                    <ul><li>Apps iOS, Android y multiplataforma</li><li>Apps web y plataformas SaaS a medida</li><li>Nube, DevOps y equipos dedicados</li></ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section class="sec" id="services" style="padding-top:0">
+        <div class="wrap">
+            <div class="head"><span class="eyebrow rv">Capacidades</span><h2 class="rv">Todo lo que necesitas para lanzar</h2></div>
+            <div class="svc-grid">
+                <a href="/ai-lab.html" class="svc glass rv"><div class="icbox"><i class="fas fa-robot"></i></div><h3>IA y Sistemas Agénticos</h3><p>Agentes, modelos de ML y asistentes integrados en tus operaciones.</p><span class="go">Explora el AI Lab →</span></a>
+                <a href="/es/services.html" class="svc glass rv"><div class="icbox"><i class="fas fa-cloud"></i></div><h3>Software a Medida y SaaS</h3><p>Plataformas escalables y herramientas internas, creadas y evolucionadas contigo.</p><span class="go">Ver servicios →</span></a>
+                <a href="/es/services.html" class="svc glass rv"><div class="icbox"><i class="fas fa-mobile-screen-button"></i></div><h3>Desarrollo Móvil</h3><p>Apps iOS y Android nativas y multiplataforma con gran rendimiento.</p><span class="go">Ver servicios →</span></a>
+                <a href="/es/services.html" class="svc glass rv"><div class="icbox"><i class="fas fa-code"></i></div><h3>Desarrollo Web</h3><p>Apps web fiables y seguras con interfaces que la gente disfruta.</p><span class="go">Ver servicios →</span></a>
+                <a href="/upskilling.html" class="svc glass rv"><div class="icbox"><i class="fas fa-chalkboard-teacher"></i></div><h3>Capacitación en IA</h3><p>Convierte a tu equipo en usuarios de IA seguros y productivos.</p><span class="go">Explora la capacitación →</span></a>
+                <a href="/es/services.html" class="svc glass rv"><div class="icbox"><i class="fas fa-server"></i></div><h3>DevOps y Nube</h3><p>Seguridad, automatización y entrega en la nube que te mantiene lanzando.</p><span class="go">Ver servicios →</span></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools & Tech Stack -->
+    <section class="sec" id="stack" style="padding-top:0">
+        <div class="wrap">
+            <div class="head"><span class="eyebrow rv">Herramientas y tecnología</span><h2 class="rv">Las herramientas con las que construimos y lanzamos</h2><p class="rv">Modelos de IA, IA creativa, automatización, APIs y las tiendas donde publicamos. Arrastra una fila para recorrerlas.</p></div>
+            <div class="ts-rows rv">
+                <div class="ts-row"><div class="ts-track" id="tsRowA"></div></div>
+                <div class="ts-row"><div class="ts-track" id="tsRowB"></div></div>
+            </div>
+            <div class="ts-card rv">
+                <div class="ts-cardhead"><h3>El stack de ingeniería</h3><p>Cada tecnología con su logo real, codificada por colores según la capa.</p></div>
+                <div id="tsTech"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured work -->
+    <section class="sec" id="work" style="padding-top:0">
+        <div class="wrap">
+            <div class="head"><span class="eyebrow rv">Trabajo seleccionado</span><h2 class="rv">Productos que hemos lanzado</h2></div>
+            <div class="work3">
+                <a href="/work.html" class="wk glass rv"><div class="ph"><img loading="lazy" decoding="async" src="/assets/img/work/healthcare-ai.webp" alt="Analítica predictiva con IA en el sector salud"></div><div class="b"><div class="cat">Salud · IA</div><h3>Analítica Predictiva con IA</h3></div></a>
+                <a href="/work.html" class="wk glass rv"><div class="ph"><img loading="lazy" decoding="async" src="/assets/img/work/ai-erp.webp" alt="Plataforma ERP impulsada por IA"></div><div class="b"><div class="cat">Empresa · IA</div><h3>Plataforma ERP con IA</h3></div></a>
+                <a href="/work.html" class="wk glass rv"><div class="ph"><img loading="lazy" decoding="async" src="/assets/img/work/ai-plantation.webp" alt="App de plantación y agricultura con IA"></div><div class="b"><div class="cat">Agricultura · IA</div><h3>App de Plantación con IA</h3></div></a>
+            </div>
+            <div class="center-cta"><a href="/work.html" class="btn-glass">Ver los 49 proyectos <i class="fas fa-arrow-right"></i></a></div>
+        </div>
+    </section>
+
+    <!-- Process -->
+    <section class="sec" style="padding-top:0">
+        <div class="wrap">
+            <div class="head"><span class="eyebrow rv">Cómo trabajamos</span><h2 class="rv">De la idea al lanzamiento, rápido</h2></div>
+            <div class="steps">
+                <div class="step glass rv"><div class="num">1</div><h3>Descubrir</h3><p>Mapeamos las oportunidades de mayor impacto y un plan claro para lanzar.</p></div>
+                <div class="step glass rv"><div class="num">2</div><h3>Diseñar</h3><p>Producto y UX moldeados en torno a resultados, no a presentaciones.</p></div>
+                <div class="step glass rv"><div class="num">3</div><h3>Construir</h3><p>Equipos senior lanzan un producto funcional en semanas, no en trimestres.</p></div>
+                <div class="step glass rv"><div class="num">4</div><h3>Escalar</h3><p>Optimizamos, damos soporte y lo hacemos crecer contigo, de principio a fin.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="sec" id="testimonials" style="padding-top:0">
+        <div class="wrap">
+            <div class="head center"><span class="eyebrow rv">Historias de clientes</span><h2 class="rv">Equipos que confían en nosotros para construir</h2></div>
+            <div class="tgrid">
+                <div class="tcard glass rv">
+                    <div class="stars">★★★★★</div>
+                    <p class="q">"Su capacidad para entender nuestros objetivos de negocio y entregar a tiempo fue impresionante. Respondieron cada pregunta e hicieron que todo el proceso fuera impecable."</p>
+                    <div class="who"><div class="avatar">MT</div><div><div class="nm">Marvin T.</div><div class="rl">Fundador</div></div></div>
+                </div>
+                <div class="tcard glass rv">
+                    <div class="stars">★★★★★</div>
+                    <p class="q">"Nunca habíamos trabajado con un equipo tan dedicado a entender nuestras necesidades. Su entrega rápida y resolución de problemas mantuvieron cada hito a tiempo."</p>
+                    <div class="who"><div class="avatar">SU</div><div><div class="nm">Shigeto Umeda</div><div class="rl">COO</div></div></div>
+                </div>
+                <div class="tcard glass rv">
+                    <div class="stars">★★★★★</div>
+                    <p class="q">"Llevamos 3 años trabajando con NEXXAI. Responden rápido a cualquier cambio y entregaron un producto de alta calidad que encajó a la perfección con nuestros sistemas."</p>
+                    <div class="who"><div class="avatar">MA</div><div><div class="nm">Mohammad Abuneef</div><div class="rl">Director de Operaciones</div></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="sec" id="contact" style="padding-top:0">
+        <div class="wrap">
+            <div class="head center"><span class="eyebrow rv">Contacto</span><h2 class="rv">Construyamos algo</h2><p class="rv">Cuéntanos qué quieres lanzar. Te responderemos en menos de 24 horas con un siguiente paso claro.</p></div>
+            <div class="contact-grid">
+                <div class="cform glass">
+                    <form id="cf" action="https://formspree.io/f/xqeonnea" method="POST">
+                        <input type="hidden" name="_subject" value="Nueva consulta desde el sitio de NEXXAI">
+                        <div class="fg"><label>Nombre</label><input type="text" name="name" required></div>
+                        <div class="fg"><label>Email</label><input type="email" name="email" required></div>
+                        <div class="fg"><label>Empresa</label><input type="text" name="company"></div>
+                        <div class="fg"><label>¿Qué quieres construir?</label><textarea name="message" rows="3" required></textarea></div>
+                        <button type="submit" class="btn-glass solid" style="width:100%">Hablemos <i class="fas fa-arrow-right"></i></button>
+                    </form>
+                </div>
+                <div class="cinfo glass">
+                    <h3>Habla con nosotros directamente</h3>
+                    <p>Ya sea un producto de IA, el desarrollo completo de una app o capacitar a tu equipo, estamos listos cuando tú lo estés.</p>
+                    <div class="row"><i class="fas fa-envelope"></i> santiago@nexxai.world</div>
+                    <div class="row"><i class="fas fa-phone"></i> +34 603 352 552</div>
+                    <div class="row"><i class="fas fa-location-dot"></i> Barcelona · Boston · Florida · Lahore · Ucrania · Turquía</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Closing CTA -->
+    <section class="wrap">
+        <div class="cta-band glass">
+            <h2 class="serif rv">Construyamos tu próximo producto</h2>
+            <p class="rv">Cuéntanos qué quieres lanzar y te llevaremos hasta allí.</p>
+            <a href="/es/#contact" class="btn-glass solid rv">Iniciar un Proyecto <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="foot">
+        <div class="wrap">
+            <div class="foot-grid">
+                <div><a href="/es/" class="brand">NEXXAI</a><p>Estudio de producto y software AI-first. Diseñamos, construimos y lanzamos la IA y el software que impulsan tu negocio.</p></div>
+                <div><h4>Explorar</h4><ul><li><a href="/es/services.html">Servicios</a></li><li><a href="/ai-lab.html">AI Lab</a></li><li><a href="/upskilling.html">Capacitación</a></li><li><a href="/work.html">Portafolio</a></li><li><a href="/insights/">Insights</a></li></ul></div>
+                <div><h4>Empresa</h4><ul><li><a href="/es/company.html">Acerca de</a></li><li><a href="/es/company.html#clients">Clientes</a></li><li><a href="/es/#contact">Contacto</a></li></ul></div>
+                <div><h4>Ponte en contacto</h4><ul><li><a href="mailto:santiago@nexxai.world">santiago@nexxai.world</a></li><li><a href="tel:+34603352552">+34 603 352 552</a></li><li><a href="/locations/barcelona/">Barcelona</a> &middot; <a href="/locations/boston/">Boston</a> &middot; <a href="/locations/florida/">Florida</a> &middot; <a href="/locations/lahore/">Lahore</a> &middot; <a href="/locations/ukraine/">Ucrania</a> &middot; <a href="/locations/turkey/">Turquía</a></li></ul></div>
+            </div>
+            <div class="foot-bottom"><span>© 2026 NEXXAI. Todos los derechos reservados.</span><span>Barcelona · Boston · Florida · Lahore · Ucrania · Turquía</span><span><a href="/privacy/">Privacidad</a> · <a href="#" data-cookie-settings>Configuración de cookies</a></span></div>
+        </div>
+    </footer>
+
+    <div class="success" id="ok"><div class="box glass"><i class="fas fa-circle-check"></i><h3>Mensaje enviado</h3><p style="color:var(--muted);margin:10px 0 20px">Nos pondremos en contacto en menos de 24 horas.</p><button class="btn-glass solid" id="okc">Cerrar</button></div></div>
+
+    <!-- robot speech bubble (pinned below the 3D robot) -->
+    <div class="speech" id="speech" aria-hidden="true">
+        <div class="speech-in">
+            <p><span id="speechtext"></span></p>
+            <div class="speech-row"><a href="/es/#contact">Iniciar un proyecto <i class="fas fa-arrow-right"></i></a><span class="speech-hint">haz clic de nuevo →</span></div>
+        </div>
+    </div>
+
+    <script src="/redesign.js?v=8"></script>
+    <script src="/toolstack.js?v=1"></script>
+    <script type="module">
+        import { createHero } from '/hero3d.js?v=20';
+        // fill logos (all of them): full set in the marquee, a curated set in the trusted-by row
+        (function () {
+            var L = ['9','10','11','12','13','14','15','16','17','18','19','IntroSlide','IntroSlide(2)','IntroSlide(3)','IntroSlide(4)','IntroSlide(5)','IntroSlide(6)','IntroSlide(7)','IntroSlide(8)'];
+            var mq = document.getElementById('mqtrack'); if (mq) { var s = ''; for (var k = 0; k < 2; k++) L.forEach(function (f) { s += '<img loading="lazy" decoding="async" src="/assets/logos/' + f + '.svg" alt="">'; }); mq.innerHTML = s; }
+            var ht = document.getElementById('herotrust'); if (ht) { ['9','12','13','15','17','19','IntroSlide','IntroSlide(4)'].forEach(function (f) { var i = new Image(); i.src = '/assets/logos/' + f + '.svg'; i.alt = ''; ht.appendChild(i); }); }
+        })();
+        var cv = document.getElementById('h3d');
+        var speech = document.getElementById('speech');
+        var speechtext = document.getElementById('speechtext');
+        var herohint = document.getElementById('herohint');
+        var cloudui = document.getElementById('cloudui');
+        var MSG = "Hola. Estas justo donde necesitas estar. Si necesitas IA, aqui estamos para ti. Cualquier cosa de IA, cualquier automatizacion que puedas imaginar.";
+        var typer = null;
+        function typeMsg(text){ clearInterval(typer); speechtext.textContent=''; var i=0; typer=setInterval(function(){ speechtext.textContent=text.slice(0,++i); if(i>=text.length) clearInterval(typer); },26); }
+        function boot(){
+            var hero = createHero(cv, {
+                speechEl: speech,
+                onState: function(i){
+                    speech.setAttribute('aria-hidden', i===1?'false':'true');
+                    if(i===1){ typeMsg(MSG); } else { clearInterval(typer); }
+                    if(herohint) herohint.classList.toggle('show', i===0);
+                    if(cloudui) cloudui.classList.toggle('show', i===2);
+                }
+            });
+            var cb = document.getElementById('cloudback'); if(cb) cb.addEventListener('click', function(){ hero.reset(); });
+        }
+        if(document.readyState==='complete') requestAnimationFrame(boot);
+        else window.addEventListener('load', function(){ requestAnimationFrame(boot); });
+    </script>
+    <script src="/cookie.js?v=3" defer></script>
+</body>
+</html>
