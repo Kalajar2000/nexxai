@@ -20,6 +20,7 @@ const SAT='https://static.poly.pizza/37eb82fb-8fae-4035-aeb8-48d807840858.glb';
 function engine(canvas,o){
   let r; try{ r=new THREE.WebGLRenderer({canvas,antialias:!MOB,alpha:true,powerPreference:'high-performance'}); }catch(e){ return; }
   r.setPixelRatio(Math.min(devicePixelRatio, MOB?1.5:2));
+  r.setClearColor(0x06060c, 1); // match page background so the figure blends in (no panel)
   r.toneMapping=THREE.ACESFilmicToneMapping; r.toneMappingExposure=o.exposure||1.2;
   const scene=new THREE.Scene(), cam=new THREE.PerspectiveCamera(o.fov||45,1,0.1,500);
   cam.position.set(0,o.camY??3,o.camZ??14);
@@ -116,8 +117,7 @@ function mesh(geo,x,y,z){ const m=new THREE.Mesh(geo); m.position.set(x,y,z); re
 
 /* ---------------- concept dressing ---------------- */
 function dressGild(a,g,model){ envmap(a); a.scene.add(new THREE.AmbientLight(0xfff0d6,0.5)); const k=new THREE.DirectionalLight(0xffffff,1.7); k.position.set(5,10,7); a.scene.add(k);
-  const gold=new THREE.MeshStandardMaterial({color:0xe8c062,roughness:0.18,metalness:1.0}); model.traverse(o=>{ if(o.isMesh)o.material=gold; }); g.add(model);
-  const floor=new THREE.Mesh(new THREE.PlaneGeometry(80,80),new THREE.MeshStandardMaterial({color:0x14101a,roughness:0.1,metalness:0.85})); floor.rotation.x=-Math.PI/2; floor.position.y=-0.02; g.add(floor); }
+  const gold=new THREE.MeshStandardMaterial({color:0xe8c062,roughness:0.18,metalness:1.0}); model.traverse(o=>{ if(o.isMesh)o.material=gold; }); g.add(model); }
 function dressGlass(a,g,model){ envmap(a); a.scene.add(new THREE.AmbientLight(0x9fb0ff,0.5)); const k=new THREE.DirectionalLight(0xffffff,1.1); k.position.set(4,9,6); a.scene.add(k);
   const glass = MOB ? new THREE.MeshStandardMaterial({color:0xb6d2ee,roughness:0.12,metalness:0.25,transparent:true,opacity:0.5,envMapIntensity:1.6})
                     : new THREE.MeshPhysicalMaterial({color:0xbcd6f0,roughness:0.06,metalness:0,transmission:1,thickness:1.4,ior:1.45,transparent:true,clearcoat:0.5,clearcoatRoughness:0.1});
