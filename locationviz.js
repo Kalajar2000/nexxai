@@ -20,7 +20,7 @@ const SAT='https://static.poly.pizza/37eb82fb-8fae-4035-aeb8-48d807840858.glb';
 function engine(canvas,o){
   let r; try{ r=new THREE.WebGLRenderer({canvas,antialias:!MOB,alpha:true,powerPreference:'high-performance'}); }catch(e){ return; }
   r.setPixelRatio(Math.min(devicePixelRatio, MOB?1.5:2));
-  r.setClearColor(0x06060c, 1); // match page background so the figure blends in (no panel)
+  r.setClearColor(0x000000, 0); // fully transparent: figure floats on the page, no panel/box
   r.toneMapping=THREE.ACESFilmicToneMapping; r.toneMappingExposure=o.exposure||1.2;
   const scene=new THREE.Scene(), cam=new THREE.PerspectiveCamera(o.fov||45,1,0.1,500);
   cam.position.set(0,o.camY??3,o.camZ??14);
@@ -55,7 +55,7 @@ function barcelona(canvas){ engine(canvas,{ exposure:1.32, fov:44, camY:5.5, cam
 
 /* ---------------- Boston: skyline in AI-blob material ---------------- */
 function buildings(){ return [[-7,1.0,1.0,2.6],[-6,1.2,1.0,3.6],[-4.9,1.0,1.0,3.0],[-3.9,1.3,1.1,4.6],[-2.7,1.1,1.0,3.4],[-1.6,1.2,1.1,5.4],[-0.4,1.5,1.2,8.4],[1.1,1.1,1.0,4.2],[2.2,1.2,1.1,6.0],[3.4,1.0,1.0,3.4],[4.4,1.2,1.1,4.9],[5.6,1.0,1.0,3.0],[6.6,1.1,1.0,3.9]]; }
-function boston(canvas){ engine(canvas,{ exposure:1.25, fov:45, camY:4, camZ:15, bloom:[0.8,0.6,0.0], build(a){
+function boston(canvas){ engine(canvas,{ exposure:1.25, fov:45, camY:4, camZ:15, build(a){
   envmap(a); a.scene.add(new THREE.AmbientLight(0x9b8cff,0.7)); const k=new THREE.DirectionalLight(0xffffff,1.2); k.position.set(-4,8,6); a.scene.add(k);
   const g=new THREE.Group(); a.scene.add(g); a.g=g; const seg=MOB?[1,5,1]:[3,10,3];
   const mat=new THREE.MeshStandardMaterial({color:0x9a6cff,roughness:0.22,metalness:0.55,emissive:0x5a2fc0,emissiveIntensity:0.85});
@@ -63,7 +63,7 @@ function boston(canvas){ engine(canvas,{ exposure:1.25, fov:45, camY:4, camZ:15,
 }, update(t,px,py,a){ a.bld.forEach(m=>{ const p=m.geometry.attributes.position.array,b=m.userData.base,ph=m.userData.ph; for(let j=0;j<p.length;j+=3){ const x=b[j],y=b[j+1],z=b[j+2],n=1+0.05*Math.sin(y*1.6+t*1.3+ph); p[j]=x*n; p[j+2]=z*n; } m.geometry.attributes.position.needsUpdate=true; m.geometry.computeVertexNormals(); }); a.g.rotation.y=Math.sin(t*0.12)*0.25+px*0.6; a.cam.position.x=px*4; a.cam.position.y=4-py*2; a.cam.lookAt(0,3,0); }});}
 
 /* ---------------- Florida: satellite + orbit data rings ---------------- */
-function florida(canvas){ engine(canvas,{ exposure:1.2, fov:45, camY:0.6, camZ:7.2, bloom:[1.0,0.7,0.0], build(a){
+function florida(canvas){ engine(canvas,{ exposure:1.2, fov:45, camY:0.6, camZ:7.2, build(a){
   envmap(a); a.scene.add(new THREE.AmbientLight(0x8ea0ff,0.7)); const sun=new THREE.DirectionalLight(0xffffff,2.4); sun.position.set(6,4,6); a.scene.add(sun);
   const g=new THREE.Group(); a.scene.add(g); a.g=g;
   const sp=[],sc=[]; for(let i=0;i<Math.floor(700*Q);i++){ const r=18+Math.random()*22,u=Math.random()*Math.PI*2,v=Math.acos(2*Math.random()-1); sp.push(r*Math.sin(v)*Math.cos(u),r*Math.sin(v)*Math.sin(u),r*Math.cos(v)); const w=0.55+Math.random()*0.45; sc.push(w,w,1);} a.scene.add(P3(sp,sc,0.12));
@@ -118,9 +118,8 @@ function mesh(geo,x,y,z){ const m=new THREE.Mesh(geo); m.position.set(x,y,z); re
 /* ---------------- concept dressing ---------------- */
 function dressGild(a,g,model){ envmap(a); a.scene.add(new THREE.AmbientLight(0xfff0d6,0.5)); const k=new THREE.DirectionalLight(0xffffff,1.7); k.position.set(5,10,7); a.scene.add(k);
   const gold=new THREE.MeshStandardMaterial({color:0xe8c062,roughness:0.18,metalness:1.0}); model.traverse(o=>{ if(o.isMesh)o.material=gold; }); g.add(model); }
-function dressGlass(a,g,model){ envmap(a); a.scene.add(new THREE.AmbientLight(0x9fb0ff,0.5)); const k=new THREE.DirectionalLight(0xffffff,1.1); k.position.set(4,9,6); a.scene.add(k);
-  const glass = MOB ? new THREE.MeshStandardMaterial({color:0xb6d2ee,roughness:0.12,metalness:0.25,transparent:true,opacity:0.5,envMapIntensity:1.6})
-                    : new THREE.MeshPhysicalMaterial({color:0xbcd6f0,roughness:0.06,metalness:0,transmission:1,thickness:1.4,ior:1.45,transparent:true,clearcoat:0.5,clearcoatRoughness:0.1});
+function dressGlass(a,g,model){ envmap(a); a.scene.add(new THREE.AmbientLight(0x9fb0ff,0.6)); const k=new THREE.DirectionalLight(0xffffff,1.2); k.position.set(4,9,6); a.scene.add(k);
+  const glass=new THREE.MeshPhysicalMaterial({color:0xbcd6f0,roughness:0.08,metalness:0,transparent:true,opacity:0.42,clearcoat:1,clearcoatRoughness:0.08,envMapIntensity:2.0,ior:1.4});
   model.traverse(o=>{ if(o.isMesh)o.material=glass; }); g.add(model); }
 function dressHolo(a,g,model){ a.scene.add(new THREE.AmbientLight(0x4060a0,0.4));
   const face=new THREE.MeshBasicMaterial({color:0x18b6d8,transparent:true,opacity:0.10,side:THREE.DoubleSide}); const lmat=new THREE.LineBasicMaterial({color:0x7fe9ff,transparent:true,opacity:0.9});
@@ -128,7 +127,7 @@ function dressHolo(a,g,model){ a.scene.add(new THREE.AmbientLight(0x4060a0,0.4))
 
 function landmark(canvas,buildFn,concept,opts){
   const cfg=Object.assign({exposure:1.2,fov:45,camY:1.6,camZ:13,look:0.6,size:8,bloom:[0.55,0.6,0.1]},opts);
-  engine(canvas,{ exposure:cfg.exposure, fov:cfg.fov, camY:cfg.camY, camZ:cfg.camZ, bloom:cfg.bloom, build(a){
+  engine(canvas,{ exposure:cfg.exposure, fov:cfg.fov, camY:cfg.camY, camZ:cfg.camZ, build(a){
     const g=new THREE.Group(); a.scene.add(g); a.g=g; const model=buildFn(); fit(model,cfg.size,0);
     if(concept==='gild') dressGild(a,g,model); else if(concept==='glass') dressGlass(a,g,model); else dressHolo(a,g,model);
   }, update(t,px,py,a){ if(a.g) a.g.rotation.y=t*0.16+px*0.6; a.cam.position.x=px*4; a.cam.position.y=cfg.camY-py*2; a.cam.lookAt(0,cfg.look,0); }});
