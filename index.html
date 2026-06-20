@@ -24,6 +24,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+      /* mobile: let taps reach the orb canvas instead of the hero text layered over it */
+      #h3d{touch-action:manipulation}
+      @media(max-width:900px){.hero-content{pointer-events:none}.hero-content a,.hero-content button{pointer-events:auto}}
+    </style>
     <script type="importmap">
     {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
     </script>
@@ -293,7 +298,7 @@
     <script src="redesign.js?v=8"></script>
     <script src="toolstack.js?v=1"></script>
     <script type="module">
-        import { createHero } from './hero3d.js?v=18';
+        import { createHero } from './hero3d.js?v=19';
         // fill logos (all of them): full set in the marquee, a curated set in the trusted-by row
         (function () {
             var L = ['9','10','11','12','13','14','15','16','17','18','19','IntroSlide','IntroSlide(2)','IntroSlide(3)','IntroSlide(4)','IntroSlide(5)','IntroSlide(6)','IntroSlide(7)','IntroSlide(8)'];

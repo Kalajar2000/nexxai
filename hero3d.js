@@ -455,7 +455,8 @@ export function createHero(canvas, opts) {
   let renderer;
   try { renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true }); }
   catch (e) { if (canvas) canvas.style.display = 'none'; return { dispose() {}, reset() {}, next() {} }; }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  var SMALL = Math.min(window.innerWidth, window.innerHeight) < 820 || (window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, SMALL ? 1.25 : 1.5));
   renderer.setClearColor(0x06060f, 1);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100); camera.position.z = 5.2;
@@ -473,7 +474,7 @@ export function createHero(canvas, opts) {
         } catch (e) { usePost = false; }
       }).catch(function () { usePost = false; });
     }
-    if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 3000 }); else setTimeout(go, 1800);
+    if (SMALL) return; if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 3000 }); else setTimeout(go, 1800);
   })();
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const holo = makeHolo();
@@ -536,6 +537,7 @@ export function createHero(canvas, opts) {
   // cloud diorama GLB - lazy-loaded when approaching the cloud state
   var cloudLoading = false;
   function loadCloud() {
+    if (SMALL) return;
     if (cloudLoading) return; cloudLoading = true;
     (async function () {
       try {
@@ -586,7 +588,7 @@ export function createHero(canvas, opts) {
   canvas.addEventListener('click', onClick);
 
   function setState(i) { current = ((i % 3) + 3) % 3; if (current === 1) loadRobot(); if (current === 2) loadCloud(); if (opts.onState) opts.onState(current, NAMES[current]); }
-  function next() { setState(current + 1); }
+  function next() { setState(SMALL ? ((current + 1) % 2) : current + 1); }
   function reset() { setState(0); }
   function smooth(x) { x = Math.min(Math.max(x, 0), 1); return x * x * (3 - 2 * x); }
   setState(0);
