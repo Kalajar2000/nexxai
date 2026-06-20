@@ -507,7 +507,7 @@ export function createHero(canvas, opts) {
         try { var pmrem = new THREE.PMREMGenerator(renderer); scene.environment = pmrem.fromScene(new mods[2].RoomEnvironment(), 0.04).texture; } catch (e) {}
         var draco = new mods[1].DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/gltf/');
         var loader = new mods[0].GLTFLoader(); loader.setDRACOLoader(draco);
-        loader.load(opts.robotUrl || 'assets/robot.glb?v=3', function (gltf) {
+        loader.load(opts.robotUrl || 'assets/robot.glb?v=4', function (gltf) {
           var model = gltf.scene;
           model.traverse(function (o) {
             if (o.isMesh && o.material) {
@@ -537,7 +537,6 @@ export function createHero(canvas, opts) {
   // cloud diorama GLB - lazy-loaded when approaching the cloud state
   var cloudLoading = false;
   function loadCloud() {
-    if (SMALL) return;
     if (cloudLoading) return; cloudLoading = true;
     (async function () {
       try {
@@ -545,7 +544,7 @@ export function createHero(canvas, opts) {
         if (!scene.environment) { try { var pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new mods[2].RoomEnvironment(), 0.04).texture; } catch (e) {} }
         var draco = new mods[1].DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/gltf/');
         var loader = new mods[0].GLTFLoader(); loader.setDRACOLoader(draco);
-        loader.load(opts.cloudUrl || 'assets/cloud.glb?v=5', function (gltf) {
+        loader.load(opts.cloudUrl || 'assets/cloud.glb?v=6', function (gltf) {
           var model = gltf.scene;
           model.traverse(function (o) {
             if (o.isMesh && o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) {
@@ -588,7 +587,7 @@ export function createHero(canvas, opts) {
   canvas.addEventListener('click', onClick);
 
   function setState(i) { current = ((i % 3) + 3) % 3; if (current === 1) loadRobot(); if (current === 2) loadCloud(); if (opts.onState) opts.onState(current, NAMES[current]); }
-  function next() { setState(SMALL ? ((current + 1) % 2) : current + 1); }
+  function next() { setState(current + 1); }
   function reset() { setState(0); }
   function smooth(x) { x = Math.min(Math.max(x, 0), 1); return x * x * (3 - 2 * x); }
   setState(0);
