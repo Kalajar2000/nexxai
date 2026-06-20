@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0d0f1e">
+<title>Concept picker - Lahore / Ukraine / Turkey - NEXXAI</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+    body{margin:0;background:#06060c;color:#f4f4fb;font-family:'Inter',sans-serif;line-height:1.6}
+    .wrap{max-width:1280px;margin:0 auto;padding:38px 22px 100px}
+    h1{font-family:'Poppins';font-weight:700;font-size:1.7rem;margin:0 0 6px}
+    .lead{color:#9a9cbb;max-width:900px;font-size:.95rem;margin:0 0 18px}.lead b{color:#cbbcff}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 8px}
+    .tab{font-family:'Poppins';font-weight:600;font-size:.9rem;color:#b9bbdd;text-decoration:none;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:8px 18px;transition:.15s}
+    .tab:hover{border-color:rgba(170,150,255,.6);color:#fff}
+    .tab.on{background:linear-gradient(120deg,#7c4dff,#49e0ff);color:#0a0a14;border-color:transparent}
+    .csub{color:#8b8db2;font-size:.9rem;margin:6px 0 22px}
+    .grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+    .card{border:1px solid rgba(255,255,255,.12);border-radius:18px;overflow:hidden;position:relative;background:rgba(255,255,255,.02)}
+    .stage{position:relative;height:400px;background:radial-gradient(120% 120% at 50% 18%,#1a1142,#04040f 74%)}
+    .card canvas{display:block;width:100%;height:100%}
+    .tag{position:absolute;top:12px;left:12px;z-index:2;font-family:'Poppins';font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:rgba(13,15,30,.55);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:5px 12px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    .loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#7d7fa0;font-size:.85rem;z-index:1}
+    .meta{padding:14px 18px 18px}
+    .meta h3{font-family:'Poppins';font-weight:600;font-size:1rem;margin:0 0 3px}
+    .meta p{color:#8b8db2;font-size:.85rem;margin:0}
+    .foot{color:#7d7fa0;font-size:.9rem;margin-top:40px;line-height:1.7}.foot b{color:#cbbcff}
+    .cred{color:#5f6180;font-size:.72rem;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+    <h1>Concept picker - the last three cities</h1>
+    <p class="lead">Each city's landmark, rendered in <b>5 concepts</b>. Switch city with the tabs; pick the concept you want per city. Florida (satellite, effect A) and Boston (AI-blob skyline) are already locked.</p>
+    <div class="tabs" id="tabs"></div>
+    <p class="csub" id="csub"></p>
+    <div class="grid" id="grid"></div>
+    <p class="foot">Tell me the concept per city (e.g. "Lahore gilded, Ukraine data points, Turkey hologram") and I build all five pages like Barcelona and ship them. The point-cloud and concepts are generated from the real mesh, so they will look even better on the exact landmark once you pick one.</p>
+    <p class="cred">Live models via Poly Pizza (CC-BY) and three.js examples. Production pages will use CC0 or credited / commissioned models.</p>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
+
+const TAJ   ='https://static.poly.pizza/1261e813-7ed3-4667-8b5d-6921547bf83e.glb';
+const ONION ='https://static.poly.pizza/5ed9ad9d-ebd6-4eb8-9ea5-5232f8f55a61.glb';
+const MOSQUE='https://static.poly.pizza/b6a712a6-0137-4752-bbf8-3f2f4cc993fe.glb';
+
+const CITY={
+  lahore :{name:'Lahore', sub:'Mughal - Taj Mahal stand-in for the Badshahi Mosque', url:TAJ,    size:5.0, camY:0.9, camZ:6.6, look:0.4},
+  ukraine:{name:'Ukraine',sub:'Golden onion-dome cathedral - Kyiv Orthodox style',   url:ONION,  size:5.0, camY:1.1, camZ:6.6, look:0.7},
+  turkey :{name:'Turkey', sub:'Domed mosque - Hagia Sophia stand-in',                 url:MOSQUE, size:5.0, camY:1.0, camZ:6.6, look:0.4}
+};
+const order=['lahore','ukraine','turkey'];
+const params=new URLSearchParams(location.search);
+let cur=params.get('city'); if(!CITY[cur]) cur='lahore';
+
+function engine(canvas,o){
+  let r; try{ r=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true}); }catch(e){ return; }
+  r.setPixelRatio(Math.min(devicePixelRatio,2)); r.toneMapping=THREE.ACESFilmicToneMapping; r.toneMappingExposure=o.exposure||1.2;
+  const scene=new THREE.Scene(); const cam=new THREE.PerspectiveCamera(45,1,0.1,500); cam.position.set(0,3,12);
+  const api={scene,cam,THREE,r,mixers:[]}; o.build(api);
+  let comp=null; if(o.bloom){ comp=new EffectComposer(r); comp.addPass(new RenderPass(scene,cam)); comp.addPass(new UnrealBloomPass(new THREE.Vector2(1,1),o.bloom[0],o.bloom[1],o.bloom[2])); }
+  function size(){ const b=canvas.getBoundingClientRect(),w=Math.max(1,b.width),h=Math.max(1,b.height); r.setSize(w,h,false); if(comp)comp.setSize(w,h); cam.aspect=w/h; cam.updateProjectionMatrix(); }
+  size(); addEventListener('resize',size);
+  let tx=0,ty=0; api.px=0; api.py=0;
+  canvas.addEventListener('pointermove',e=>{ const b=canvas.getBoundingClientRect(); tx=(e.clientX-b.left)/b.width-0.5; ty=(e.clientY-b.top)/b.height-0.5; });
+  canvas.addEventListener('pointerleave',()=>{ tx=0; ty=0; });
+  let vis=true; try{ new IntersectionObserver(es=>vis=es[0].isIntersecting,{threshold:0}).observe(canvas); }catch(e){}
+  const clk=new THREE.Clock();
+  (function loop(){ requestAnimationFrame(loop); if(!vis)return; const dt=Math.min(clk.getDelta(),0.05),t=clk.elapsedTime; api.px+=(tx-api.px)*0.06; api.py+=(ty-api.py)*0.06; api.mixers.forEach(m=>m.update(dt)); o.update&&o.update(t,api.px,api.py,api); if(comp)comp.render(); else r.render(scene,cam); })();
+}
+function envmap(a){ try{ const pm=new THREE.PMREMGenerator(a.r); a.scene.environment=pm.fromScene(new RoomEnvironment(),0.04).texture; }catch(e){} }
+function fit(obj,size,yoff){ let b=new THREE.Box3().setFromObject(obj); const s=b.getSize(new THREE.Vector3()); const sc=size/Math.max(s.x,s.y,s.z); obj.scale.setScalar(sc); b=new THREE.Box3().setFromObject(obj); const c=b.getCenter(new THREE.Vector3()); obj.position.sub(c); obj.position.y+=(yoff||0); }
+function draco(){ const d=new DRACOLoader(); d.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/gltf/'); const g=new GLTFLoader(); g.setDRACOLoader(d); return g; }
+function mkPoints(pts,cols,size){ const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pts,3)); g.setAttribute('color',new THREE.Float32BufferAttribute(cols,3)); return new THREE.Points(g,new THREE.PointsMaterial({size:size||0.05,vertexColors:true,transparent:true,opacity:0.95,blending:THREE.AdditiveBlending,depthWrite:false})); }
+function done(c){ const l=c.parentNode.querySelector('.loading'); if(l)l.remove(); }
+function fail(c){ const l=c.parentNode.querySelector('.loading'); if(l)l.textContent='could not load model'; }
+
+function sampleModel(root,total){
+  root.updateWorldMatrix(true,true);
+  const meshes=[]; root.traverse(o=>{ if(o.isMesh&&o.geometry&&o.geometry.attributes&&o.geometry.attributes.position) meshes.push(o); });
+  if(!meshes.length) return {pos:[],col:[]};
+  const weights=meshes.map(m=>{ m.geometry.computeBoundingBox(); const s=m.geometry.boundingBox.getSize(new THREE.Vector3()); return Math.max(0.001,s.x*s.y+s.y*s.z+s.x*s.z); });
+  const wsum=weights.reduce((a,b)=>a+b,0);
+  const bb=new THREE.Box3().setFromObject(root),ymin=bb.min.y,ymax=bb.max.y;
+  const c2=new THREE.Color(0x8b5cf6),c1=new THREE.Color(0x49e0ff),tmp=new THREE.Vector3();
+  const pos=[],col=[];
+  meshes.forEach((m,i)=>{ const n=Math.max(40,Math.floor(total*weights[i]/wsum)); let sampler; try{ sampler=new MeshSurfaceSampler(m).build(); }catch(e){ return; }
+    for(let k=0;k<n;k++){ sampler.sample(tmp); tmp.applyMatrix4(m.matrixWorld); pos.push(tmp.x,tmp.y,tmp.z); const f=(tmp.y-ymin)/Math.max(0.001,ymax-ymin); const c=c2.clone().lerp(c1,f); col.push(c.r,c.g,c.b);} });
+  return {pos,col};
+}
+
+function applyConcept(a,g,root,concept){
+  const bb=new THREE.Box3().setFromObject(root),size=bb.getSize(new THREE.Vector3());
+  if(concept==='points'){ const {pos,col}=sampleModel(root,9000); if(pos.length){ root.visible=false; const p=mkPoints(pos,col,0.05); g.add(p); a.pts=p; } return; }
+  if(concept==='blob'){ const mat=new THREE.MeshStandardMaterial({color:0x9a6cff,roughness:0.22,metalness:0.55,emissive:0x5a2fc0,emissiveIntensity:0.85}); root.traverse(o=>{ if(o.isMesh)o.material=mat; }); a.blobMat=mat; return; }
+  if(concept==='gild'){ const gold=new THREE.MeshStandardMaterial({color:0xe8c062,roughness:0.16,metalness:1.0}); root.traverse(o=>{ if(o.isMesh)o.material=gold; }); return; }
+  if(concept==='glass'){ const glass=new THREE.MeshPhysicalMaterial({color:0xcfeaff,roughness:0.05,metalness:0,transmission:1,thickness:1.4,ior:1.45,transparent:true,clearcoat:0.6,clearcoatRoughness:0.1}); root.traverse(o=>{ if(o.isMesh)o.material=glass; }); return; }
+  if(concept==='holo'){ const face=new THREE.MeshBasicMaterial({color:0x18b6d8,transparent:true,opacity:0.12,side:THREE.DoubleSide}); const lmat=new THREE.LineBasicMaterial({color:0x7fe9ff,transparent:true,opacity:0.9});
+    root.traverse(o=>{ if(o.isMesh){ o.material=face; try{ o.add(new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry,28),lmat)); }catch(_){}} });
+    const w=Math.max(size.x,size.z)*1.3; const scan=new THREE.Mesh(new THREE.PlaneGeometry(w,w),new THREE.MeshBasicMaterial({color:0x9fefff,transparent:true,opacity:0.5,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
+    scan.rotation.x=-Math.PI/2; scan.position.set((bb.min.x+bb.max.x)/2,bb.min.y,(bb.min.z+bb.max.z)/2); g.add(scan); a.scan=scan; a.scanMin=bb.min.y; a.scanMax=bb.max.y; return; }
+}
+function conceptUpdate(a,t,concept){
+  if(concept==='blob'&&a.blobMat) a.blobMat.emissiveIntensity=0.7+0.25*Math.sin(t*1.5);
+  if(concept==='points'&&a.pts) a.pts.material.size=0.05+0.012*Math.sin(t*2);
+  if(concept==='holo'&&a.scan){ a.scan.position.y=a.scanMin+((t*0.55)%1)*(a.scanMax-a.scanMin); a.scan.material.opacity=0.3+0.4*Math.abs(Math.sin(t*6)); }
+}
+const BLOOM={points:[0.95,0.6,0.0],blob:[0.8,0.6,0.0],holo:[1.1,0.7,0.0],gild:[0.5,0.7,0.1],glass:[0.55,0.6,0.1]};
+function conceptModel(canvas,cfg,concept){ engine(canvas,{ exposure:1.2, bloom:BLOOM[concept], build(a){
+  envmap(a); a.scene.add(new THREE.AmbientLight(0x9fb0ff,0.7));
+  const k=new THREE.DirectionalLight(0xffffff,1.7); k.position.set(4,9,6); a.scene.add(k);
+  const f=new THREE.DirectionalLight(0x9b8cff,0.7); f.position.set(-5,3,-4); a.scene.add(f);
+  const g=new THREE.Group(); a.scene.add(g); a.g=g; a.cam.position.set(0,cfg.camY,cfg.camZ);
+  draco().load(cfg.url, gltf=>{ const root=gltf.scene; g.add(root); fit(root,cfg.size,0); applyConcept(a,g,root,concept); done(canvas); }, undefined, ()=>fail(canvas));
+}, update(t,px,py,a){ conceptUpdate(a,t,concept); if(a.g) a.g.rotation.y=0.3*t+px*0.7; a.cam.position.x=px*2.2; a.cam.position.y=cfg.camY-py*1.1; a.cam.lookAt(0,cfg.look,0); }});}
+
+const CONCEPTS=[
+  ['Data points','points','The Barcelona look: the landmark rebuilt as a living point cloud, sampled from the real mesh.'],
+  ['AI-blob material','blob','The Boston look: the landmark cast in the glowing, breathing AI material.'],
+  ['Hologram','holo','Wireframe + translucent faces + a moving scan line. Techy, projected.'],
+  ['Gilded / royal','gild','Polished gold metal with real reflections. Regal.'],
+  ['Crystal glass','glass','Transparent, refractive glass. Premium and clean.']
+];
+
+function render(){
+  const cfg=CITY[cur];
+  document.getElementById('csub').textContent=cfg.name+' - '+cfg.sub;
+  const tabs=document.getElementById('tabs'); tabs.innerHTML='';
+  order.forEach(k=>{ const a=document.createElement('a'); a.className='tab'+(k===cur?' on':''); a.href='?city='+k; a.textContent=CITY[k].name; tabs.appendChild(a); });
+  const grid=document.getElementById('grid'); grid.innerHTML='';
+  CONCEPTS.forEach(c=>{ const el=document.createElement('div'); el.className='card';
+    el.innerHTML='<div class="stage"><span class="tag">'+c[0]+'</span><div class="loading">loading 3D...</div><canvas></canvas></div><div class="meta"><h3>'+c[0]+'</h3><p>'+c[2]+'</p></div>';
+    grid.appendChild(el); try{ conceptModel(el.querySelector('canvas'),cfg,c[1]); }catch(e){ fail(el.querySelector('canvas')); } });
+}
+render();
+</script>
+</body>
+</html>
