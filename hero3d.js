@@ -578,7 +578,7 @@ export function createHero(canvas, opts) {
   function onDown(e) { if (current !== 2) return; dragActive = true; dragMoved = 0; lastDX = e.clientX; lastDY = e.clientY; if (cloud.setDragging) cloud.setDragging(true); }
   function onDrag(e) { if (!dragActive) return; var dx = e.clientX - lastDX, dy = e.clientY - lastDY; lastDX = e.clientX; lastDY = e.clientY; dragMoved += Math.abs(dx) + Math.abs(dy); if (cloud.addDrag) cloud.addDrag(dx * 0.011, dy * 0.011); }
   function onUp() { if (dragActive) { dragActive = false; if (cloud.setDragging) cloud.setDragging(false); } }
-  function onClick() { if (current === 2 && dragMoved > 6) { dragMoved = 0; return; } next(); }
+  function onClick() { if (SMALL) return; if (current === 2 && dragMoved > 6) { dragMoved = 0; return; } next(); }
   window.addEventListener('pointermove', onMove, { passive: true });
   window.addEventListener('scroll', onScroll, { passive: true });
   canvas.addEventListener('pointerdown', onDown);
