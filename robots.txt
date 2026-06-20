@@ -7,3 +7,4 @@ Disallow: /hero-robot.html
 Disallow: /redesign.html
 
 Sitemap: https://nexxai.world/sitemap.xml
+Sitemap: https://nexxai.world/sitemap-images.xml

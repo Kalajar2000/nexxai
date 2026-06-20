@@ -1,0 +1,28 @@
+# NEXXAI
+
+> AI-first product and software studio. We design, build and ship AI agents, web and mobile apps, and custom platforms, from first idea to production. Building since 2015.
+
+## About
+NEXXAI builds production AI (agents, ML models, RAG assistants), custom software and SaaS, and native and cross-platform mobile and web apps for startups and enterprises. One senior team takes a product from first idea to shipped. Delivery hubs in Barcelona (Spain), Boston (USA), Florida (USA), Lahore (Pakistan), Ukraine (Kyiv) and Turkey (Istanbul).
+
+## Key pages
+- [Home](https://nexxai.world/): overview of services and approach
+- [Services](https://nexxai.world/services.html): AI agents, custom software, SaaS, mobile and web apps, UI/UX, DevOps
+- [AI Lab](https://nexxai.world/ai-lab.html): applied AI work
+- [Upskilling](https://nexxai.world/upskilling.html): AI training for teams
+- [Portfolio](https://nexxai.world/work.html): shipped projects
+- [Company](https://nexxai.world/company.html): about, clients, hubs
+- [Insights](https://nexxai.world/insights/): blog (coming soon)
+
+## Locations
+- [Barcelona, Spain](https://nexxai.world/locations/barcelona/)
+- [Boston, USA](https://nexxai.world/locations/boston/)
+- [Florida, USA](https://nexxai.world/locations/florida/)
+- [Lahore, Pakistan](https://nexxai.world/locations/lahore/)
+- [Ukraine (Kyiv)](https://nexxai.world/locations/ukraine/)
+- [Turkey (Istanbul)](https://nexxai.world/locations/turkey/)
+
+## Contact
+- Email: santiago@nexxai.world
+- Phone: +34 603 352 552
+- Website: https://nexxai.world/
