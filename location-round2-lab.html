@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0d0f1e">
+<title>Locations round 2 - Florida satellite + the last three - NEXXAI</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+    body{margin:0;background:#06060c;color:#f4f4fb;font-family:'Inter',sans-serif;line-height:1.6}
+    .wrap{max-width:1280px;margin:0 auto;padding:42px 22px 100px}
+    h1{font-family:'Poppins';font-weight:700;font-size:1.85rem;margin:0 0 8px}
+    .lead{color:#9a9cbb;max-width:920px;font-size:.97rem;margin:0 0 6px}.lead b{color:#cbbcff}
+    .grp{font-family:'Poppins';font-weight:600;font-size:1.18rem;margin:46px 0 6px;padding-top:22px;border-top:1px solid rgba(255,255,255,.1)}
+    .grpsub{color:#8b8db2;font-size:.9rem;margin:0 0 16px;max-width:880px}
+    .pill{display:inline-block;font-family:'Poppins';font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#9affc8;border:1px solid rgba(80,230,160,.4);border-radius:999px;padding:2px 9px;margin-left:8px;vertical-align:middle}
+    .grid{display:grid;gap:18px}
+    .big{grid-template-columns:repeat(auto-fit,minmax(500px,1fr))}
+    .tri{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+    .card{border:1px solid rgba(255,255,255,.12);border-radius:18px;overflow:hidden;position:relative;background:rgba(255,255,255,.02)}
+    .big .stage{height:500px}
+    .tri .stage{height:400px}
+    .stage{position:relative;background:radial-gradient(120% 120% at 50% 18%,#1a1142,#04040f 74%)}
+    .card canvas{display:block;width:100%;height:100%}
+    .tag{position:absolute;top:12px;left:12px;z-index:2;font-family:'Poppins';font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:rgba(13,15,30,.55);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:5px 12px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    .loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#7d7fa0;font-size:.85rem;z-index:1}
+    .meta{padding:14px 18px 18px}
+    .meta h3{font-family:'Poppins';font-weight:600;font-size:1rem;margin:0 0 3px}
+    .meta p{color:#8b8db2;font-size:.85rem;margin:0}
+    .foot{color:#7d7fa0;font-size:.9rem;margin-top:44px;line-height:1.7}.foot b{color:#cbbcff}
+    .cred{color:#5f6180;font-size:.72rem;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+    <h1>Round 2: Florida satellite, Boston locked, and the last three</h1>
+    <p class="lead"><b>Florida</b> = a real satellite with a cool effect around it (two versions to pick from). <b>Boston</b> = the skyline in the AI-blob material, locked. <b>Lahore / Ukraine / Turkey</b> = real model options to react to - each can also be rendered in any concept (data points / AI-blob / hologram / gilded), just say which.</p>
+
+    <h2 class="grp">Florida - satellite <span class="pill">pick an effect</span></h2>
+    <p class="grpsub">A real satellite model, slowly turning over Earth's limb, with the data effect wrapped around it. Same model, two treatments.</p>
+    <div class="grid big" id="florida"></div>
+
+    <h2 class="grp">Boston - skyline in AI-blob material <span class="pill">locked</span></h2>
+    <p class="grpsub">Confirming the direction you picked: the skyline rendered in the living, breathing AI-blob material.</p>
+    <div class="grid big" id="boston"></div>
+
+    <h2 class="grp">The last three - real model options</h2>
+    <p class="grpsub">Distinct real meshes per city, streamed live. Lahore = Mughal (Taj Mahal stand-in for Badshahi). Ukraine = golden onion-dome cathedral, plus a sunflower as a symbol. Turkey = a domed mosque (Hagia Sophia stand-in).</p>
+    <div class="grid tri" id="last3"></div>
+
+    <p class="foot">Tell me, per remaining city: keep the <b>real model</b>, or render that landmark in a <b>concept</b> (data points / AI-blob / hologram / gilded). Then I build Florida + Boston + the three like Barcelona and ship them. If you find an exact landmark on <b>Sketchfab / Poly Pizza</b>, send the link and I host it.</p>
+    <p class="cred">Live models via Poly Pizza (CC-BY) and three.js examples. Production pages will use CC0 or credited / commissioned models.</p>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const SAT   ='https://static.poly.pizza/37eb82fb-8fae-4035-aeb8-48d807840858.glb';
+const TAJ   ='https://static.poly.pizza/1261e813-7ed3-4667-8b5d-6921547bf83e.glb';
+const ONION ='https://static.poly.pizza/5ed9ad9d-ebd6-4eb8-9ea5-5232f8f55a61.glb';
+const SUN   ='https://static.poly.pizza/bc27aa5a-64db-4189-9f77-ed8559a2081f.glb';
+const MOSQUE='https://static.poly.pizza/b6a712a6-0137-4752-bbf8-3f2f4cc993fe.glb';
+
+function engine(canvas,o){
+  let r; try{ r=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true}); }catch(e){ return; }
+  r.setPixelRatio(Math.min(devicePixelRatio,2)); r.toneMapping=THREE.ACESFilmicToneMapping; r.toneMappingExposure=o.exposure||1.2;
+  const scene=new THREE.Scene(); const cam=new THREE.PerspectiveCamera(45,1,0.1,500); cam.position.set(0,3,12);
+  const api={scene,cam,THREE,r,mixers:[]}; o.build(api);
+  let comp=null; if(o.bloom){ comp=new EffectComposer(r); comp.addPass(new RenderPass(scene,cam)); comp.addPass(new UnrealBloomPass(new THREE.Vector2(1,1),o.bloom[0],o.bloom[1],o.bloom[2])); }
+  function size(){ const b=canvas.getBoundingClientRect(),w=Math.max(1,b.width),h=Math.max(1,b.height); r.setSize(w,h,false); if(comp)comp.setSize(w,h); cam.aspect=w/h; cam.updateProjectionMatrix(); }
+  size(); addEventListener('resize',size);
+  let tx=0,ty=0; api.px=0; api.py=0;
+  canvas.addEventListener('pointermove',e=>{ const b=canvas.getBoundingClientRect(); tx=(e.clientX-b.left)/b.width-0.5; ty=(e.clientY-b.top)/b.height-0.5; });
+  canvas.addEventListener('pointerleave',()=>{ tx=0; ty=0; });
+  let vis=true; try{ new IntersectionObserver(es=>vis=es[0].isIntersecting,{threshold:0}).observe(canvas); }catch(e){}
+  const clk=new THREE.Clock();
+  (function loop(){ requestAnimationFrame(loop); if(!vis)return; const dt=Math.min(clk.getDelta(),0.05),t=clk.elapsedTime; api.px+=(tx-api.px)*0.06; api.py+=(ty-api.py)*0.06; api.mixers.forEach(m=>m.update(dt)); o.update&&o.update(t,api.px,api.py,api); if(comp)comp.render(); else r.render(scene,cam); })();
+}
+function envmap(a){ try{ const pm=new THREE.PMREMGenerator(a.r); a.scene.environment=pm.fromScene(new RoomEnvironment(),0.04).texture; }catch(e){} }
+function fit(obj,size,yoff){ let b=new THREE.Box3().setFromObject(obj); const s=b.getSize(new THREE.Vector3()); const sc=size/Math.max(s.x,s.y,s.z); obj.scale.setScalar(sc); b=new THREE.Box3().setFromObject(obj); const c=b.getCenter(new THREE.Vector3()); obj.position.sub(c); obj.position.y+=(yoff||0); }
+function draco(){ const d=new DRACOLoader(); d.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/gltf/'); const g=new GLTFLoader(); g.setDRACOLoader(d); return g; }
+function mkPoints(pts,cols,size){ const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pts,3)); g.setAttribute('color',new THREE.Float32BufferAttribute(cols,3)); return new THREE.Points(g,new THREE.PointsMaterial({size:size||0.07,vertexColors:true,transparent:true,opacity:0.95,blending:THREE.AdditiveBlending,depthWrite:false})); }
+function done(canvas){ const l=canvas.parentNode.querySelector('.loading'); if(l)l.remove(); }
+function fail(canvas){ const l=canvas.parentNode.querySelector('.loading'); if(l)l.textContent='could not load model'; }
+
+/* ---- real model (big, framed) ---- */
+function realModel(canvas,url,o){ o=o||{}; engine(canvas,{ exposure:o.exposure||1.15, bloom:o.bloom, build(a){
+  envmap(a); a.scene.add(new THREE.AmbientLight(0xffffff,o.amb||0.9));
+  const k=new THREE.DirectionalLight(0xffffff,o.key||2.0); k.position.set(4,9,6); a.scene.add(k);
+  const f=new THREE.DirectionalLight(0x9b8cff,0.8); f.position.set(-5,3,-4); a.scene.add(f);
+  const g=new THREE.Group(); a.scene.add(g); a.g=g; a.cam.position.set(0,o.camY??1.0,o.camZ||6.2);
+  draco().load(url, gltf=>{ const ob=gltf.scene; g.add(ob); fit(ob,o.size||5,o.yoff||0);
+    if(gltf.animations&&gltf.animations.length){ const mx=new THREE.AnimationMixer(ob); mx.clipAction(gltf.animations[0]).play(); a.mixers.push(mx); }
+    done(canvas); }, undefined, ()=>fail(canvas));
+}, update(t,px,py,a){ if(a.g) a.g.rotation.y=(o.spin??0.3)*t+px*0.8; a.cam.position.x=px*2.4; a.cam.position.y=(o.camY??1.0)-py*1.2; a.cam.lookAt(0,o.look??0.4,0); }});}
+
+/* ---- Florida: satellite + effect ---- */
+function floridaSat(canvas,mode){ engine(canvas,{ exposure:1.2, bloom:[1.0,0.7,0.0], build(a){
+  envmap(a); a.scene.add(new THREE.AmbientLight(0x8ea0ff,0.7));
+  const sun=new THREE.DirectionalLight(0xffffff,2.4); sun.position.set(6,4,6); a.scene.add(sun);
+  const g=new THREE.Group(); a.scene.add(g); a.g=g; a.cam.position.set(0,0.6,7.2);
+  // starfield
+  const sp=[],scol=[]; for(let i=0;i<700;i++){ const r=18+Math.random()*22,u=Math.random()*Math.PI*2,v=Math.acos(2*Math.random()-1); sp.push(r*Math.sin(v)*Math.cos(u),r*Math.sin(v)*Math.sin(u),r*Math.cos(v)); const w=0.55+Math.random()*0.45; scol.push(w,w,1);} a.scene.add(mkPoints(sp,scol,0.12));
+  // Earth limb + atmosphere
+  const earth=new THREE.Mesh(new THREE.SphereGeometry(9,48,48), new THREE.MeshStandardMaterial({color:0x0a1f4a,emissive:0x0a2a66,emissiveIntensity:0.45,roughness:1,metalness:0})); earth.position.set(0,-11.6,-2); g.add(earth);
+  const atmo=new THREE.Mesh(new THREE.SphereGeometry(9.7,48,48), new THREE.MeshBasicMaterial({color:0x2f7bff,transparent:true,opacity:0.18,side:THREE.BackSide})); atmo.position.copy(earth.position); g.add(atmo);
+  // satellite
+  const sat=new THREE.Group(); g.add(sat); a.sat=sat;
+  draco().load(SAT, gltf=>{ const o=gltf.scene; sat.add(o); fit(o,2.7,0.2); done(canvas); }, undefined, ()=>fail(canvas));
+  if(mode==='orbit'){
+    a.rings=[]; const cols=[0x49e0ff,0x8b5cf6,0x32e6c0];
+    for(let k=0;k<3;k++){ const pts=[],pc=[],col=new THREE.Color(cols[k]),R=2.9+k*0.6,N=150;
+      for(let i=0;i<N;i++){ const an=i/N*Math.PI*2; pts.push(Math.cos(an)*R,(Math.random()-.5)*0.1,Math.sin(an)*R); pc.push(col.r,col.g,col.b);}
+      const ring=mkPoints(pts,pc,0.075); ring.rotation.set(0.5+k*0.32,0,k*0.6); g.add(ring); a.rings.push(ring); }
+  } else {
+    a.pulses=[]; for(let k=0;k<3;k++){ const t=new THREE.Mesh(new THREE.TorusGeometry(1,0.028,8,64),new THREE.MeshBasicMaterial({color:0x6fe6ff,transparent:true,opacity:0.7,blending:THREE.AdditiveBlending,depthWrite:false})); t.rotation.x=Math.PI/2; g.add(t); a.pulses.push({m:t,off:k/3}); }
+    const cvv=[0x49e0ff,0x8b5cf6]; for(let k=0;k<2;k++){ const p=[]; for(let i=0;i<=60;i++){ const u=i/60; p.push(new THREE.Vector3(Math.cos(u*9+k*3)*(3.2-u*0.7),(u-0.5)*4.2,Math.sin(u*9+k*3)*(3.2-u*0.7))); } g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(p),90,0.03,6,false),new THREE.MeshBasicMaterial({color:cvv[k],transparent:true,opacity:0.85}))); }
+  }
+}, update(t,px,py,a){ if(a.sat) a.sat.rotation.y=t*0.45+px*0.8;
+  if(a.rings) a.rings.forEach((r,i)=>{ r.rotation.y=t*(0.5+i*0.22); });
+  if(a.pulses) a.pulses.forEach(p=>{ const s=(t*0.45+p.off)%1; p.m.scale.setScalar(0.6+s*5.2); p.m.material.opacity=0.7*(1-s); });
+  a.cam.position.x=px*2; a.cam.position.y=0.6-py*1.1; a.cam.lookAt(0,0.2,0); }});}
+
+/* ---- Boston (locked): skyline in AI-blob material ---- */
+function buildings(){ return [
+  [-7,1.0,1.0,2.6],[-6,1.2,1.0,3.6],[-4.9,1.0,1.0,3.0],[-3.9,1.3,1.1,4.6],
+  [-2.7,1.1,1.0,3.4],[-1.6,1.2,1.1,5.4],[-0.4,1.5,1.2,8.4],
+  [1.1,1.1,1.0,4.2],[2.2,1.2,1.1,6.0],[3.4,1.0,1.0,3.4],[4.4,1.2,1.1,4.9],
+  [5.6,1.0,1.0,3.0],[6.6,1.1,1.0,3.9] ]; }
+function bostonBlob(canvas){ engine(canvas,{ exposure:1.25, bloom:[0.8,0.6,0.0], build(a){
+  envmap(a); a.scene.add(new THREE.AmbientLight(0x9b8cff,0.7));
+  const k=new THREE.DirectionalLight(0xffffff,1.2); k.position.set(-4,8,6); a.scene.add(k);
+  const g=new THREE.Group(); a.scene.add(g); a.g=g; a.cam.position.set(0,4,15);
+  const mat=new THREE.MeshStandardMaterial({color:0x9a6cff,roughness:0.22,metalness:0.55,emissive:0x5a2fc0,emissiveIntensity:0.85});
+  a.bld=[]; buildings().forEach((b,i)=>{ const[x,w,d,h]=b; const geo=new THREE.BoxGeometry(w,h,d,3,10,3); const m=new THREE.Mesh(geo,mat); m.position.set(x,h/2,0); m.userData={base:geo.attributes.position.array.slice(),ph:i}; g.add(m); a.bld.push(m); });
+  done(canvas);
+}, update(t,px,py,a){ a.bld.forEach(m=>{ const p=m.geometry.attributes.position.array,b=m.userData.base,ph=m.userData.ph;
+    for(let j=0;j<p.length;j+=3){ const x=b[j],y=b[j+1],z=b[j+2],n=1+0.05*Math.sin(y*1.6+t*1.3+ph); p[j]=x*n; p[j+2]=z*n; }
+    m.geometry.attributes.position.needsUpdate=true; m.geometry.computeVertexNormals(); });
+  a.g.rotation.y=Math.sin(t*0.12)*0.25+px*0.6; a.cam.position.x=px*4; a.cam.position.y=4-py*2; a.cam.lookAt(0,3,0); }});}
+
+const FLORIDA=[
+  ['Effect A - orbit rings','Glowing data particles orbiting on tilted rings, over Earth\'s limb, in a starfield.', c=>floridaSat(c,'orbit')],
+  ['Effect B - signal pulses','Expanding transmission rings + data ribbons streaming off the satellite.', c=>floridaSat(c,'pulse')]
+];
+const BOSTON=[ ['Boston - AI-blob skyline','The skyline as living AI material. Locked direction.', bostonBlob] ];
+const LAST3=[
+  ['Lahore - Mughal (Taj stand-in)','Mughal domes + four minarets - stand-in for the Badshahi Mosque.', c=>realModel(c,TAJ,{size:5.2,camY:0.9,camZ:6.6,look:0.4,spin:0.3})],
+  ['Ukraine - onion-dome cathedral','A golden onion-dome cathedral - Kyiv Orthodox style.', c=>realModel(c,ONION,{size:5.0,camY:1.0,camZ:6.4,look:0.5,spin:0.3})],
+  ['Ukraine - sunflower (symbol)','The national flower - a softer, symbolic option.', c=>realModel(c,SUN,{size:4.4,camY:0.6,camZ:6,look:0.2,spin:0.2})],
+  ['Turkey - domed mosque','Dome + minarets - stand-in for Hagia Sophia.', c=>realModel(c,MOSQUE,{size:5.2,camY:1.0,camZ:6.6,look:0.4,spin:0.3})]
+];
+function build(into,arr){ const root=document.getElementById(into); arr.forEach(c=>{ const el=document.createElement('div'); el.className='card';
+  el.innerHTML='<div class="stage"><span class="tag">'+c[0]+'</span><div class="loading">loading 3D...</div><canvas></canvas></div><div class="meta"><h3>'+c[0]+'</h3><p>'+c[1]+'</p></div>';
+  root.appendChild(el); try{ c[2](el.querySelector('canvas')); }catch(e){ fail(el.querySelector('canvas')); } }); }
+build('florida',FLORIDA); build('boston',BOSTON); build('last3',LAST3);
+</script>
+</body>
+</html>
