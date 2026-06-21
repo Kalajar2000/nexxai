@@ -28,9 +28,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
     <style>
-      /* mobile: let taps reach the orb canvas instead of the hero text layered over it */
-      #h3d{touch-action:manipulation}
-      @media(max-width:900px){.hero-content{pointer-events:none}.hero-content a,.hero-content button{pointer-events:auto}}
+      /* mobile: no orb at all - skip the 3D for a clean, light, content-driven hero */
+      @media(max-width:900px){.hero-3d{display:none}.hero{min-height:auto;padding:110px 0 44px}.hero-hint,.cloud-ui,.speech{display:none!important}}
     </style>
     <script type="importmap">
     {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
@@ -302,7 +301,6 @@
     <script src="/redesign.js?v=8"></script>
     <script src="/toolstack.js?v=3"></script>
     <script type="module">
-        import { createHero } from '/hero3d.js?v=20';
         // fill logos (all of them): full set in the marquee, a curated set in the trusted-by row
         (function () {
             var L = ['9','10','11','12','13','14','15','16','17','18','19','IntroSlide','IntroSlide(2)','IntroSlide(3)','IntroSlide(4)','IntroSlide(5)','IntroSlide(6)','IntroSlide(7)','IntroSlide(8)'];
@@ -317,20 +315,27 @@
         var MSG = "Hola. Estas justo donde necesitas estar. Si necesitas IA, aqui estamos para ti. Cualquier cosa de IA, cualquier automatizacion que puedas imaginar.";
         var typer = null;
         function typeMsg(text){ clearInterval(typer); speechtext.textContent=''; var i=0; typer=setInterval(function(){ speechtext.textContent=text.slice(0,++i); if(i>=text.length) clearInterval(typer); },26); }
+        // 3D orb: desktop only (width-based, matches the .hero-3d CSS breakpoint).
+        // On phones (<=900px) we skip the three.js download for a light, clean hero.
+        var SMALL = window.matchMedia ? window.matchMedia('(max-width:900px)').matches : ((window.innerWidth||document.documentElement.clientWidth) <= 900);
         function boot(){
-            var hero = createHero(cv, {
-                speechEl: speech,
-                onState: function(i){
-                    speech.setAttribute('aria-hidden', i===1?'false':'true');
-                    if(i===1){ typeMsg(MSG); } else { clearInterval(typer); }
-                    if(herohint) herohint.classList.toggle('show', i===0);
-                    if(cloudui) cloudui.classList.toggle('show', i===2);
-                }
+            import('/hero3d.js?v=22').then(function(m){
+                var hero = m.createHero(cv, {
+                    speechEl: speech,
+                    onState: function(i){
+                        speech.setAttribute('aria-hidden', i===1?'false':'true');
+                        if(i===1){ typeMsg(MSG); } else { clearInterval(typer); }
+                        if(herohint) herohint.classList.toggle('show', i===0);
+                        if(cloudui) cloudui.classList.toggle('show', i===2);
+                    }
+                });
+                var cb = document.getElementById('cloudback'); if(cb) cb.addEventListener('click', function(){ hero.reset(); });
             });
-            var cb = document.getElementById('cloudback'); if(cb) cb.addEventListener('click', function(){ hero.reset(); });
         }
-        if(document.readyState==='complete') requestAnimationFrame(boot);
-        else window.addEventListener('load', function(){ requestAnimationFrame(boot); });
+        if(!SMALL){
+            if(document.readyState==='complete') requestAnimationFrame(boot);
+            else window.addEventListener('load', function(){ requestAnimationFrame(boot); });
+        }
     </script>
     <script src="/cookie.js?v=3" defer></script>
 </body>

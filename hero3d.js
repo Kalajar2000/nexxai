@@ -507,7 +507,7 @@ export function createHero(canvas, opts) {
         try { var pmrem = new THREE.PMREMGenerator(renderer); scene.environment = pmrem.fromScene(new mods[2].RoomEnvironment(), 0.04).texture; } catch (e) {}
         var draco = new mods[1].DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/gltf/');
         var loader = new mods[0].GLTFLoader(); loader.setDRACOLoader(draco);
-        loader.load(opts.robotUrl || 'assets/robot.glb?v=4', function (gltf) {
+        loader.load(opts.robotUrl || '/assets/robot.glb?v=4', function (gltf) {
           var model = gltf.scene;
           model.traverse(function (o) {
             if (o.isMesh && o.material) {
@@ -544,7 +544,7 @@ export function createHero(canvas, opts) {
         if (!scene.environment) { try { var pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new mods[2].RoomEnvironment(), 0.04).texture; } catch (e) {} }
         var draco = new mods[1].DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/gltf/');
         var loader = new mods[0].GLTFLoader(); loader.setDRACOLoader(draco);
-        loader.load(opts.cloudUrl || 'assets/cloud.glb?v=6', function (gltf) {
+        loader.load(opts.cloudUrl || '/assets/cloud.glb?v=6', function (gltf) {
           var model = gltf.scene;
           model.traverse(function (o) {
             if (o.isMesh && o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) {
