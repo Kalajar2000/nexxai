@@ -25,7 +25,7 @@
         ['Cloud & DevOps','#f472b6',[['AWS','aws'],['Azure','azure'],['Google Cloud','googlecloud'],['Docker','docker'],['Kubernetes','kubernetes'],['Jenkins','jenkins'],['Git','git'],['CI/CD','']]]
     ];
 
-    function chip(t){return '<span class="ts-chip" style="--c:'+t[2]+'"><img src="assets/brand-stack/'+t[1]+'" alt="'+t[0]+'" loading="lazy"><b>'+t[0]+'</b></span>';}
+    function chip(t){return '<span class="ts-chip" style="--c:'+t[2]+'"><img src="/assets/brand-stack/'+t[1]+'" alt="'+t[0]+'" loading="lazy"><b>'+t[0]+'</b></span>';}
     function fill(id,arr){var el=document.getElementById(id);if(!el)return false;var h=arr.map(chip).join('');el.innerHTML=h+h;return true;}
 
     var hasRows=fill('tsRowA',ROWA);fill('tsRowB',ROWB);
@@ -33,7 +33,7 @@
     var techEl=document.getElementById('tsTech');
     if(techEl){
         techEl.innerHTML=TECH.map(function(g){
-            var pills=g[2].map(function(it){var ic=it[1]?'<img src="assets/tech/'+it[1]+'.svg" alt="" loading="lazy">':'<i class="fas fa-infinity"></i>';return '<span class="ts-pill" style="--c:'+g[1]+'">'+ic+'<span>'+it[0]+'</span></span>';}).join('');
+            var pills=g[2].map(function(it){var ic=it[1]?'<img src="/assets/tech/'+it[1]+'.svg" alt="" loading="lazy">':'<i class="fas fa-infinity"></i>';return '<span class="ts-pill" style="--c:'+g[1]+'">'+ic+'<span>'+it[0]+'</span></span>';}).join('');
             return '<div class="ts-cat" style="--c:'+g[1]+'"><h4 style="color:'+g[1]+'">'+g[0]+'</h4><div class="ts-pills">'+pills+'</div></div>';
         }).join('');
     }

@@ -108,7 +108,7 @@
         hit:function(x,y){clickT=now;return false;}};}
     // ⑤ company - REAL textured globe (earth texture painted per-pixel onto the visible hemisphere) + clickable hubs + hover target
     function company(){var MW=1024,MH=512,texData=null,ready=false,clickHub=-1,cp=2;
-        var img=new Image();img.onload=function(){try{var oc=document.createElement('canvas');oc.width=MW;oc.height=MH;var o=oc.getContext('2d');o.drawImage(img,0,0,MW,MH);texData=o.getImageData(0,0,MW,MH).data;ready=true;}catch(e){}};img.src='assets/img/earth-dark.jpg';
+        var img=new Image();img.onload=function(){try{var oc=document.createElement('canvas');oc.width=MW;oc.height=MH;var o=oc.getContext('2d');o.drawImage(img,0,0,MW,MH);texData=o.getImageData(0,0,MW,MH).data;ready=true;}catch(e){}};img.src='/assets/img/earth-dark.jpg';
         var hubs=[[41.39,2.16,'<b>Barcelona</b>'],[42.36,-71.06,'<b>Boston</b>'],[27.99,-81.76,'<b>Florida</b>'],[31.55,74.34,'<b>Lahore</b>'],[50.45,30.52,'<b>Ukraine</b>'],[41.01,28.98,'<b>Turkey</b>']];
         function rot(v,ry,rx){var x=v[0],y=v[1],z=v[2],c=Math.cos(ry),s=Math.sin(ry),x1=x*c+z*s,z1=-x*s+z*c,c2=Math.cos(rx),s2=Math.sin(rx),y1=y*c2-z1*s2,z2=y*s2+z1*c2;return [x1,y1,z2];}
         var spots=[],drag=false,bound=false,dragMoved=false,lpx=0,lpy=0,dragYaw=0,dragPitch=0,spin=0;
