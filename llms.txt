@@ -1,6 +1,6 @@
 # NEXXAI
 
-> AI-first product and software studio. We design, build and ship AI agents, web and mobile apps, and custom platforms, from first idea to production. Building since 2015.
+> AI-first product and software studio. We design, build and ship AI agents, web and mobile apps, and custom platforms, from first idea to production.
 
 ## About
 NEXXAI builds production AI (agents, ML models, RAG assistants), custom software and SaaS, and native and cross-platform mobile and web apps for startups and enterprises. One senior team takes a product from first idea to shipped. Delivery hubs in Barcelona (Spain), Boston (USA), Florida (USA), Lahore (Pakistan), Ukraine (Kyiv) and Turkey (Istanbul).
