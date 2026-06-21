@@ -21,7 +21,7 @@
     <meta property="og:title" content="NEXXAI | AI-First Product &amp; Software Studio">
     <meta property="og:description" content="We design, build and ship the AI and software products that move your business, from first idea to production.">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="stylesheet" href="redesign.css?v=13">
+    <link rel="stylesheet" href="redesign.css?v=14">
     <link rel="stylesheet" href="toolstack.css?v=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -299,7 +299,7 @@
     </div>
 
     <script src="redesign.js?v=8"></script>
-    <script src="toolstack.js?v=1"></script>
+    <script src="toolstack.js?v=2"></script>
     <script type="module">
         // fill logos (full set in the marquee, a curated set in the trusted-by row)
         (function () {
@@ -323,6 +323,8 @@
             function end(){dragging=false;box.style.cursor='grab';}
             box.addEventListener('pointerup',end); box.addEventListener('pointercancel',end);
             window.addEventListener('load',function(){half=track.scrollWidth/2;});
+            // touch-only swipe hint, fades on first interaction
+            try{ if(window.matchMedia&&window.matchMedia('(pointer:coarse)').matches){ var mw=track.closest('.marquee')||box; var mh=document.createElement('div'); mh.className='swipe-hint'; mh.innerHTML='<i class="fas fa-arrows-left-right"></i> Swipe'; mw.parentNode.insertBefore(mh,mw.nextSibling); var md=function(){mh.classList.add('gone');}; box.addEventListener('pointerdown',md,{once:true}); setTimeout(md,6000); } }catch(e){}
         })();
         // 3D orb: desktop only. On mobile we skip the three.js download entirely for a light, clean hero.
         var SMALL = Math.min(window.innerWidth, window.innerHeight) < 820 || (window.matchMedia && window.matchMedia('(pointer:coarse)').matches);

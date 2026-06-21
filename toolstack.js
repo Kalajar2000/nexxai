@@ -69,4 +69,20 @@
     var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     marquee('tsRowA',-1,reduce?0:0.45);
     marquee('tsRowB', 1,reduce?0:0.45);
+
+    /* touch-only swipe hint on the draggable tool rows, fades on first interaction */
+    try{
+        if(window.matchMedia && window.matchMedia('(pointer:coarse)').matches){
+            var rowsWrap=document.querySelector('.ts-rows');
+            if(rowsWrap){
+                var hint=document.createElement('div');
+                hint.className='swipe-hint';
+                hint.innerHTML='<i class="fas fa-arrows-left-right"></i> Swipe';
+                rowsWrap.parentNode.insertBefore(hint, rowsWrap.nextSibling);
+                var dismiss=function(){hint.classList.add('gone');};
+                rowsWrap.addEventListener('pointerdown',dismiss,{once:true});
+                setTimeout(dismiss,6000);
+            }
+        }
+    }catch(e){}
 })();
