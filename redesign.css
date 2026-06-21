@@ -224,6 +224,8 @@ ul{list-style:none}
 @media(max-width:560px){.stats,.foot-grid{grid-template-columns:1fr}.nav{padding:0 16px}.sec{padding:70px 0}}
 /* prevent iOS Safari auto-zoom on field focus (inputs must be >=16px) */
 @media(max-width:600px){input,textarea,select{font-size:16px!important}}
+/* roomier tap targets for footer links on touch screens */
+@media(max-width:600px){.foot li{margin-bottom:4px}.foot li a{display:inline-block;padding:7px 0}}
 
 /* =====================================================================
    SHARED ADDITIONS - mobile nav, inner-page heroes, portfolio system

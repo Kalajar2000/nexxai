@@ -21,7 +21,7 @@
     <meta property="og:title" content="NEXXAI | AI-First Product &amp; Software Studio">
     <meta property="og:description" content="We design, build and ship the AI and software products that move your business, from first idea to production.">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="stylesheet" href="redesign.css?v=12">
+    <link rel="stylesheet" href="redesign.css?v=13">
     <link rel="stylesheet" href="toolstack.css?v=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -312,7 +312,8 @@
             var track=document.getElementById('mqtrack'); if(!track) return;
             var box=track.parentNode;
             track.style.animation='none'; box.style.cursor='grab'; box.style.touchAction='pan-y'; box.style.userSelect='none';
-            var half=track.scrollWidth/2,pos=0,vel=0,dragging=false,lastX=0,speed=0.4;
+            var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var half=track.scrollWidth/2,pos=0,vel=0,dragging=false,lastX=0,speed=rm?0:0.4;
             function norm(p){ if(!half) return p; while(p<=-half)p+=half; while(p>0)p-=half; return p; }
             var vis=true; try{ new IntersectionObserver(function(es){vis=es[0].isIntersecting;},{threshold:0}).observe(box); }catch(e){}
             function frame(){ if(vis){ if(!dragging){ pos+=-speed+vel; vel*=0.93; if(Math.abs(vel)<0.02)vel=0; } pos=norm(pos); track.style.transform='translateX('+pos+'px)'; } requestAnimationFrame(frame); }
