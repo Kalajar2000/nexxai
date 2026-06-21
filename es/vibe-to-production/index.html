@@ -53,8 +53,11 @@
       .lp-hero h1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(2.1rem,5.2vw,3.7rem);line-height:1.06;margin:16px 0 18px;max-width:17ch}
       .lp-hero .sub{max-width:790px;margin:0 auto 26px;color:#9a9cbb;font-size:1.06rem;line-height:1.6}
       .lp-hero .cta-row{justify-content:center}
-      .lp-tools{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;align-items:center;margin-top:30px;color:#7d7fa0;font-size:.82rem;letter-spacing:.04em}
-      .lp-tools b{color:#cbbcff;font-weight:600}
+      .lp-tools{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;align-items:center;margin-top:32px}
+      .lp-tools .lbl{color:#7d7fa0;font-size:.82rem;letter-spacing:.04em;font-family:'Inter',sans-serif}
+      .lp-tools img{height:20px;width:auto;filter:brightness(0) invert(1);opacity:.6;transition:opacity .2s}
+      .lp-tools img:hover{opacity:1}
+      @media(max-width:600px){.lp-tools img{height:17px}.lp-tools{gap:16px}}
       .num-badge{font-family:'Poppins',sans-serif;font-weight:600;font-size:1.2rem;color:#cbbcff}
       .compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
       .compare .col h4{font-family:'Poppins';margin:0 0 12px;font-size:1rem}
@@ -75,18 +78,18 @@
             <a href="/es/">Inicio</a>
             <a href="/es/services.html">Servicios</a>
             <a href="/es/ai-lab.html">AI Lab</a>
-            <a href="/es/upskilling.html">Upskilling</a>
+            <a href="/es/upskilling.html">Upskilling</a><a href="/es/vibe-to-production/">Vibe Coding</a>
             <a href="/es/work.html">Portafolio</a>
             <a href="/es/company.html">Empresa</a>
-        <a href="/es/vibe-to-production/" class="active">Vibe Coding</a></div>
+        </div>
         <a href="/vibe-to-production/" class="nav-lang" style="display:inline-flex;align-items:center;padding:8px 12px;margin-right:6px;border-radius:999px;border:1px solid rgba(255,255,255,.18);color:#cbbcff;text-decoration:none;font-weight:600;font-size:.85rem">EN</a>
         <a href="#contact" class="nav-cta">Auditoría gratis</a>
         <div class="nav-burger"><span></span><span></span><span></span></div>
     </nav>
     <div class="mnav">
         <span class="x">&times;</span>
-        <a href="/es/">Inicio</a><a href="/es/services.html">Servicios</a><a href="/es/ai-lab.html">AI Lab</a><a href="/es/upskilling.html">Upskilling</a><a href="/es/work.html">Portafolio</a><a href="/es/company.html">Empresa</a><a href="#contact">Contacto</a><a href="/vibe-to-production/">EN</a>
-    <a href="/es/vibe-to-production/">Vibe Coding</a></div>
+        <a href="/es/">Inicio</a><a href="/es/services.html">Servicios</a><a href="/es/ai-lab.html">AI Lab</a><a href="/es/upskilling.html">Upskilling</a><a href="/es/vibe-to-production/">Vibe Coding</a><a href="/es/work.html">Portafolio</a><a href="/es/company.html">Empresa</a><a href="#contact">Contacto</a><a href="/vibe-to-production/">EN</a>
+    </div>
 
     <!-- Hero -->
     <section class="lp-hero">
@@ -99,7 +102,7 @@
                 <a href="#contact" class="btn-glass solid">Consigue una auditoría gratis <i class="fas fa-arrow-right"></i></a>
                 <a href="#how" class="btn-ghost">Mira cómo funciona <i class="fas fa-arrow-right" style="font-size:.8em"></i></a>
             </div>
-            <div class="lp-tools rv">Funciona con <b>Cursor</b> · <b>Lovable</b> · <b>Bolt</b> · <b>v0</b> · <b>Replit</b> · <b>Claude</b> · <b>Windsurf</b></div>
+            <div class="lp-tools rv"><span class="lbl">Funciona con</span><img src="/assets/toollogos/cursor.svg" alt="Cursor" title="Cursor"><img src="/assets/toollogos/claude.svg" alt="Claude Code" title="Claude Code"><img src="/assets/toollogos/lovable.svg" alt="Lovable" title="Lovable"><img src="/assets/toollogos/bolt.svg" alt="Bolt" title="Bolt"><img src="/assets/toollogos/windsurf.svg" alt="Windsurf" title="Windsurf"><img src="/assets/toollogos/replit.svg" alt="Replit" title="Replit"><img src="/assets/toollogos/v0.svg" alt="v0" title="v0"></div>
         </div>
     </section>
 
