@@ -307,6 +307,22 @@
             var mq = document.getElementById('mqtrack'); if (mq) { var s = ''; for (var k = 0; k < 2; k++) L.forEach(function (f) { s += '<img loading="lazy" decoding="async" src="assets/logos/' + f + '.svg" alt="">'; }); mq.innerHTML = s; }
             var ht = document.getElementById('herotrust'); if (ht) { ['9','12','13','15','17','19','IntroSlide','IntroSlide(4)'].forEach(function (f) { var i = new Image(); i.src = 'assets/logos/' + f + '.svg'; i.alt = ''; ht.appendChild(i); }); }
         })();
+        // Clients marquee: draggable + auto-scroll, touch-friendly (pan-y so vertical scroll still works)
+        (function(){
+            var track=document.getElementById('mqtrack'); if(!track) return;
+            var box=track.parentNode;
+            track.style.animation='none'; box.style.cursor='grab'; box.style.touchAction='pan-y'; box.style.userSelect='none';
+            var half=track.scrollWidth/2,pos=0,vel=0,dragging=false,lastX=0,speed=0.4;
+            function norm(p){ if(!half) return p; while(p<=-half)p+=half; while(p>0)p-=half; return p; }
+            var vis=true; try{ new IntersectionObserver(function(es){vis=es[0].isIntersecting;},{threshold:0}).observe(box); }catch(e){}
+            function frame(){ if(vis){ if(!dragging){ pos+=-speed+vel; vel*=0.93; if(Math.abs(vel)<0.02)vel=0; } pos=norm(pos); track.style.transform='translateX('+pos+'px)'; } requestAnimationFrame(frame); }
+            requestAnimationFrame(frame);
+            box.addEventListener('pointerdown',function(e){dragging=true;lastX=e.clientX;vel=0;box.style.cursor='grabbing';try{box.setPointerCapture(e.pointerId);}catch(_){}});
+            box.addEventListener('pointermove',function(e){if(!dragging)return;var dx=e.clientX-lastX;lastX=e.clientX;pos=norm(pos+dx);vel=dx;track.style.transform='translateX('+pos+'px)';});
+            function end(){dragging=false;box.style.cursor='grab';}
+            box.addEventListener('pointerup',end); box.addEventListener('pointercancel',end);
+            window.addEventListener('load',function(){half=track.scrollWidth/2;});
+        })();
         // 3D orb: desktop only. On mobile we skip the three.js download entirely for a light, clean hero.
         var SMALL = Math.min(window.innerWidth, window.innerHeight) < 820 || (window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
         if (!SMALL) {
