@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var btn = cf.querySelector('button[type="submit"]');
         if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
         fetch(cf.action, { method: 'POST', body: new FormData(cf), headers: { 'Accept': 'application/json' } })
-            .then(function (r) { if (r.ok && ok) ok.classList.add('on'); cf.reset(); })
+            .then(function (r) { if (r.ok) { if (ok) ok.classList.add('on'); if (window.gtag) gtag('event', 'generate_lead'); } cf.reset(); })
             .catch(function () { alert('Please email santiago@nexxai.world'); })
             .finally(function () { if (btn) { btn.disabled = false; btn.innerHTML = 'Let\'s Talk <i class="fas fa-arrow-right"></i>'; } });
     });
