@@ -15,6 +15,15 @@
   function loadAnalytics() {
     if (window.__nxAnalyticsLoaded) return;
     window.__nxAnalyticsLoaded = true;
+    // Google Analytics 4 (loads only after analytics consent)
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { dataLayer.push(arguments); };
+    gtag('js', new Date());
+    gtag('config', 'G-399RKZXX8Z');
+    var ga = document.createElement('script');
+    ga.async = true;
+    ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-399RKZXX8Z';
+    document.head.appendChild(ga);
     // Apollo website visitor tracking (loads only after analytics consent)
     var n = Math.random().toString(36).substring(7);
     var o = document.createElement('script');
